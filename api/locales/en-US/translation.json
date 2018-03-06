@@ -1,0 +1,16 @@
+{
+  "login successfull": "Login Successful",
+  "invalid credentials": "Invalid credentials",
+  "login error": "Login error",
+  "logout error": "Logout error",
+  "user registered": "User registered",
+  "register user error": "Register user error",
+  "user not found": "User not found",
+  "required": "Required",
+  "invalid email": "{{value}} is not a valid email",
+  "password must be longer": "Password must be longer",
+  "enter the same password": "Enter the same password",
+  "locale must be set": "Locale must be set",
+  "language changing error": "Language changing error",
+  "selected language is not allowed": "Selected language is not allowed"
+}

@@ -1,0 +1,8 @@
+{
+  "basepath": "migrations",
+  "connection": "mongodb://mongodb/jwt-boilerplate",
+  "current_timestamp": 1511626526924,
+  "models": {
+    "User": "models/User.js"
+  }
+}

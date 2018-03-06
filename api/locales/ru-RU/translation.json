@@ -1,0 +1,14 @@
+{
+  "login successfull": "Вход выполнен",
+  "invalid credentials": "Неверные данные",
+  "login error": "Ошибка при входе",
+  "logout error": "Ошибка при выходе",
+  "user registered": "Пользователь зарегистрирован",
+  "register user error": "Ошибка при регистрации пользователя",
+  "user not found": "Пользователь не найден",
+  "required": "Поле обязательно",
+  "invalid email": "{{value}} не является валидным",
+  "password must be longer": "Пароль должен быть длиннее",
+  "enter the same password": "Повторите ввод пароля",
+  "locale must be set": "Желаемый язык не указан"
+}

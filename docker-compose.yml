@@ -1,0 +1,44 @@
+api:
+  build: ./api
+  volumes:
+    - ./api:/src
+  ports:
+    - "3001:3001"
+  links:
+    - mongodb
+    - redis
+  command: [nodemon, start]
+mongodb:
+  image: mongo:3
+  volumes:
+    - ./runtime/mongo:/data/db
+  ports:
+    - "27017:27017"
+mongoexpress:
+  image: mongo-express:0.44
+  links:
+    - mongodb
+  environment:
+    ME_CONFIG_MONGODB_SERVER: mongodb
+    ME_CONFIG_MONGODB_PORT: 27017
+  ports:
+    - "8082:8081"
+docs:
+  image: swaggerapi/swagger-ui:latest
+  ports:
+    - "8080:8080"
+  environment:
+    API_URL: http://localhost:3001/swagger/docs/api.json
+redis:
+    image: redis:3
+    volumes:
+        - ./runtime/redis:/data
+    ports:
+        - 6379:6379
+redisCommander:
+    image: tenstartups/redis-commander
+    command: --redis-host redis
+    links:
+      - redis:redis
+    ports:
+      - "8095:8081"
