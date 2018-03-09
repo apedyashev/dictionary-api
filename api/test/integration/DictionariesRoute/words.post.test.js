@@ -10,7 +10,7 @@ describe('Dictionarie Route', () => {
   let dictionary;
   before(async () => {
     await request(app)
-      .post(endpoints.dictionaries)
+      .post(endpoints.dictionaries())
       .set(...defaultUser.authData.header)
       .send(mocks.dictionary())
       .expect(201)

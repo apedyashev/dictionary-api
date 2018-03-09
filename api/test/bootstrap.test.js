@@ -28,7 +28,7 @@ before(async () => {
       defaultUser.authData.header = ['Authorization', `Bearer ${res.body.token}`];
       defaultUser.authData.token = res.body.token;
 
-      // TODO: to boilerplate
+      // TODO: boilerplate
       defaultUser.data.id = res.body.user.id;
     });
 });

@@ -49,9 +49,15 @@ const schema = new Schema({
 });
 schema.plugin(timestamps);
 schema.plugin(toJson);
-schema.plugin(sluggable, {source: ['translateFrom', 'translateTo']});
+schema.plugin(sluggable, {unique: true, source: ['translateFrom', 'translateTo']});
 
 schema.pre('save', async function() {
+  delete this.slug;
+  this.wordSets.forEach((wordSet) => {
+    delete wordSet.slug;
+    delete wordSet.stats;
+  });
+
   // the sluggable plugin cannot handle nested schemas, so generate unique slugs for word sets here
   if (this.isNew && _.isArray(this.wordSets)) {
     this.wordSets.forEach((wordSet) => {
@@ -65,11 +71,12 @@ schema.pre('save', async function() {
       wordSet.slug = withNextId(wordSet.slug, allSlugs, 0);
     });
   } else if (_.isArray(this.wordSets)) {
+    // delete this.wordSets;
     // TODO: when update is implemented
-    this.wordSets.forEach(async (wordSet) => {
-      const curSlug = slug(wordSet.title);
-      await this.find({_id: this._id, 'wordSets.slug': curSlug});
-    });
+    // this.wordSets.forEach(async (wordSet) => {
+    //   const curSlug = slug(wordSet.title);
+    //   await this.constructor.find({_id: this._id, 'wordSets.slug': curSlug});
+    // });
   }
 });
 

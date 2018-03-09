@@ -8,10 +8,10 @@ const {endpoints} = require(`${TEST_BASE}/constants.js`);
 const mocks = require(`${TEST_BASE}/mocks`);
 
 describe('Dictionarie Route', () => {
-  describe(`POST ${endpoints.dictionaries}`, () => {
+  describe(`POST ${endpoints.dictionaries()}`, () => {
     it('should return 401 if auth header is not set', async () => {
       await request(app)
-        .post(endpoints.dictionaries)
+        .post(endpoints.dictionaries())
         // .set(...defaultUser.authData.header)
         .send(mocks.dictionary())
         .expect(401);
@@ -20,7 +20,7 @@ describe('Dictionarie Route', () => {
     it('should return 201 and created dictionary if header and payload are valid', async () => {
       const dictonary = mocks.dictionary();
       await request(app)
-        .post(endpoints.dictionaries)
+        .post(endpoints.dictionaries())
         .set(...defaultUser.authData.header)
         .send(dictonary)
         .expect(201)
@@ -57,11 +57,12 @@ describe('Dictionarie Route', () => {
 
     it('should append incremented number to slug if such slug is already exist', async () => {
       const dictonary = mocks.dictionary(5);
+      // make some of titles the same
       dictonary.wordSets[2].title = dictonary.wordSets[0].title;
       dictonary.wordSets[4].title = dictonary.wordSets[0].title;
       dictonary.wordSets[3].title = dictonary.wordSets[1].title;
       await request(app)
-        .post(endpoints.dictionaries)
+        .post(endpoints.dictionaries())
         .set(...defaultUser.authData.header)
         .send(dictonary)
         .expect(201)
@@ -83,7 +84,7 @@ describe('Dictionarie Route', () => {
       const dictonary = mocks.dictionary();
       delete dictonary.wordSets;
       await request(app)
-        .post(endpoints.dictionaries)
+        .post(endpoints.dictionaries())
         .set(...defaultUser.authData.header)
         .send(dictonary)
         .expect(201)
@@ -106,16 +107,46 @@ describe('Dictionarie Route', () => {
           },
         });
     });
-  });
 
-  // describe(`GET ${endpoints.dictionaries}`, () => {
-  //   it('should return 200 and user`s dictionaries', async () => {
-  //     const dictonary = mocks.dictionary();
-  //     await request(app)
-  //       .get(endpoints.dictionaries)
-  //       .set(...defaultUser.authData.header)
-  //       .expect(200)
-  //       .expect({});
-  //   });
-  // });
+    it('should make slug unique', async () => {
+      const dictonary = mocks.dictionary();
+      let firstSlug;
+      await request(app)
+        .post(endpoints.dictionaries())
+        .set(...defaultUser.authData.header)
+        .send(dictonary)
+        .expect(201)
+        .expect((res) => {
+          firstSlug = res.body.item.slug;
+        });
+
+      // send the same data and ensure that slug is different
+      await request(app)
+        .post(endpoints.dictionaries())
+        .set(...defaultUser.authData.header)
+        .send(dictonary)
+        .expect(201)
+        .expect((res) => {
+          assert.equal(res.body.item.slug, `${firstSlug}-2`);
+        });
+
+      // ensure that slug will be unique for a new users
+      let newUserAuth;
+      await request(app)
+        .post(endpoints.register)
+        .send(mocks.user())
+        .expect(201)
+        .expect((res) => {
+          newUserAuth = ['Authorization', `Bearer ${res.body.token}`];
+        });
+      await request(app)
+        .post(endpoints.dictionaries())
+        .set(...newUserAuth)
+        .send(dictonary)
+        .expect(201)
+        .expect((res) => {
+          assert.equal(res.body.item.slug, `${firstSlug}-3`);
+        });
+    });
+  });
 });

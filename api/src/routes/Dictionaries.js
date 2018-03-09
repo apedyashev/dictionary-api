@@ -4,8 +4,6 @@ const mongoose = require('mongoose');
 const _ = require('lodash');
 const policies = require('../helpers/policies');
 const errorHandler = require('../helpers/errorHandler');
-const config = require('../config');
-const User = mongoose.model('User');
 const Dictionary = mongoose.model('Dictionary');
 const Word = mongoose.model('Word');
 
@@ -21,12 +19,8 @@ router.post('/', policies.checkJwtAuth, async (req, res) => {
   try {
     const reqBody = req.body;
     let wordSetsCount = 0;
-    // remove wordSet.stats since it cannot by controlled by client directly
     if (reqBody && _.isArray(reqBody.wordSets)) {
       wordSetsCount = reqBody.wordSets.length;
-      reqBody.wordSets.forEach((wordSet) => {
-        delete wordSet.stats;
-      });
     }
 
     const dictionary = new Dictionary({
@@ -45,18 +39,29 @@ router.post('/', policies.checkJwtAuth, async (req, res) => {
 
 router.put('/:slug', policies.checkJwtAuth, async (req, res) => {
   try {
-    const slug = req.param('slug');
+    const {slug} = req.params;
     const dict = await Dictionary.findOne({slug});
     if (!dict) {
-      return req.notFound('dictionary not found');
+      return res.notFound('dictionary not found');
     }
 
-    dict.set(req.body);
+    dict.set(_.omit(req.body, ['wordSets', 'owner', 'slug', 'stats', 'collaborators']));
     await dict.save();
-    req.ok();
+    res.ok('dictionary updated', {item: dict});
   } catch (err) {
     errorHandler(res, 'dictionary update error')(err);
   }
+});
+
+router.put('/:slug/wordsets/:wordSetSlug', policies.checkJwtAuth, async (req, res) => {
+  try {
+    const {slug, wordSetSlug} = this.params;
+    const wordSet = await Dictionary.findOneAndUpdate(
+      {slug, 'wordSets.slug': wordSetSlug},
+      {'wordSets.$': req.body}
+    );
+    res.ok({item: wordSet});
+  } catch (e) {}
 });
 
 router.post('/:id/wordsets/:wordSetId/words', policies.checkJwtAuth, async (req, res) => {
