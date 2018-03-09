@@ -2,9 +2,10 @@
 const {assert} = require('chai');
 const request = require('supertest');
 const _ = require('lodash');
-const app = require('../../app.js');
-const {endpoints} = require('../constants.js');
-const mocks = require('../mocks');
+const slug = require('slug');
+const app = require(`${TEST_BASE}/../app.js`);
+const {endpoints} = require(`${TEST_BASE}/constants.js`);
+const mocks = require(`${TEST_BASE}/mocks`);
 
 describe('Dictionarie Route', () => {
   describe(`POST ${endpoints.dictionaries}`, () => {
@@ -31,11 +32,6 @@ describe('Dictionarie Route', () => {
           item.wordSets.forEach((wordSet) => {
             assert.exists(wordSet.id, `wordSet.id`);
             delete wordSet.id;
-
-            // wordSet.items.forEach((word) => {
-            //   assert.exists(word.id, `word.id`);
-            //   delete word.id;
-            // });
           });
           res.body.item = _.omit(item, ['id', 'createdAt', 'updatedAt']);
         })
@@ -44,8 +40,42 @@ describe('Dictionarie Route', () => {
           item: {
             ...dictonary,
             owner: defaultUser.data.id,
+            slug: slug([dictonary.translateFrom, dictonary.translateTo].join(' ')),
             collaborators: [],
+            wordSets: dictonary.wordSets.map((wordSet) => ({
+              ...wordSet,
+              slug: slug(wordSet.title),
+              stats: {wordsCount: 0},
+            })),
+            stats: {
+              wordSetsCount: dictonary.wordSets.length,
+              wordsCount: 0,
+            },
           },
+        });
+    });
+
+    it('should append incremented number to slug if such slug is already exist', async () => {
+      const dictonary = mocks.dictionary(5);
+      dictonary.wordSets[2].title = dictonary.wordSets[0].title;
+      dictonary.wordSets[4].title = dictonary.wordSets[0].title;
+      dictonary.wordSets[3].title = dictonary.wordSets[1].title;
+      await request(app)
+        .post(endpoints.dictionaries)
+        .set(...defaultUser.authData.header)
+        .send(dictonary)
+        .expect(201)
+        .expect((res) => {
+          const {item: {wordSets}} = res.body;
+          const expectedSlugs = _(dictonary.wordSets)
+            .map('title')
+            .map((title) => slug(title))
+            .value();
+          expectedSlugs[2] = `${expectedSlugs[0]}-1`;
+          expectedSlugs[4] = `${expectedSlugs[0]}-2`;
+          expectedSlugs[3] = `${expectedSlugs[1]}-1`;
+          const allSlugs = _.map(wordSets, 'slug');
+          assert.includeMembers(allSlugs, expectedSlugs, 'slugs are autoincremented');
         });
     });
 
@@ -66,8 +96,13 @@ describe('Dictionarie Route', () => {
           item: {
             ...dictonary,
             owner: defaultUser.data.id,
+            slug: slug([dictonary.translateFrom, dictonary.translateTo].join(' ')),
             collaborators: [],
             wordSets: [],
+            stats: {
+              wordSetsCount: 0,
+              wordsCount: 0,
+            },
           },
         });
     });

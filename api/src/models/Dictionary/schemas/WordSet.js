@@ -7,9 +7,15 @@ const schema = new Schema({
     type: String,
     required: [true, 'required'],
   },
-  wordsCount: {
-    type: Number,
-    default: 0,
+  slug: {
+    type: String,
+  },
+  // for the sake of performance store count instead of calculating it using aggregation
+  stats: {
+    wordsCount: {
+      type: Number,
+      default: 0,
+    },
   },
 });
 schema.plugin(toJson);

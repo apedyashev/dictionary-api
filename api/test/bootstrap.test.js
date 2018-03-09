@@ -1,9 +1,12 @@
+const path = require('path');
 const {assert} = require('chai');
 const mongoose = require('mongoose');
 const request = require('supertest');
 const mocks = require('./mocks');
 const app = require('../app.js');
 const {endpoints} = require('./constants.js');
+
+global.TEST_BASE = path.resolve(__dirname, './');
 
 const defaultUser = {
   data: mocks.user(),

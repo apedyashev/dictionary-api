@@ -2253,6 +2253,12 @@ mongoose-paginate@5.0.3:
   dependencies:
     bluebird "3.0.5"
 
+mongoose-sluggable@0.7.4:
+  version "0.7.4"
+  resolved "https://registry.yarnpkg.com/mongoose-sluggable/-/mongoose-sluggable-0.7.4.tgz#232d30d75f067708370158685e1fd1dd1ae2bf1a"
+  dependencies:
+    slug "^0.9.1"
+
 mongoose-timestamp@0.6.0:
   version "0.6.0"
   resolved "https://registry.yarnpkg.com/mongoose-timestamp/-/mongoose-timestamp-0.6.0.tgz#da54110ca8e6d4c2b9957a0366836c362ed272be"
@@ -3003,6 +3009,12 @@ sliced@1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/sliced/-/sliced-1.0.1.tgz#0b3a662b5d04c3177b1926bea82b03f837a2ef41"
 
+slug@0.9.1, slug@^0.9.1:
+  version "0.9.1"
+  resolved "https://registry.yarnpkg.com/slug/-/slug-0.9.1.tgz#af08f608a7c11516b61778aa800dce84c518cfda"
+  dependencies:
+    unicode ">= 0.3.1"
+
 sntp@1.x.x:
   version "1.0.9"
   resolved "https://registry.yarnpkg.com/sntp/-/sntp-1.0.9.tgz#6541184cc90aeea6c6e7b35e2659082443c66198"
@@ -3362,6 +3374,10 @@ uid-number@^0.0.6:
 uid2@0.0.x:
   version "0.0.3"
   resolved "https://registry.yarnpkg.com/uid2/-/uid2-0.0.3.tgz#483126e11774df2f71b8b639dcd799c376162b82"
+
+"unicode@>= 0.3.1":
+  version "10.0.0"
+  resolved "https://registry.yarnpkg.com/unicode/-/unicode-10.0.0.tgz#e5d51c1db93b6c71a0b879e0b0c4af7e6fdf688e"
 
 unpipe@1.0.0, unpipe@~1.0.0:
   version "1.0.0"

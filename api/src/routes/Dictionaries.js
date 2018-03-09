@@ -20,16 +20,21 @@ const Word = mongoose.model('Word');
 router.post('/', policies.checkJwtAuth, async (req, res) => {
   try {
     const reqBody = req.body;
-    // set wordsCount to 0 since it isn't allowed to be set by user
+    let wordSetsCount = 0;
+    // remove wordSet.stats since it cannot by controlled by client directly
     if (reqBody && _.isArray(reqBody.wordSets)) {
+      wordSetsCount = reqBody.wordSets.length;
       reqBody.wordSets.forEach((wordSet) => {
-        wordSet.wordsCount = 0;
+        delete wordSet.stats;
       });
     }
 
     const dictionary = new Dictionary({
       owner: req.user.id,
       ...reqBody,
+      stats: {
+        wordSetsCount,
+      },
     });
     await dictionary.save();
     res.created('dictonary created', {item: dictionary});
@@ -38,10 +43,44 @@ router.post('/', policies.checkJwtAuth, async (req, res) => {
   }
 });
 
-router.post('/:id/words', policies.checkJwtAuth, async (req, res) => {
+router.put('/:slug', policies.checkJwtAuth, async (req, res) => {
   try {
-    const word = new Word(req.body);
-    res.created('words created', {item: word});
+    const slug = req.param('slug');
+    const dict = await Dictionary.findOne({slug});
+    if (!dict) {
+      return req.notFound('dictionary not found');
+    }
+
+    dict.set(req.body);
+    await dict.save();
+    req.ok();
+  } catch (err) {
+    errorHandler(res, 'dictionary update error')(err);
+  }
+});
+
+router.post('/:id/wordsets/:wordSetId/words', policies.checkJwtAuth, async (req, res) => {
+  try {
+    const dictionaryId = req.param('id');
+    const wordSetId = req.param('wordSetId');
+    if (!Dictionary.hasWordSet(dictionaryId, wordSetId)) {
+      return req.notFound();
+    }
+
+    const word = new Word({
+      owner: req.user.id,
+      wordSet: wordSetId,
+      ...req.body,
+    });
+    await word.save();
+
+    // inc words count for the corresponding word set
+    await Dictionary.findOneAndUpdate(
+      {_id: dictionaryId, 'wordSets._id': wordSetId},
+      {$inc: {'wordSets.$.stats.wordsCount': 1}}
+    );
+
+    res.created('a word created', {item: word});
   } catch (err) {
     errorHandler(res, 'words create error')(err);
   }

@@ -5,7 +5,7 @@
   "scripts": {
     "start": "nodemon ./src/bin/www.js",
     "migrate": "node node_modules/migrate/bin/migrate --chdir ./src",
-    "test": "PORT=3002 NODE_ENV=test mocha --exit --timeout 10000 test/bootstrap.test.js test/integration/**/*.test.js test/unit/**/*.test.js",
+    "test": "PORT=3002 NODE_ENV=test mocha --exit --timeout 10000 'test/bootstrap.test.js' 'test/**/*.test.js'",
     "lint": "eslint .",
     "prettier": "prettier --write './**/*.js'"
   },
@@ -30,6 +30,7 @@
     "mocha": "5.0.0",
     "mongoose": "5.0.7",
     "mongoose-paginate": "5.0.3",
+    "mongoose-sluggable": "0.7.4",
     "mongoose-timestamp": "0.6.0",
     "morgan": "1.9.0",
     "passport": "0.4.0",
@@ -37,6 +38,7 @@
     "passport-jwt": "3.0.1",
     "redis": "2.8.0",
     "serve-favicon": "2.4.2",
+    "slug": "0.9.1",
     "swagger-jsdoc": "1.9.7",
     "winston": "3.0.0-rc1"
   },

@@ -1,16 +1,12 @@
 const faker = require('faker');
+const _ = require('lodash');
 
-module.exports = function dictonary(customFields) {
+module.exports = function dictonary(wordSetsCount = 3) {
   return {
     translateFrom: faker.hacker.noun(),
     translateTo: faker.hacker.noun(),
-    wordSets: [1, 2, 3].map(() => ({
+    wordSets: _.range(wordSetsCount).map(() => ({
       title: faker.hacker.phrase(),
-      wordsCount: 0,
-      // items: [1, 2, 3, 4, 5].map(() => ({
-      //   word: faker.hacker.noun(),
-      //   translation: faker.hacker.verb(),
-      // })),
     })),
   };
 };

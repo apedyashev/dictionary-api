@@ -12,5 +12,7 @@ module.exports = {
     register: `${apiPrefix}/auth/register`,
 
     dictionaries: `${apiPrefix}/dictionaries`,
+    dictionaryWords: (dictionaryId, wordSetId) =>
+      `${apiPrefix}/dictionaries/${dictionaryId}/wordsets/${wordSetId}/words`,
   },
 };
