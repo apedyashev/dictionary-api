@@ -53,30 +53,28 @@ schema.plugin(sluggable, {unique: true, source: ['translateFrom', 'translateTo']
 
 schema.pre('save', async function() {
   delete this.slug;
-  this.wordSets.forEach((wordSet) => {
-    delete wordSet.slug;
-    delete wordSet.stats;
-  });
 
   // the sluggable plugin cannot handle nested schemas, so generate unique slugs for word sets here
-  if (this.isNew && _.isArray(this.wordSets)) {
+  if (_.isArray(this.wordSets)) {
+    this.stats.wordSetsCount = this.wordSets.length;
+
     this.wordSets.forEach((wordSet) => {
-      wordSet.slug = slug(wordSet.title);
+      if (wordSet.isModified('title')) {
+        wordSet.slug = slug(wordSet.title);
+      }
+      // do not allow to update state directly
+      delete wordSet.stats;
     });
+    // make slugs unique
     this.wordSets.forEach((wordSet) => {
-      const allSlugs = _(this.wordSets)
-        .filter((ws) => ws._id !== wordSet._id)
-        .map('slug')
-        .value();
-      wordSet.slug = withNextId(wordSet.slug, allSlugs, 0);
+      if (wordSet.isNew || wordSet.isModified('title')) {
+        const allSlugs = _(this.wordSets)
+          .filter((ws) => ws._id !== wordSet._id)
+          .map('slug')
+          .value();
+        wordSet.slug = withNextId(wordSet.slug, allSlugs, 0);
+      }
     });
-  } else if (_.isArray(this.wordSets)) {
-    // delete this.wordSets;
-    // TODO: when update is implemented
-    // this.wordSets.forEach(async (wordSet) => {
-    //   const curSlug = slug(wordSet.title);
-    //   await this.constructor.find({_id: this._id, 'wordSets.slug': curSlug});
-    // });
   }
 });
 

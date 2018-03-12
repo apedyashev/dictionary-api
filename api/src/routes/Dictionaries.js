@@ -55,13 +55,22 @@ router.put('/:slug', policies.checkJwtAuth, async (req, res) => {
 
 router.put('/:slug/wordsets/:wordSetSlug', policies.checkJwtAuth, async (req, res) => {
   try {
-    const {slug, wordSetSlug} = this.params;
-    const wordSet = await Dictionary.findOneAndUpdate(
-      {slug, 'wordSets.slug': wordSetSlug},
-      {'wordSets.$': req.body}
-    );
-    res.ok({item: wordSet});
-  } catch (e) {}
+    const {slug, wordSetSlug} = req.params;
+    const dictonary = await Dictionary.findOne({slug});
+    if (!dictonary) {
+      return res.notFound('dictionary not found');
+    }
+    const wordSetIndex = _.findIndex(dictonary.wordSets, (ws) => ws.slug === wordSetSlug);
+    if (wordSetIndex < 0) {
+      return res.notFound('wordset not found');
+    }
+    dictonary.wordSets[wordSetIndex] = {...req.body, _id: req.body.id};
+    await dictonary.save();
+
+    res.ok('word set updated', {item: dictonary.wordSets[wordSetIndex]});
+  } catch (err) {
+    errorHandler(res, 'wordset update error')(err);
+  }
 });
 
 router.post('/:id/wordsets/:wordSetId/words', policies.checkJwtAuth, async (req, res) => {
