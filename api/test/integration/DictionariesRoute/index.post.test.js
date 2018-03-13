@@ -7,7 +7,7 @@ const app = require(`${TEST_BASE}/../app.js`);
 const {endpoints} = require(`${TEST_BASE}/constants.js`);
 const mocks = require(`${TEST_BASE}/mocks`);
 
-describe('Dictionarie Route', () => {
+describe('Dictionaries Route', () => {
   describe(`POST ${endpoints.dictionaries()}`, () => {
     it('should return 401 if auth header is not set', async () => {
       await request(app)

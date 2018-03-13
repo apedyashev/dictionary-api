@@ -1,4 +1,5 @@
 /* global defaultUser */
+const {assert} = require('chai');
 const request = require('supertest');
 const _ = require('lodash');
 const slug = require('slug');
@@ -7,7 +8,7 @@ const {endpoints} = require(`${TEST_BASE}/constants.js`);
 const mocks = require(`${TEST_BASE}/mocks`);
 
 describe('Dictionaries Route', () => {
-  describe(`PUT ${endpoints.dictionaries(':slug')}`, () => {
+  describe(`GET ${endpoints.dictionaries(':slug')}`, () => {
     let newDict;
     beforeEach(async () => {
       const dictonary = mocks.dictionary(5);
@@ -23,39 +24,29 @@ describe('Dictionaries Route', () => {
 
     it('should return 401 if auth header is not set', async () => {
       await request(app)
-        .put(endpoints.dictionaries(newDict.slug))
-        .send(newDict)
+        .get(endpoints.dictionaries(newDict.slug))
         .expect(401);
     });
 
-    it('should update only allowed fields if header and payload are valid', async () => {
-      const dictonary = mocks.dictionary(5);
-      // only those fields can be updated by tested endpoint
-      newDict.translateFrom = dictonary.translateFrom;
-      newDict.translateTo = dictonary.translateTo;
-
+    it('should get a dictionary', async () => {
       await request(app)
-        .put(endpoints.dictionaries(newDict.slug))
+        .get(endpoints.dictionaries(newDict.slug))
         .set(...defaultUser.authData.header)
-        .send(newDict)
         .expect(200)
         .expect((res) => {
-          delete res.body.item.updatedAt;
+          const {item} = res.body;
+          assert.exists(item.createdAt, 'item.createdAt');
+          res.body.item = _.omit(item, ['updatedAt']);
         })
         .expect({
-          message: 'dictionary updated',
-          item: {
-            ..._.omit(newDict, 'updatedAt'),
-            slug: slug([newDict.translateFrom, newDict.translateTo].join(' ')),
-          },
+          item: _.omit(newDict, ['updatedAt']),
         });
     });
 
     it('should return 404 if slug is invalid', async () => {
       await request(app)
-        .put(endpoints.dictionaries(`${newDict.slug}-a-fake-slug`))
+        .get(endpoints.dictionaries(`${newDict.slug}-fake`))
         .set(...defaultUser.authData.header)
-        .send(newDict)
         .expect(404);
     });
   });

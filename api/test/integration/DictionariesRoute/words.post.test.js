@@ -6,7 +6,7 @@ const app = require(`${TEST_BASE}/../app.js`);
 const {endpoints} = require(`${TEST_BASE}/constants.js`);
 const mocks = require(`${TEST_BASE}/mocks`);
 
-describe('Dictionarie Route', () => {
+describe('Dictionaries Route', () => {
   let dictionary;
   before(async () => {
     await request(app)

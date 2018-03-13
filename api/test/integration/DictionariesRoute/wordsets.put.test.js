@@ -7,7 +7,7 @@ const app = require(`${TEST_BASE}/../app.js`);
 const {endpoints} = require(`${TEST_BASE}/constants.js`);
 const mocks = require(`${TEST_BASE}/mocks`);
 
-describe('Dictionarie Route', () => {
+describe('Dictionaries Route', () => {
   describe(`PUT ${endpoints.dictionaryWordSets(':dictionarySlug', ':wordSetSlug')}`, () => {
     let newDict;
     beforeEach(async () => {

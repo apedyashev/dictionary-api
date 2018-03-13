@@ -37,6 +37,19 @@ router.post('/', policies.checkJwtAuth, async (req, res) => {
   }
 });
 
+router.get('/:slug', policies.checkJwtAuth, async (req, res) => {
+  try {
+    const {slug} = req.params;
+    const item = await Dictionary.findOne({slug});
+    if (!item) {
+      return res.notFound('dictionary not found');
+    }
+    return res.ok({item});
+  } catch (err) {
+    errorHandler(res, 'dictionary get error')(err);
+  }
+});
+
 router.put('/:slug', policies.checkJwtAuth, async (req, res) => {
   try {
     const {slug} = req.params;
@@ -70,6 +83,28 @@ router.put('/:slug/wordsets/:wordSetSlug', policies.checkJwtAuth, async (req, re
     res.ok('word set updated', {item: dictonary.wordSets[wordSetIndex]});
   } catch (err) {
     errorHandler(res, 'wordset update error')(err);
+  }
+});
+
+router.delete('/:slug/wordsets/:wordSetSlug', policies.checkJwtAuth, async (req, res) => {
+  try {
+    const {slug, wordSetSlug} = req.params;
+    const dictionary = await Dictionary.findOne({slug});
+    if (!dictionary) {
+      return res.notFound('dictionary not found');
+    }
+    const wordSetIndex = _.findIndex(dictionary.wordSets, (ws) => ws.slug === wordSetSlug);
+    if (wordSetIndex < 0) {
+      return res.notFound('wordset not found');
+    }
+
+    // TODO: check if wordset has words
+    dictionary.wordSets = _.filter(dictionary.wordSets, (elem, idx) => idx !== wordSetIndex);
+    await dictionary.save();
+
+    res.noContent();
+  } catch (err) {
+    errorHandler(res, 'wordset delete error')(err);
   }
 });
 
