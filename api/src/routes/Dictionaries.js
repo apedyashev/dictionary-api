@@ -123,9 +123,8 @@ router.delete('/:slug/wordsets/:wordSetSlug', policies.checkJwtAuth, async (req,
 
 router.post('/:id/wordsets/:wordSetId/words', policies.checkJwtAuth, async (req, res) => {
   try {
-    const dictionaryId = req.param('id');
-    const wordSetId = req.param('wordSetId');
-    if (!Dictionary.hasWordSet(dictionaryId, wordSetId)) {
+    const {id, wordSetId} = req.params;
+    if (!Dictionary.hasWordSet(id, wordSetId)) {
       return req.notFound();
     }
 
@@ -138,13 +137,13 @@ router.post('/:id/wordsets/:wordSetId/words', policies.checkJwtAuth, async (req,
 
     // inc words count for the corresponding word set
     await Dictionary.findOneAndUpdate(
-      {_id: dictionaryId, 'wordSets._id': wordSetId},
+      {_id: id, 'wordSets._id': wordSetId},
       {$inc: {'wordSets.$.stats.wordsCount': 1}}
     );
 
     res.created('a word created', {item: word});
   } catch (err) {
-    errorHandler(res, 'words create error')(err);
+    errorHandler(res, 'word create error')(err);
   }
 });
 

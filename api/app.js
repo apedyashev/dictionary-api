@@ -31,7 +31,7 @@ i18next
     preload: config.allowedLanguages,
     fallbackLng: config.fallbackLng,
     backend: {
-      loadPath: `${__dirname}/locales/{{lng}}/{{ns}}.json`,
+      loadPath: config.disableI18NextLoadPath ? '' : `${__dirname}/locales/{{lng}}/{{ns}}.json`,
     },
   });
 app.use(bodyParser.json());

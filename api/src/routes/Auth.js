@@ -166,11 +166,11 @@ router.delete('/logout', policies.checkJwtAuth, async (req, res) => {
  *         type: string
  */
 router.post('/register', async (req, res) => {
-  // do not allow to assign role by a user - use default one
-  const roles = ['login'];
-  const deviceId = req.device.type;
-
   try {
+    // do not allow to assign role by a user - use default one
+    const roles = ['login'];
+    const deviceId = req.device.type;
+
     const user = new User({...req.body, roles, provider: 'local'});
     await user.save();
 

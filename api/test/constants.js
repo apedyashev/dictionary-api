@@ -11,6 +11,8 @@ module.exports = {
     login: `${apiPrefix}/auth/login`,
     register: `${apiPrefix}/auth/register`,
 
+    usersLanguage: `${apiPrefix}/users/language`,
+
     dictionaries: (slug) =>
       slug ? `${apiPrefix}/dictionaries/${slug}` : `${apiPrefix}/dictionaries`,
     dictionaryWordSets: (dictionarySlug, wordSetSlug) =>

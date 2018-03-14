@@ -31,6 +31,13 @@ before(async () => {
       // TODO: boilerplate
       defaultUser.data.id = res.body.user.id;
     });
+
+  await request(app)
+    .put(endpoints.usersLanguage)
+    .set(...defaultUser.authData.header)
+    .send({locale: 'dev'})
+    .expect(204)
+    .expect({});
 });
 
 after((done) => {

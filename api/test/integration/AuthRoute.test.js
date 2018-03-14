@@ -17,6 +17,7 @@ describe('AuthController', () => {
           res.body.originalError = null;
         })
         .expect({
+          message: 'register user error',
           originalError: null,
           validationErrors: {
             email: 'required',
@@ -38,6 +39,7 @@ describe('AuthController', () => {
           res.body.originalError = null;
         })
         .expect({
+          message: 'register user error',
           originalError: null,
           validationErrors: {
             email: 'invalid email',
@@ -59,6 +61,7 @@ describe('AuthController', () => {
           res.body.originalError = null;
         })
         .expect({
+          message: 'register user error',
           originalError: null,
           validationErrors: {
             email: 'invalid email',
@@ -178,7 +181,7 @@ describe('AuthController', () => {
           user: {
             ..._.omit(defaultUser.data, ['password', 'passwordConfirmation']),
             roles: ['login'],
-            locale: 'en-US',
+            locale: 'dev',
           },
         });
     });

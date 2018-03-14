@@ -18,6 +18,7 @@ describe('Dictionaries Route', () => {
         dictionary = res.body.item;
       });
   });
+
   describe(`POST ${endpoints.dictionaryWords(':id', ':wordSetId')}`, () => {
     it('should return 401 if auth header is not set', async () => {
       const wordSetId = dictionary.wordSets[0].id;
@@ -27,27 +28,22 @@ describe('Dictionaries Route', () => {
         .expect(401);
     });
 
-    // it('should set wordSets to empty array if it is missing', async () => {
-    //   const dictonary = mocks.dictionary();
-    //   delete dictonary.wordSets;
-    //   await request(app)
-    //     .post(endpoints.dictionaries)
-    //     .set(...defaultUser.authData.header)
-    //     .send(dictonary)
-    //     .expect(201)
-    //     .expect((res) => {
-    //       const {item} = res.body;
-    //       res.body.item = _.omit(item, ['id', 'createdAt', 'updatedAt']);
-    //     })
-    //     .expect({
-    //       message: 'dictonary created',
-    //       item: {
-    //         ...dictonary,
-    //         owner: defaultUser.data.id,
-    //         collaborators: [],
-    //         wordSets: [],
-    //       },
-    //     });
-    // });
+    it('should return 422 if payload is empty', async () => {
+      const wordSetId = dictionary.wordSets[0].id;
+      await request(app)
+        .post(endpoints.dictionaryWords(dictionary.id, wordSetId))
+        .set(...defaultUser.authData.header)
+        .expect(422)
+        .expect((res) => {
+          delete res.body.originalError;
+        })
+        .expect({
+          message: 'word create error',
+          validationErrors: {
+            word: 'required',
+            translation: 'required',
+          },
+        });
+    });
   });
 });

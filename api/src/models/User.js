@@ -110,6 +110,7 @@ schema.plugin(timestamps);
 schema.pre('validate', function(next) {
   if (
     this.provider === 'local' &&
+    this.isModified('password') &&
     isPasswordLengthValid(this.password) &&
     this.password !== this.passwordConfirmation
   ) {
@@ -120,7 +121,7 @@ schema.pre('validate', function(next) {
 
 // Hook a pre save method to hash the password
 schema.pre('save', function(next) {
-  if (isPasswordLengthValid(this.password)) {
+  if (isPasswordLengthValid(this.password) && this.isModified('password')) {
     this.salt = Buffer.from(crypto.randomBytes(16).toString('base64'), 'base64');
     this.password = this.hashPassword(this.password);
   }
