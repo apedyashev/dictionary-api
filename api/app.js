@@ -42,6 +42,7 @@ app.use(cookieParser());
 
 app.use(cors());
 app.use(require('./src/responses'));
+app.use(require('./src/serializers'));
 require('./src/routes')(app);
 
 // catch 404 and forward to error handler

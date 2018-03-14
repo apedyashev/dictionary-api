@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const timestamps = require('mongoose-timestamp');
 const toJson = require('@meanie/mongoose-to-json');
 const sluggable = require('mongoose-sluggable');
+const mongoosePaginate = require('mongoose-paginate');
 const slug = require('slug');
 const _ = require('lodash');
 const {Collaborator, WordSet} = require('./schemas');
@@ -50,6 +51,7 @@ const schema = new Schema({
 schema.plugin(timestamps);
 schema.plugin(toJson);
 schema.plugin(sluggable, {unique: true, source: ['translateFrom', 'translateTo']});
+schema.plugin(mongoosePaginate);
 
 schema.pre('save', async function() {
   delete this.slug;

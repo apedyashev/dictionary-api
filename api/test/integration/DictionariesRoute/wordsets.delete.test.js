@@ -2,7 +2,6 @@
 const {assert} = require('chai');
 const request = require('supertest');
 const _ = require('lodash');
-const slug = require('slug');
 const app = require(`${TEST_BASE}/../app.js`);
 const {endpoints} = require(`${TEST_BASE}/constants.js`);
 const mocks = require(`${TEST_BASE}/mocks`);

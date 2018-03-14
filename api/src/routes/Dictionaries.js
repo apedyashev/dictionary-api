@@ -3,6 +3,7 @@ const router = express.Router();
 const mongoose = require('mongoose');
 const _ = require('lodash');
 const policies = require('../helpers/policies');
+const {parseSortBy} = require('../helpers/list');
 const errorHandler = require('../helpers/errorHandler');
 const Dictionary = mongoose.model('Dictionary');
 const Word = mongoose.model('Word');
@@ -14,6 +15,18 @@ const Word = mongoose.model('Word');
  *   description: Dictionaries operations
  *
  */
+router.get('/', policies.checkJwtAuth, async (req, res) => {
+  try {
+    const perPage = +req.query.perPage || 30;
+    const page = +req.query.page || 1;
+    const sort = parseSortBy(req.query.sortBy);
+
+    const items = await Dictionary.paginate({owner: req.user.id}, {page, limit: perPage, sort});
+    res.paginated(items).ok();
+  } catch (err) {
+    errorHandler(res, 'dictionaries list error')(err);
+  }
+});
 
 router.post('/', policies.checkJwtAuth, async (req, res) => {
   try {
@@ -132,15 +145,6 @@ router.post('/:id/wordsets/:wordSetId/words', policies.checkJwtAuth, async (req,
     res.created('a word created', {item: word});
   } catch (err) {
     errorHandler(res, 'words create error')(err);
-  }
-});
-
-router.get('/', policies.checkJwtAuth, async (req, res) => {
-  try {
-    const items = await Dictionary.find({owner: req.user.id});
-    res.ok({items});
-  } catch (err) {
-    errorHandler(res, 'dictionary create error')(err);
   }
 });
 

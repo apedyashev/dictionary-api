@@ -19,6 +19,11 @@ module.exports = function(...args) {
   } else if (_.isPlainObject(args[0])) {
     data = args[0];
   }
+
+  // if serializer is used then use it's data
+  if (this.res.responseData) {
+    data = this.res.responseData;
+  }
   const response = {message, ...data};
 
   logger.silly('Sending 200 ("OK") response', response);

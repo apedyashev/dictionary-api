@@ -32,14 +32,18 @@ module.exports = function(err) {
     if (process.env !== 'production') {
       result.originalError = err;
     }
-    return result;
+    // return result;
+    this.res.responseData = result;
   } else if (_.isPlainObject(err)) {
     const validationErrors = serializeMessagesObject(err);
     if (validationErrors) {
-      return {validationErrors};
+      this.res.responseData = {validationErrors};
+      // return {validationErrors};
     }
   }
   logger.debug('unable to serialize error - unknown format');
+
+  return this.res;
 };
 
 function serializeMessagesObject(err) {
