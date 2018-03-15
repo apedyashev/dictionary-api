@@ -6,7 +6,7 @@ const {endpoints} = require('../constants.js');
 
 describe('TranslateRoute', () => {
   describe(`GET ${endpoints.translate}`, () => {
-    it('should return 422 is request body is empty', async () => {
+    it('should returns list of translations', async () => {
       const text = 'well';
       await request(app)
         .get(endpoints.translate)
@@ -18,8 +18,7 @@ describe('TranslateRoute', () => {
           assert.isArray(items);
           assert.isAtLeast(items.length, 1, 'response contains at least one translation');
           assert.equal(items[0].text, text, 'original text is presented');
-        })
-        .expect({});
+        });
     });
   });
 });

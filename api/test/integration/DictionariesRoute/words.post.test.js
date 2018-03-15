@@ -41,7 +41,7 @@ describe('Dictionaries Route', () => {
           message: 'word create error',
           validationErrors: {
             word: 'required',
-            translation: 'required',
+            translations: 'required',
           },
         });
     });
@@ -55,6 +55,12 @@ describe('Dictionaries Route', () => {
         .send(newWord)
         .expect(201)
         .expect((res) => {
+          const {item} = res.body;
+          assert.isArray(item.translations, 'word has translations array');
+          item.translations.forEach((translation) => {
+            assert.exists(translation.id, 'translation has id');
+            delete translation.id;
+          });
           res.body.item = _.omit(res.body.item, ['id', 'createdAt', 'updatedAt', 'owner']);
         })
         .expect({

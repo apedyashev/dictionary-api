@@ -5,7 +5,7 @@ const sluggable = require('mongoose-sluggable');
 const mongoosePaginate = require('mongoose-paginate');
 const slug = require('slug');
 const _ = require('lodash');
-const {Collaborator, WordSet} = require('./schemas');
+const {Collaborator, WordSet, Language} = require('./schemas');
 const {withNextId} = require('../../helpers/mongoose');
 const Schema = mongoose.Schema;
 
@@ -13,6 +13,10 @@ const schema = new Schema({
   owner: {
     type: Schema.Types.ObjectId,
     ref: 'User',
+    required: [true, 'required'],
+  },
+  title: {
+    type: String,
     required: [true, 'required'],
   },
   translateFrom: {

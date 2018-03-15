@@ -17,6 +17,25 @@ describe('Dictionaries Route', () => {
         .expect(401);
     });
 
+    it('should return 422 if payload is invalid', async () => {
+      const dictonary = mocks.dictionary();
+      await request(app)
+        .post(endpoints.dictionaries())
+        .set(...defaultUser.authData.header)
+        .expect(422)
+        .expect((res) => {
+          delete res.body.originalError;
+        })
+        .expect({
+          message: 'dictionary create error',
+          validationErrors: {
+            title: 'required',
+            translateFrom: 'required',
+            translateTo: 'required',
+          },
+        });
+    });
+
     it('should return 201 and created dictionary if header and payload are valid', async () => {
       const dictonary = mocks.dictionary();
       await request(app)

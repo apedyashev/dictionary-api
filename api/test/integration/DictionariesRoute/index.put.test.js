@@ -31,6 +31,7 @@ describe('Dictionaries Route', () => {
     it('should update only allowed fields if header and payload are valid', async () => {
       const dictonary = mocks.dictionary(5);
       // only those fields can be updated by tested endpoint
+      newDict.title = dictonary.title;
       newDict.translateFrom = dictonary.translateFrom;
       newDict.translateTo = dictonary.translateTo;
 
