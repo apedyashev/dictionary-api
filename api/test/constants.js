@@ -19,5 +19,7 @@ module.exports = {
       `${apiPrefix}/dictionaries/${dictionarySlug}/wordsets/${wordSetSlug}`,
     dictionaryWords: (dictionaryId, wordSetId) =>
       `${apiPrefix}/dictionaries/${dictionaryId}/wordsets/${wordSetId}/words`,
+
+    translate: `${apiPrefix}/translate`,
   },
 };

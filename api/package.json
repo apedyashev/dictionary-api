@@ -20,6 +20,7 @@
     "debug": "2.6.3",
     "express": "4.15.2",
     "express-device": "0.4.2",
+    "got": "8.3.0",
     "i18next": "10.2.2",
     "i18next-express-middleware": "1.0.9",
     "i18next-node-fs-backend": "1.0.0",

@@ -14,6 +14,7 @@ const util = require('util');
  *         type: object
  */
 module.exports = function(message, error) {
+  // TODO: log to DB + use userId
   logger.error('Sending 500 ("Server Error") response', {message, error: util.inspect(error)});
   const response = {message};
   if (process.env !== 'production') {

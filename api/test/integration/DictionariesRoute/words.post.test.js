@@ -45,5 +45,25 @@ describe('Dictionaries Route', () => {
           },
         });
     });
+
+    it('should return 201 if payload is valid', async () => {
+      const wordSetId = dictionary.wordSets[0].id;
+      const newWord = mocks.word();
+      await request(app)
+        .post(endpoints.dictionaryWords(dictionary.id, wordSetId))
+        .set(...defaultUser.authData.header)
+        .send(newWord)
+        .expect(201)
+        .expect((res) => {
+          res.body.item = _.omit(res.body.item, ['id', 'createdAt', 'updatedAt', 'owner']);
+        })
+        .expect({
+          message: 'a word created',
+          item: {
+            ...newWord,
+            wordSet: wordSetId,
+          },
+        });
+    });
   });
 });
