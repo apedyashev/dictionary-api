@@ -117,7 +117,6 @@ describe('Dictionaries Route', () => {
     });
 
     it('should return 403 if word doesn` belong to user', async () => {
-      // try to change owner
       const wordSetId = dictionary.wordSets[0].id;
       await request(app)
         .patch(endpoints.dictionaryWords(dictionary.id, wordSetId, wordToBeUpdated.id))

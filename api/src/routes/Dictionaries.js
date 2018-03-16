@@ -115,7 +115,7 @@ router.delete('/:slug/wordsets/:wordSetSlug', policies.checkJwtAuth, async (req,
     dictionary.wordSets = _.filter(dictionary.wordSets, (elem, idx) => idx !== wordSetIndex);
     await dictionary.save();
 
-    res.noContent();
+    res.ok('wordset deleted');
   } catch (err) {
     errorHandler(res, 'wordset delete error')(err);
   }
@@ -162,6 +162,22 @@ router.patch('/:id/wordsets/:wordSetId/words/:wordId', policies.checkJwtAuth, as
     res.ok('word updated', {item: word});
   } catch (err) {
     errorHandler(res, 'word update error')(err);
+  }
+});
+
+router.delete('/:id/wordsets/:wordSetId/words/:wordId', policies.checkJwtAuth, async (req, res) => {
+  try {
+    const {wordId} = req.params;
+    const word = await Word.findOne({_id: wordId});
+    if (word.owner.toString() !== req.user.id) {
+      return res.forbidden();
+    }
+
+    await word.remove();
+
+    res.ok('word deleted');
+  } catch (err) {
+    errorHandler(res, 'word delete error')(err);
   }
 });
 

@@ -31,8 +31,10 @@ describe('Dictionaries Route', () => {
       await request(app)
         .delete(endpoints.dictionaryWordSets(newDict.slug, newDict.wordSets[3].slug))
         .set(...defaultUser.authData.header)
-        .expect(204)
-        .expect('');
+        .expect(200)
+        .expect({
+          message: 'wordset deleted',
+        });
 
       _.pullAt(newDict.wordSets, 3);
       newDict.stats.wordSetsCount = newDict.wordSets.length;
