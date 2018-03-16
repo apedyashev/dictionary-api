@@ -5,7 +5,7 @@ const sluggable = require('mongoose-sluggable');
 const mongoosePaginate = require('mongoose-paginate');
 const slug = require('slug');
 const _ = require('lodash');
-const {Collaborator, WordSet, Language} = require('./schemas');
+const {Collaborator, WordSet} = require('./schemas');
 const {withNextId} = require('../../helpers/mongoose');
 const Schema = mongoose.Schema;
 

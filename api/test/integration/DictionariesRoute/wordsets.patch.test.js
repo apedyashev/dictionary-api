@@ -6,7 +6,7 @@ const {endpoints} = require(`${TEST_BASE}/constants.js`);
 const mocks = require(`${TEST_BASE}/mocks`);
 
 describe('Dictionaries Route', () => {
-  describe(`PUT ${endpoints.dictionaryWordSets(':dictionarySlug', ':wordSetSlug')}`, () => {
+  describe(`PATCH ${endpoints.dictionaryWordSets(':dictionarySlug', ':wordSetSlug')}`, () => {
     let newDict;
     beforeEach(async () => {
       const dictonary = mocks.dictionary(5);
@@ -22,7 +22,7 @@ describe('Dictionaries Route', () => {
 
     it('should return 401 if auth header is not set', async () => {
       await request(app)
-        .put(endpoints.dictionaryWordSets(newDict.slug, newDict.wordSets[0].slug))
+        .patch(endpoints.dictionaryWordSets(newDict.slug, newDict.wordSets[0].slug))
         .send({...newDict.wordSets[0], ...mocks.wordSet()})
         .expect(401);
     });
@@ -33,7 +33,7 @@ describe('Dictionaries Route', () => {
       wordSet.title = newDict.wordSets[0].title;
 
       await request(app)
-        .put(endpoints.dictionaryWordSets(newDict.slug, wordSet.slug))
+        .patch(endpoints.dictionaryWordSets(newDict.slug, wordSet.slug))
         .set(...defaultUser.authData.header)
         .send(wordSet)
         .expect(200)
@@ -49,7 +49,7 @@ describe('Dictionaries Route', () => {
       wordSet.title = newDict.wordSets[4].title;
 
       await request(app)
-        .put(endpoints.dictionaryWordSets(newDict.slug, wordSet.slug))
+        .patch(endpoints.dictionaryWordSets(newDict.slug, wordSet.slug))
         .set(...defaultUser.authData.header)
         .send(wordSet)
         .expect(200)

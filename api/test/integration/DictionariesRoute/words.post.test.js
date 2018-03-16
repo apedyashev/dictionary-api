@@ -68,6 +68,7 @@ describe('Dictionaries Route', () => {
           item: {
             ...newWord,
             wordSet: wordSetId,
+            isLearned: false,
           },
         });
     });

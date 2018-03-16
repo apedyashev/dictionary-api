@@ -21,7 +21,10 @@ const schema = new Schema({
   translations: {
     type: [Translation],
   },
-
+  isLearned: {
+    type: Boolean,
+    default: false,
+  },
   // TODO: progress fields (reading, writing, listening)
 });
 schema.plugin(toJson);

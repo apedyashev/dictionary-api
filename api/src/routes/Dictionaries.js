@@ -63,7 +63,7 @@ router.get('/:slug', policies.checkJwtAuth, async (req, res) => {
   }
 });
 
-router.put('/:slug', policies.checkJwtAuth, async (req, res) => {
+router.patch('/:slug', policies.checkJwtAuth, async (req, res) => {
   try {
     const {slug} = req.params;
     const dict = await Dictionary.findOne({slug});
@@ -79,7 +79,7 @@ router.put('/:slug', policies.checkJwtAuth, async (req, res) => {
   }
 });
 
-router.put('/:slug/wordsets/:wordSetSlug', policies.checkJwtAuth, async (req, res) => {
+router.patch('/:slug/wordsets/:wordSetSlug', policies.checkJwtAuth, async (req, res) => {
   try {
     const {slug, wordSetSlug} = req.params;
     const dictonary = await Dictionary.findOne({slug});
@@ -144,6 +144,24 @@ router.post('/:id/wordsets/:wordSetId/words', policies.checkJwtAuth, async (req,
     res.created('a word created', {item: word});
   } catch (err) {
     errorHandler(res, 'word create error')(err);
+  }
+});
+
+router.patch('/:id/wordsets/:wordSetId/words/:wordId', policies.checkJwtAuth, async (req, res) => {
+  try {
+    const {wordId} = req.params;
+    const word = await Word.findOne({_id: wordId});
+    if (word.owner.toString() !== req.user.id) {
+      return res.forbidden();
+    }
+    // word cannot be updated, only its translations
+    const payload = _.omit(req.body, ['owner', 'word']);
+    word.set(payload);
+    await word.save();
+
+    res.ok('word updated', {item: word});
+  } catch (err) {
+    errorHandler(res, 'word update error')(err);
   }
 });
 

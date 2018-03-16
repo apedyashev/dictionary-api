@@ -18,7 +18,6 @@ describe('Dictionaries Route', () => {
     });
 
     it('should return 422 if payload is invalid', async () => {
-      const dictonary = mocks.dictionary();
       await request(app)
         .post(endpoints.dictionaries())
         .set(...defaultUser.authData.header)

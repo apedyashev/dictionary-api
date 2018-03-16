@@ -7,7 +7,7 @@ const {endpoints} = require(`${TEST_BASE}/constants.js`);
 const mocks = require(`${TEST_BASE}/mocks`);
 
 describe('Dictionaries Route', () => {
-  describe(`PUT ${endpoints.dictionaries(':slug')}`, () => {
+  describe(`PATCH ${endpoints.dictionaries(':slug')}`, () => {
     let newDict;
     beforeEach(async () => {
       const dictonary = mocks.dictionary(5);
@@ -23,7 +23,7 @@ describe('Dictionaries Route', () => {
 
     it('should return 401 if auth header is not set', async () => {
       await request(app)
-        .put(endpoints.dictionaries(newDict.slug))
+        .patch(endpoints.dictionaries(newDict.slug))
         .send(newDict)
         .expect(401);
     });
@@ -36,7 +36,7 @@ describe('Dictionaries Route', () => {
       newDict.translateTo = dictonary.translateTo;
 
       await request(app)
-        .put(endpoints.dictionaries(newDict.slug))
+        .patch(endpoints.dictionaries(newDict.slug))
         .set(...defaultUser.authData.header)
         .send(newDict)
         .expect(200)
@@ -54,7 +54,7 @@ describe('Dictionaries Route', () => {
 
     it('should return 404 if slug is invalid', async () => {
       await request(app)
-        .put(endpoints.dictionaries(`${newDict.slug}-a-fake-slug`))
+        .patch(endpoints.dictionaries(`${newDict.slug}-a-fake-slug`))
         .set(...defaultUser.authData.header)
         .send(newDict)
         .expect(404);
