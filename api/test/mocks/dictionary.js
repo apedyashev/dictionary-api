@@ -4,7 +4,7 @@ const _ = require('lodash');
 module.exports = function dictonary(wordSetsCount = 3) {
   return {
     title: faker.hacker.phrase(),
-    translateFrom: faker.hacker.noun(),
+    translateFrom: `${faker.hacker.noun()}-${_.uniq()}`,
     translateTo: faker.hacker.noun(),
     wordSets: _.range(wordSetsCount).map(() => ({
       title: faker.hacker.phrase(),

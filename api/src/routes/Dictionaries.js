@@ -130,6 +130,7 @@ router.post('/:id/wordsets/:wordSetId/words', policies.checkJwtAuth, async (req,
 
     const word = new Word({
       owner: req.user.id,
+      dictonary: id,
       wordSet: wordSetId,
       ...req.body,
     });
@@ -167,7 +168,7 @@ router.patch('/:id/wordsets/:wordSetId/words/:wordId', policies.checkJwtAuth, as
 
 router.delete('/:id/wordsets/:wordSetId/words/:wordId', policies.checkJwtAuth, async (req, res) => {
   try {
-    const {wordId} = req.params;
+    const {id, wordSetId, wordId} = req.params;
     const word = await Word.findOne({_id: wordId});
     if (word.owner.toString() !== req.user.id) {
       return res.forbidden();
@@ -175,9 +176,33 @@ router.delete('/:id/wordsets/:wordSetId/words/:wordId', policies.checkJwtAuth, a
 
     await word.remove();
 
+    await Dictionary.findOneAndUpdate(
+      {_id: id, 'wordSets._id': wordSetId},
+      {$inc: {'wordSets.$.stats.wordsCount': -1}}
+    );
+
     res.ok('word deleted');
   } catch (err) {
     errorHandler(res, 'word delete error')(err);
+  }
+});
+
+router.get('/:id/words', policies.checkJwtAuth, async (req, res) => {
+  try {
+    const perPage = +req.query.perPage || 30;
+    const page = +req.query.page || 1;
+    const sort = parseSortBy(req.query.sortBy);
+    const {searchQuery, filter} = req.query;
+
+    const query = {owner: req.user.id, dictionary: req.params.id};
+    if (searchQuery) {
+      query.word = new RegExp(searchQuery, 'ig');
+    }
+
+    const items = await Word.paginate(query, {page, limit: perPage, sort});
+    res.paginated(items).ok();
+  } catch (err) {
+    errorHandler(res, 'words list error')(err);
   }
 });
 

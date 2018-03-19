@@ -7,47 +7,47 @@ const {endpoints} = require(`${TEST_BASE}/constants.js`);
 const mocks = require(`${TEST_BASE}/mocks`);
 
 describe('Dictionaries Route', () => {
-  let dictionary;
-  let newUserAuth;
-  let newUserId;
-  before(async () => {
-    await request(app)
-      .post(endpoints.dictionaries())
-      .set(...defaultUser.authData.header)
-      .send(mocks.dictionary())
-      .expect(201)
-      .expect((res) => {
-        dictionary = res.body.item;
-      });
+  describe(`PATCH ${endpoints.dictionaryWordsetWords(':id', ':wordSetId', ':wordId')}`, () => {
+    let dictionary;
+    let newUserAuth;
+    let newUserId;
+    before(async () => {
+      await request(app)
+        .post(endpoints.dictionaries())
+        .set(...defaultUser.authData.header)
+        .send(mocks.dictionary())
+        .expect(201)
+        .expect((res) => {
+          dictionary = res.body.item;
+        });
 
-    await request(app)
-      .post(endpoints.register)
-      .send(mocks.user())
-      .expect(201)
-      .expect((res) => {
-        newUserId = res.body.user.id;
-        newUserAuth = ['Authorization', `Bearer ${res.body.token}`];
-      });
-  });
+      await request(app)
+        .post(endpoints.register)
+        .send(mocks.user())
+        .expect(201)
+        .expect((res) => {
+          newUserId = res.body.user.id;
+          newUserAuth = ['Authorization', `Bearer ${res.body.token}`];
+        });
+    });
 
-  let wordToBeUpdated;
-  beforeEach(async () => {
-    const wordSetId = dictionary.wordSets[0].id;
-    await request(app)
-      .post(endpoints.dictionaryWords(dictionary.id, wordSetId))
-      .set(...defaultUser.authData.header)
-      .send(mocks.word())
-      .expect(201)
-      .expect((res) => {
-        wordToBeUpdated = res.body.item;
-      });
-  });
+    let wordToBeUpdated;
+    beforeEach(async () => {
+      const wordSetId = dictionary.wordSets[0].id;
+      await request(app)
+        .post(endpoints.dictionaryWordsetWords(dictionary.id, wordSetId))
+        .set(...defaultUser.authData.header)
+        .send(mocks.word({dictionary: dictionary.id}))
+        .expect(201)
+        .expect((res) => {
+          wordToBeUpdated = res.body.item;
+        });
+    });
 
-  describe(`PATCH ${endpoints.dictionaryWords(':id', ':wordSetId', ':wordId')}`, () => {
     it('should return 401 if auth header is not set', async () => {
       const wordSetId = dictionary.wordSets[0].id;
       await request(app)
-        .patch(endpoints.dictionaryWords(dictionary.id, wordSetId, wordToBeUpdated.id))
+        .patch(endpoints.dictionaryWordsetWords(dictionary.id, wordSetId, wordToBeUpdated.id))
         .send(mocks.word())
         .expect(401);
     });
@@ -60,7 +60,7 @@ describe('Dictionaries Route', () => {
         translations: [],
       };
       await request(app)
-        .patch(endpoints.dictionaryWords(dictionary.id, wordSetId, wordToBeUpdated.id))
+        .patch(endpoints.dictionaryWordsetWords(dictionary.id, wordSetId, wordToBeUpdated.id))
         .set(...defaultUser.authData.header)
         .send(updatedWord)
         .expect(422);
@@ -76,7 +76,7 @@ describe('Dictionaries Route', () => {
         isLearned: true,
       };
       await request(app)
-        .patch(endpoints.dictionaryWords(dictionary.id, wordSetId, wordToBeUpdated.id))
+        .patch(endpoints.dictionaryWordsetWords(dictionary.id, wordSetId, wordToBeUpdated.id))
         .set(...defaultUser.authData.header)
         .send(updatedWord)
         .expect(200)
@@ -107,7 +107,7 @@ describe('Dictionaries Route', () => {
         owner: newUserId,
       };
       await request(app)
-        .patch(endpoints.dictionaryWords(dictionary.id, wordSetId, wordToBeUpdated.id))
+        .patch(endpoints.dictionaryWordsetWords(dictionary.id, wordSetId, wordToBeUpdated.id))
         .set(...defaultUser.authData.header)
         .send(updatedWord)
         .expect(200)
@@ -119,7 +119,7 @@ describe('Dictionaries Route', () => {
     it('should return 403 if word doesn` belong to user', async () => {
       const wordSetId = dictionary.wordSets[0].id;
       await request(app)
-        .patch(endpoints.dictionaryWords(dictionary.id, wordSetId, wordToBeUpdated.id))
+        .patch(endpoints.dictionaryWordsetWords(dictionary.id, wordSetId, wordToBeUpdated.id))
         .set(...newUserAuth)
         .send(wordToBeUpdated)
         .expect(403);

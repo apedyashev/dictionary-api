@@ -17,10 +17,11 @@ module.exports = {
       slug ? `${apiPrefix}/dictionaries/${slug}` : `${apiPrefix}/dictionaries`,
     dictionaryWordSets: (dictionarySlug, wordSetSlug) =>
       `${apiPrefix}/dictionaries/${dictionarySlug}/wordsets/${wordSetSlug}`,
-    dictionaryWords: (dictionaryId, wordSetId, wordId) =>
+    dictionaryWordsetWords: (dictionaryId, wordSetId, wordId) =>
       wordId
         ? `${apiPrefix}/dictionaries/${dictionaryId}/wordsets/${wordSetId}/words/${wordId}`
         : `${apiPrefix}/dictionaries/${dictionaryId}/wordsets/${wordSetId}/words`,
+    dictionaryWords: (dictionaryId) => `${apiPrefix}/dictionaries/${dictionaryId}/words`,
 
     translate: `${apiPrefix}/translate`,
   },

@@ -19,19 +19,19 @@ describe('Dictionaries Route', () => {
       });
   });
 
-  describe(`POST ${endpoints.dictionaryWords(':id', ':wordSetId')}`, () => {
+  describe(`POST ${endpoints.dictionaryWordsetWords(':id', ':wordSetId')}`, () => {
     it('should return 401 if auth header is not set', async () => {
       const wordSetId = dictionary.wordSets[0].id;
       await request(app)
-        .post(endpoints.dictionaryWords(dictionary.id, wordSetId))
-        .send(mocks.word())
+        .post(endpoints.dictionaryWordsetWords(dictionary.id, wordSetId))
+        .send(mocks.word({dictionary: dictionary.id}))
         .expect(401);
     });
 
     it('should return 422 if payload is empty', async () => {
       const wordSetId = dictionary.wordSets[0].id;
       await request(app)
-        .post(endpoints.dictionaryWords(dictionary.id, wordSetId))
+        .post(endpoints.dictionaryWordsetWords(dictionary.id, wordSetId))
         .set(...defaultUser.authData.header)
         .expect(422)
         .expect((res) => {
@@ -41,6 +41,7 @@ describe('Dictionaries Route', () => {
           message: 'word create error',
           validationErrors: {
             word: 'required',
+            dictionary: 'required',
             translations: 'required',
           },
         });
@@ -48,9 +49,9 @@ describe('Dictionaries Route', () => {
 
     it('should return 201 if payload is valid', async () => {
       const wordSetId = dictionary.wordSets[0].id;
-      const newWord = mocks.word();
+      const newWord = mocks.word({dictionary: dictionary.id});
       await request(app)
-        .post(endpoints.dictionaryWords(dictionary.id, wordSetId))
+        .post(endpoints.dictionaryWordsetWords(dictionary.id, wordSetId))
         .set(...defaultUser.authData.header)
         .send(newWord)
         .expect(201)
