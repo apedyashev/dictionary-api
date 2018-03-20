@@ -192,11 +192,11 @@ router.get('/:id/words', policies.checkJwtAuth, async (req, res) => {
     const perPage = +req.query.perPage || 30;
     const page = +req.query.page || 1;
     const sort = parseSortBy(req.query.sortBy);
-    const {searchQuery, filter} = req.query;
+    const {search} = req.query;
 
     const query = {owner: req.user.id, dictionary: req.params.id};
-    if (searchQuery) {
-      query.word = new RegExp(searchQuery, 'ig');
+    if (search) {
+      query.word = new RegExp(search, 'ig');
     }
 
     const items = await Word.paginate(query, {page, limit: perPage, sort});

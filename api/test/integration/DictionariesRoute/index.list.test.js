@@ -89,10 +89,11 @@ describe('Dictionaries Route', () => {
     });
 
     it('should return paginated results (page: 1, perPage: 2)', async () => {
+      const perPage = 2;
       await request(app)
         .get(endpoints.dictionaries())
         .set(...newUserAuth)
-        .query({sortBy: 'translateFrom:asc', page: 1, perPage: 2})
+        .query({sortBy: 'translateFrom:asc', page: 1, perPage})
         .expect(200)
         .expect((res) => {
           const {items} = res.body;
@@ -112,17 +113,18 @@ describe('Dictionaries Route', () => {
           pagination: {
             page: 1,
             pages: 3,
-            limit: 2,
+            perPage,
             total: 5,
           },
         });
     });
 
     it('should return paginated results (page: 2, perPage: 2)', async () => {
+      const perPage = 2;
       await request(app)
         .get(endpoints.dictionaries())
         .set(...newUserAuth)
-        .query({sortBy: 'translateFrom:asc', page: 2, perPage: 2})
+        .query({sortBy: 'translateFrom:asc', page: 2, perPage})
         .expect(200)
         .expect((res) => {
           const {items} = res.body;
@@ -142,17 +144,18 @@ describe('Dictionaries Route', () => {
           pagination: {
             page: 2,
             pages: 3,
-            limit: 2,
+            perPage,
             total: 5,
           },
         });
     });
 
     it('should return paginated results (page: 1, perPage: 3)', async () => {
+      const perPage = 3;
       await request(app)
         .get(endpoints.dictionaries())
         .set(...newUserAuth)
-        .query({sortBy: 'translateFrom:asc', page: 1, perPage: 3})
+        .query({sortBy: 'translateFrom:asc', page: 1, perPage})
         .expect(200)
         .expect((res) => {
           const {items} = res.body;
@@ -172,7 +175,7 @@ describe('Dictionaries Route', () => {
           pagination: {
             page: 1,
             pages: 2,
-            limit: 3,
+            perPage,
             total: 5,
           },
         });

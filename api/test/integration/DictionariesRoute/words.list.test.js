@@ -96,10 +96,11 @@ describe('Dictionaries Route', () => {
     });
 
     it('should return paginated results (page: 1, perPage: 5)', async () => {
+      const perPage = 5;
       await request(app)
         .get(endpoints.dictionaryWords(dictionary.id))
         .set(...newUserAuth)
-        .query({sortBy: 'word:asc', page: 1, perPage: 5})
+        .query({sortBy: 'word:asc', page: 1, perPage})
         .expect(200)
         .expect((res) => {
           const {items} = res.body;
@@ -119,17 +120,18 @@ describe('Dictionaries Route', () => {
           pagination: {
             page: 1,
             pages: 4,
-            limit: 5,
+            perPage,
             total: 20,
           },
         });
     });
 
     it('should return paginated results (page: 2, perPage: 5)', async () => {
+      const perPage = 5;
       await request(app)
         .get(endpoints.dictionaryWords(dictionary.id))
         .set(...newUserAuth)
-        .query({sortBy: 'word:asc', page: 2, perPage: 5})
+        .query({sortBy: 'word:asc', page: 2, perPage})
         .expect(200)
         .expect((res) => {
           const {items} = res.body;
@@ -149,8 +151,86 @@ describe('Dictionaries Route', () => {
           pagination: {
             page: 2,
             pages: 4,
-            limit: 5,
+            perPage,
             total: 20,
+          },
+        });
+    });
+
+    it('should return paginated results (page: 1, perPage: 9)', async () => {
+      const perPage = 9;
+      await request(app)
+        .get(endpoints.dictionaryWords(dictionary.id))
+        .set(...newUserAuth)
+        .query({sortBy: 'word:asc', page: 1, perPage})
+        .expect(200)
+        .expect((res) => {
+          const {items} = res.body;
+          assert.sameOrderedMembers(
+            _.map(items, 'word'),
+            _(userWords)
+              .orderBy(['word'], ['asc'])
+              .map('word')
+              .slice(0, 9)
+              .value(),
+            'returns the first page'
+          );
+
+          res.body = _.omit(res.body, ['items']);
+        })
+        .expect({
+          pagination: {
+            page: 1,
+            pages: 3,
+            perPage,
+            total: 20,
+          },
+        });
+    });
+
+    it('should search by whole word', async () => {
+      const search = userWords[10].word;
+      await request(app)
+        .get(endpoints.dictionaryWords(dictionary.id))
+        .set(...newUserAuth)
+        .query({search})
+        .expect(200)
+        .expect({
+          items: [userWords[10]],
+          pagination: {
+            page: 1,
+            pages: 1,
+            perPage: 30,
+            total: 1,
+          },
+        });
+    });
+
+    it('should search by beggining of a word', async () => {
+      const search = userWords[9].word.slice(0, 3);
+      const expectedItems = _(userWords)
+        .filter(({word}) => {
+          return new RegExp(search, 'ig').test(word);
+        })
+        .orderBy(['word'], ['asc'])
+        .value();
+
+      await request(app)
+        .get(endpoints.dictionaryWords(dictionary.id))
+        .set(...newUserAuth)
+        .query({search, sortBy: 'word:asc'})
+        .expect(200)
+        .expect((res) => {
+          const {items} = res.body;
+          assert.include(_.map(items, 'id'), userWords[9].id, 'result includes word ad index 9');
+        })
+        .expect({
+          items: expectedItems,
+          pagination: {
+            page: 1,
+            pages: 1,
+            perPage: 30,
+            total: expectedItems.length,
           },
         });
     });

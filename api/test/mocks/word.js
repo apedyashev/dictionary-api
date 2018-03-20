@@ -1,8 +1,9 @@
 const faker = require('faker');
+const _ = require('lodash');
 
 module.exports = function dictonary(customFields) {
   return {
-    word: faker.hacker.noun(),
+    word: `${faker.hacker.noun()}-${_.uniqueId()}`,
     translations: [
       {
         text: faker.hacker.verb(),
