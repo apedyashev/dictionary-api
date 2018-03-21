@@ -1,7 +1,9 @@
 const mongoose = require('mongoose');
 const _ = require('lodash');
+const {parseSortBy} = require('helpers/list');
 const errorHandler = require('helpers/errorHandler');
 const Dictionary = mongoose.model('Dictionary');
+const {ObjectId} = mongoose.Types;
 
 module.exports = {
   async create(req, res) {
@@ -60,6 +62,39 @@ module.exports = {
       res.ok('wordset deleted');
     } catch (err) {
       errorHandler(res, 'wordset delete error')(err);
+    }
+  },
+
+  async list(req, res) {
+    try {
+      const {id} = req.params;
+      const limit = +req.query.perPage || 30;
+      const page = +req.query.page || 1;
+      const offset = limit * (page - 1);
+      const sort = parseSortBy(req.query.sortBy, {prefix: 'wordSets', numberedOrdering: true});
+
+      const items = await Dictionary.aggregate([
+        {$match: {_id: ObjectId(id), owner: ObjectId(req.user.id)}},
+        {$unwind: '$wordSets'},
+        {$sort: sort},
+        {$skip: offset},
+        {$limit: limit},
+        {$group: {_id: '$_id', wordSets: {$push: '$wordSets'}}},
+      ]);
+      const dict = await Dictionary.findOne({_id: id, owner: req.user.id});
+      const total = dict ? dict.wordSets.length : 0;
+
+      res.ok({
+        items: items[0].wordSets,
+        pagination: {
+          page,
+          perPage: limit,
+          pages: Math.ceil(total / limit),
+          total,
+        },
+      });
+    } catch (err) {
+      errorHandler(res, 'wordset list error')(err);
     }
   },
 };

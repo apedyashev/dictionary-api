@@ -16,7 +16,7 @@ router.delete('/:id', policies.checkJwtAuth, dictionaryController.delete);
 router.post('/:id/wordsets', policies.checkJwtAuth, wordsetController.create);
 router.patch('/:slug/wordsets/:wordSetSlug', policies.checkJwtAuth, wordsetController.update);
 router.delete('/:slug/wordsets/:wordSetSlug', policies.checkJwtAuth, wordsetController.delete);
-// router.get('/:id/wordsets', policies.checkJwtAuth, wordsetController.list);
+router.get('/:id/wordsets', policies.checkJwtAuth, wordsetController.list);
 
 router.post('/words', policies.checkJwtAuth, wordController.create);
 router.patch('/words/:id', policies.checkJwtAuth, wordController.update);

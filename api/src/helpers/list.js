@@ -1,5 +1,7 @@
+const _ = require('lodash');
+
 module.exports = {
-  parseSortBy(queryVal) {
+  parseSortBy(queryVal, {prefix, numberedOrdering} = {prefix: null, numberedOrdering: false}) {
     const sortBy = queryVal || 'createdAt:DESC';
     const sort = {};
     sortBy.split(',').forEach((sortParam) => {
@@ -9,8 +11,16 @@ module.exports = {
       }
       if (sortByField) {
         sort[sortByField] = sortByDirection.toLowerCase();
+        if (numberedOrdering) {
+          const orderingMap = {asc: 1, desc: -1};
+          sort[sortByField] = orderingMap[sort[sortByField]];
+        }
       }
     });
+
+    if (prefix) {
+      return _.mapKeys(sort, (val, key) => `${prefix}.${key}`);
+    }
 
     return sort;
   },

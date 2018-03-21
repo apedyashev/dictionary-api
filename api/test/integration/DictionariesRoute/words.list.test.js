@@ -8,6 +8,7 @@ const mocks = require(`${TEST_BASE}/mocks`);
 describe('Dictionaries Route', () => {
   const userWords = [];
   let newUserAuth;
+  let dictionary;
   before(async () => {
     const wordSetsCount = 3;
     await request(app)
