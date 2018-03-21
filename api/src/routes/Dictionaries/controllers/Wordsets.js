@@ -35,9 +35,9 @@ module.exports = {
       if (wordSetIndex < 0) {
         return res.notFound('wordset not found');
       }
-
       // TODO: reset words' references to deleted wordset
       dictionary.wordSets = _.filter(dictionary.wordSets, (elem, idx) => idx !== wordSetIndex);
+      // NOTE: it also updates `state.wordSetsCount`
       await dictionary.save();
 
       res.ok('wordset deleted');

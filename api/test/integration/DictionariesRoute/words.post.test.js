@@ -48,6 +48,16 @@ describe('Dictionaries Route', () => {
     });
 
     it('should return 201 if payload is valid', async () => {
+      // get dictonary stats befire creating a new word
+      let dictionaryStats;
+      await request(app)
+        .get(endpoints.dictionaries(dictionary.slug))
+        .set(...defaultUser.authData.header)
+        .expect(200)
+        .expect((res) => {
+          dictionaryStats = res.body.item.stats;
+        });
+
       const wordSetId = dictionary.wordSets[0].id;
       const newWord = mocks.word({dictionary: dictionary.id});
       await request(app)
@@ -71,6 +81,24 @@ describe('Dictionaries Route', () => {
             wordSet: wordSetId,
             isLearned: false,
           },
+        });
+
+      // Check that words count has been increased
+      await request(app)
+        .get(endpoints.dictionaries(dictionary.slug))
+        .set(...defaultUser.authData.header)
+        .expect(200)
+        .expect((res) => {
+          assert.deepEqual(res.body.item.stats, {
+            wordsCount: dictionaryStats.wordsCount + 1,
+            wordSetsCount: dictionaryStats.wordSetsCount,
+          });
+
+          assert.equal(
+            _.find(res.body.item.wordSets, {id: wordSetId}).stats.wordsCount,
+            dictionary.wordSets[0].stats.wordsCount + 1,
+            'wordSets.stats.wordsCount increased'
+          );
         });
     });
   });

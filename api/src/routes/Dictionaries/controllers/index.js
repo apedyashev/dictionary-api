@@ -27,17 +27,11 @@ const actions = {
   async create(req, res) {
     try {
       const reqBody = req.body;
-      let wordSetsCount = 0;
-      if (reqBody && _.isArray(reqBody.wordSets)) {
-        wordSetsCount = reqBody.wordSets.length;
-      }
 
       const dictionary = new Dictionary({
         owner: req.user.id,
         ...reqBody,
-        stats: {
-          wordSetsCount,
-        },
+        // NOTE: wordSetsCount is set in pre:save hook
       });
       await dictionary.save();
       res.created('dictonary created', {item: dictionary});

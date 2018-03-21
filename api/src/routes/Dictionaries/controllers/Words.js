@@ -16,7 +16,7 @@ module.exports = {
       const word = new Word({
         owner: req.user.id,
         dictonary: id,
-        wordSet: wordSetId,
+        wordSet: wordSetId || null,
         ...req.body,
       });
       await word.save();
@@ -24,7 +24,7 @@ module.exports = {
       // inc words count for the corresponding word set
       await Dictionary.findOneAndUpdate(
         {_id: id, 'wordSets._id': wordSetId},
-        {$inc: {'wordSets.$.stats.wordsCount': 1}}
+        {$inc: {'wordSets.$.stats.wordsCount': 1, 'stats.wordsCount': 1}}
       );
 
       res.created('a word created', {item: word});
@@ -66,7 +66,7 @@ module.exports = {
 
       await Dictionary.findOneAndUpdate(
         {_id: id, 'wordSets._id': wordSetId},
-        {$inc: {'wordSets.$.stats.wordsCount': -1}}
+        {$inc: {'wordSets.$.stats.wordsCount': -1, 'stats.wordsCount': -1}}
       );
 
       res.ok('word deleted');

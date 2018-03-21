@@ -39,6 +39,17 @@ describe('Dictionaries Route', () => {
     });
 
     it('should delete a word', async () => {
+      // get dictonary stats befire deleting a new word
+      let dictionaryBeforeDelete;
+
+      await request(app)
+        .get(endpoints.dictionaries(dictionary.slug))
+        .set(...defaultUser.authData.header)
+        .expect(200)
+        .expect((res) => {
+          dictionaryBeforeDelete = res.body.item;
+        });
+
       const wordSetId = dictionary.wordSets[0].id;
       await request(app)
         .delete(endpoints.dictionaryWordsetWords(dictionary.id, wordSetId, wordToBeDeleted.id))
@@ -48,6 +59,7 @@ describe('Dictionaries Route', () => {
           message: 'word deleted',
         });
 
+      // check that the word isn't returned by the GET response
       await request(app)
         .get(endpoints.dictionaryWords(dictionary.id))
         .set(...defaultUser.authData.header)
@@ -58,6 +70,24 @@ describe('Dictionaries Route', () => {
             _.map(items, 'id'),
             wordToBeDeleted.id,
             'deleted word ID is absent in the GET response'
+          );
+        });
+
+      // Check that words count has been decreased
+      await request(app)
+        .get(endpoints.dictionaries(dictionary.slug))
+        .set(...defaultUser.authData.header)
+        .expect(200)
+        .expect((res) => {
+          assert.deepEqual(res.body.item.stats, {
+            wordsCount: dictionaryBeforeDelete.stats.wordsCount - 1,
+            wordSetsCount: dictionaryBeforeDelete.stats.wordSetsCount,
+          });
+
+          assert.equal(
+            _.find(res.body.item.wordSets, {id: wordSetId}).stats.wordsCount,
+            _.find(dictionaryBeforeDelete.wordSets, {id: wordSetId}).stats.wordsCount - 1,
+            'wordSets.stats.wordsCount increased'
           );
         });
     });

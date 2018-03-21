@@ -16,7 +16,11 @@ router.delete('/:id', policies.checkJwtAuth, dictionaryControllers.delete);
 router.patch('/:slug/wordsets/:wordSetSlug', policies.checkJwtAuth, wordsetControllers.update);
 router.delete('/:slug/wordsets/:wordSetSlug', policies.checkJwtAuth, wordsetControllers.delete);
 
+// create a word and associate it with the dictionary and wordset
 router.post('/:id/wordsets/:wordSetId/words', policies.checkJwtAuth, wordControllers.create);
+// create a word and associate it with the dictionary
+router.post('/:id/words', policies.checkJwtAuth, wordControllers.create);
+
 router.patch(
   '/:id/wordsets/:wordSetId/words/:wordId',
   policies.checkJwtAuth,
