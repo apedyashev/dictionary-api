@@ -8,6 +8,8 @@ const _ = require('lodash');
 const {Collaborator, WordSet} = require('./schemas');
 const {withNextId} = require('../../helpers/mongoose');
 const Schema = mongoose.Schema;
+require('models/Word');
+const Word = mongoose.model('Word');
 
 const schema = new Schema({
   owner: {
@@ -82,6 +84,11 @@ schema.pre('save', async function() {
       }
     });
   }
+});
+
+schema.pre('remove', async function() {
+  // remove all the associated words
+  await Word.remove({dictionary: this._id});
 });
 
 schema.statics.hasWordSet = async function(dictionaryId, wordSetId) {

@@ -75,7 +75,25 @@ const actions = {
     }
   },
 
-  async delete(req, res) {},
+  async delete(req, res) {
+    try {
+      const {id} = req.params;
+      const dictionary = await Dictionary.findOne({_id: id});
+      if (!dictionary) {
+        return res.notFound();
+      }
+      if (dictionary.owner.toString() != req.user.id) {
+        return res.forbidden();
+      }
+
+      // all associated words will be removed in the pre:remove hook
+      await dictionary.remove();
+
+      res.ok('dictionary deleted');
+    } catch (err) {
+      errorHandler(res, 'dictionary delete error')(err);
+    }
+  },
 };
 
 module.exports = {

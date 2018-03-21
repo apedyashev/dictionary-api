@@ -55,6 +55,9 @@ module.exports = {
     try {
       const {id, wordSetId, wordId} = req.params;
       const word = await Word.findOne({_id: wordId});
+      if (!word) {
+        return res.notFound();
+      }
       if (word.owner.toString() !== req.user.id) {
         return res.forbidden();
       }

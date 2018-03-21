@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const _ = require('lodash');
-const {parseSortBy} = require('helpers/list');
 const errorHandler = require('helpers/errorHandler');
 const Dictionary = mongoose.model('Dictionary');
 
