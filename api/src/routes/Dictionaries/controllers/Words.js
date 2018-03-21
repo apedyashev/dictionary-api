@@ -8,14 +8,17 @@ const Word = mongoose.model('Word');
 module.exports = {
   async create(req, res) {
     try {
-      const {id, wordSetId} = req.params;
-      if (!Dictionary.hasWordSet(id, wordSetId)) {
-        return req.notFound();
+      const {dictionary: dictionaryId, wordSet: wordSetId} = req.body;
+      if (dictionaryId && !await Dictionary.hasWordSet(dictionaryId, wordSetId)) {
+        return res.unprocessableEntity({dictionary: 'invalid dictionary'});
+      }
+      if (wordSetId && !await Dictionary.hasWordSet(dictionaryId, wordSetId)) {
+        return res.unprocessableEntity({wordSet: 'invalid wordset'});
       }
 
       const word = new Word({
         owner: req.user.id,
-        dictonary: id,
+        dictonary: dictionaryId,
         wordSet: wordSetId || null,
         ...req.body,
       });
@@ -23,7 +26,7 @@ module.exports = {
 
       // inc words count for the corresponding word set
       await Dictionary.findOneAndUpdate(
-        {_id: id, 'wordSets._id': wordSetId},
+        {_id: dictionaryId, 'wordSets._id': wordSetId},
         {$inc: {'wordSets.$.stats.wordsCount': 1, 'stats.wordsCount': 1}}
       );
 
@@ -35,11 +38,19 @@ module.exports = {
 
   async update(req, res) {
     try {
-      const {wordId} = req.params;
+      const {id: wordId} = req.params;
       const word = await Word.findOne({_id: wordId});
       if (word.owner.toString() !== req.user.id) {
         return res.forbidden();
       }
+      const {dictionary: dictionaryId, wordSet: wordSetId} = req.body;
+      if (!dictionaryId || !await Dictionary.count({_id: dictionaryId})) {
+        return res.unprocessableEntity({dictionary: 'invalid dictionary'});
+      }
+      if (wordSetId && !await Dictionary.hasWordSet(dictionaryId, wordSetId)) {
+        return res.unprocessableEntity({wordSet: 'invalid wordset'});
+      }
+
       // word cannot be updated, only its translations
       const payload = _.omit(req.body, ['owner', 'word']);
       word.set(payload);
@@ -53,7 +64,7 @@ module.exports = {
 
   async delete(req, res) {
     try {
-      const {id, wordSetId, wordId} = req.params;
+      const {id: wordId} = req.params;
       const word = await Word.findOne({_id: wordId});
       if (!word) {
         return res.notFound();
@@ -61,11 +72,12 @@ module.exports = {
       if (word.owner.toString() !== req.user.id) {
         return res.forbidden();
       }
+      const wordSetId = word.wordSet;
+      const dictionaryId = word.dictionary;
 
       await word.remove();
-
       await Dictionary.findOneAndUpdate(
-        {_id: id, 'wordSets._id': wordSetId},
+        {_id: dictionaryId, 'wordSets._id': wordSetId},
         {$inc: {'wordSets.$.stats.wordsCount': -1, 'stats.wordsCount': -1}}
       );
 
@@ -82,7 +94,11 @@ module.exports = {
       const sort = parseSortBy(req.query.sortBy);
       const {search} = req.query;
 
-      const query = {owner: req.user.id, dictionary: req.params.id};
+      const {id: dictionaryId, wordSetId} = req.params;
+      const query = {owner: req.user.id, dictionary: dictionaryId};
+      if (wordSetId) {
+        query.wordSet = wordSetId;
+      }
       if (search) {
         query.word = new RegExp(search, 'ig');
       }

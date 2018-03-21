@@ -6,40 +6,40 @@ const {endpoints} = require(`${TEST_BASE}/constants.js`);
 const mocks = require(`${TEST_BASE}/mocks`);
 
 describe('Dictionaries Route', () => {
-  describe(`GET ${endpoints.dictionaryWords(':id')}`, () => {
-    const userWords = [];
-    let newUserAuth;
-    before(async () => {
-      const wordSetsCount = 3;
-      await request(app)
-        .post(endpoints.register)
-        .send(mocks.user())
-        .expect(201)
-        .expect((res) => {
-          newUserAuth = ['Authorization', `Bearer ${res.body.token}`];
-        });
-      await request(app)
-        .post(endpoints.dictionaries())
-        .set(...newUserAuth)
-        .send(mocks.dictionary(wordSetsCount))
-        .expect(201)
-        .expect((res) => {
-          dictionary = res.body.item;
-        });
-
-      _.range(20).forEach(async () => {
-        const wordSetId = dictionary.wordSets[_.random(wordSetsCount - 1)].id;
-        await request(app)
-          .post(endpoints.dictionaryWordsetWords(dictionary.id, wordSetId))
-          .set(...newUserAuth)
-          .send(mocks.word({dictionary: dictionary.id}))
-          .expect(201)
-          .expect((res) => {
-            userWords.push(res.body.item);
-          });
+  const userWords = [];
+  let newUserAuth;
+  before(async () => {
+    const wordSetsCount = 3;
+    await request(app)
+      .post(endpoints.register)
+      .send(mocks.user())
+      .expect(201)
+      .expect((res) => {
+        newUserAuth = ['Authorization', `Bearer ${res.body.token}`];
       });
-    });
+    await request(app)
+      .post(endpoints.dictionaries())
+      .set(...newUserAuth)
+      .send(mocks.dictionary(wordSetsCount))
+      .expect(201)
+      .expect((res) => {
+        dictionary = res.body.item;
+      });
 
+    _.range(20).forEach(async () => {
+      const wordSetId = dictionary.wordSets[_.random(wordSetsCount - 1)].id;
+      await request(app)
+        .post(endpoints.words())
+        .set(...newUserAuth)
+        .send(mocks.word({dictionary: dictionary.id, wordSet: wordSetId}))
+        .expect(201)
+        .expect((res) => {
+          userWords.push(res.body.item);
+        });
+    });
+  });
+
+  describe(`GET ${endpoints.dictionaryWords(':id')}`, () => {
     it('should return 401 if auth header is not set', async () => {
       await request(app)
         .get(endpoints.dictionaryWords(dictionary.id))
@@ -233,6 +233,40 @@ describe('Dictionaries Route', () => {
             total: expectedItems.length,
           },
         });
+    });
+  });
+
+  describe(`GET ${endpoints.dictionaryWordsetWords(':id', ':wordSetId', ':wordId')}`, () => {
+    it('should return 401 if auth header is not set', async () => {
+      const wordSetId = dictionary.wordSets[0].id;
+      await request(app)
+        .get(endpoints.dictionaryWordsetWords(dictionary.id, wordSetId))
+        .expect(401);
+    });
+
+    it('should return words associated with wordset', async () => {
+      dictionary.wordSets.forEach(async ({id: wordSetId}) => {
+        const expectedItems = _(userWords)
+          .filter(({wordSet}) => {
+            return wordSet === wordSetId;
+          })
+          .orderBy(['word'], ['asc'])
+          .value();
+        await request(app)
+          .get(endpoints.dictionaryWordsetWords(dictionary.id, wordSetId))
+          .set(...newUserAuth)
+          .query({sortBy: 'word:asc'})
+          .expect(200)
+          .expect({
+            items: expectedItems,
+            pagination: {
+              page: 1,
+              pages: 1,
+              perPage: 30,
+              total: expectedItems.length,
+            },
+          });
+      });
     });
   });
 });

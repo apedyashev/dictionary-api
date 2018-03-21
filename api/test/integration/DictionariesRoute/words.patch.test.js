@@ -7,7 +7,7 @@ const {endpoints} = require(`${TEST_BASE}/constants.js`);
 const mocks = require(`${TEST_BASE}/mocks`);
 
 describe('Dictionaries Route', () => {
-  describe(`PATCH ${endpoints.dictionaryWordsetWords(':id', ':wordSetId', ':wordId')}`, () => {
+  describe(`PATCH ${endpoints.words(':id')}`, () => {
     let dictionary;
     let newUserAuth;
     let newUserId;
@@ -35,9 +35,9 @@ describe('Dictionaries Route', () => {
     beforeEach(async () => {
       const wordSetId = dictionary.wordSets[0].id;
       await request(app)
-        .post(endpoints.dictionaryWordsetWords(dictionary.id, wordSetId))
+        .post(endpoints.words())
         .set(...defaultUser.authData.header)
-        .send(mocks.word({dictionary: dictionary.id}))
+        .send(mocks.word({dictionary: dictionary.id, wordSet: wordSetId}))
         .expect(201)
         .expect((res) => {
           wordToBeUpdated = res.body.item;
@@ -45,29 +45,26 @@ describe('Dictionaries Route', () => {
     });
 
     it('should return 401 if auth header is not set', async () => {
-      const wordSetId = dictionary.wordSets[0].id;
       await request(app)
-        .patch(endpoints.dictionaryWordsetWords(dictionary.id, wordSetId, wordToBeUpdated.id))
+        .patch(endpoints.words(wordToBeUpdated.id))
         .send(mocks.word())
         .expect(401);
     });
 
     it('should return 422 if invalid fields are sent', async () => {
-      const wordSetId = dictionary.wordSets[0].id;
       const updatedWord = {
         ...wordToBeUpdated,
         word: '',
         translations: [],
       };
       await request(app)
-        .patch(endpoints.dictionaryWordsetWords(dictionary.id, wordSetId, wordToBeUpdated.id))
+        .patch(endpoints.words(wordToBeUpdated.id))
         .set(...defaultUser.authData.header)
         .send(updatedWord)
         .expect(422);
     });
 
     it('should update allowed fields', async () => {
-      const wordSetId = dictionary.wordSets[0].id;
       const updatedWord = {
         ...wordToBeUpdated,
         word: `${wordToBeUpdated.word}-updated`,
@@ -76,7 +73,7 @@ describe('Dictionaries Route', () => {
         isLearned: true,
       };
       await request(app)
-        .patch(endpoints.dictionaryWordsetWords(dictionary.id, wordSetId, wordToBeUpdated.id))
+        .patch(endpoints.words(wordToBeUpdated.id))
         .set(...defaultUser.authData.header)
         .send(updatedWord)
         .expect(200)
@@ -101,13 +98,12 @@ describe('Dictionaries Route', () => {
 
     it('shouldn`t allow owner changing', async () => {
       // try to change owner
-      const wordSetId = dictionary.wordSets[0].id;
       const updatedWord = {
         ...wordToBeUpdated,
         owner: newUserId,
       };
       await request(app)
-        .patch(endpoints.dictionaryWordsetWords(dictionary.id, wordSetId, wordToBeUpdated.id))
+        .patch(endpoints.words(wordToBeUpdated.id))
         .set(...defaultUser.authData.header)
         .send(updatedWord)
         .expect(200)
@@ -117,9 +113,8 @@ describe('Dictionaries Route', () => {
     });
 
     it('should return 403 if word doesn` belong to user', async () => {
-      const wordSetId = dictionary.wordSets[0].id;
       await request(app)
-        .patch(endpoints.dictionaryWordsetWords(dictionary.id, wordSetId, wordToBeUpdated.id))
+        .patch(endpoints.words(wordToBeUpdated.id))
         .set(...newUserAuth)
         .send(wordToBeUpdated)
         .expect(403);

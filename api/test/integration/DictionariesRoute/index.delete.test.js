@@ -20,9 +20,9 @@ describe('Dictionaries Route', () => {
 
       const wordSetId = dictionary.wordSets[0].id;
       await request(app)
-        .post(endpoints.dictionaryWordsetWords(dictionary.id, wordSetId))
+        .post(endpoints.words())
         .set(...defaultUser.authData.header)
-        .send(mocks.word({dictionary: dictionary.id}))
+        .send(mocks.word({dictionary: dictionary.id, wordSet: wordSetId}))
         .expect(201);
     });
 

@@ -7,31 +7,30 @@ const {endpoints} = require(`${TEST_BASE}/constants.js`);
 const mocks = require(`${TEST_BASE}/mocks`);
 
 describe('Dictionaries Route', () => {
-  let dictionary;
-  before(async () => {
-    await request(app)
-      .post(endpoints.dictionaries())
-      .set(...defaultUser.authData.header)
-      .send(mocks.dictionary())
-      .expect(201)
-      .expect((res) => {
-        dictionary = res.body.item;
-      });
-  });
+  describe(`POST ${endpoints.words()}`, () => {
+    let dictionary;
+    before(async () => {
+      await request(app)
+        .post(endpoints.dictionaries())
+        .set(...defaultUser.authData.header)
+        .send(mocks.dictionary())
+        .expect(201)
+        .expect((res) => {
+          dictionary = res.body.item;
+        });
+    });
 
-  describe(`POST ${endpoints.dictionaryWordsetWords(':id', ':wordSetId')}`, () => {
     it('should return 401 if auth header is not set', async () => {
       const wordSetId = dictionary.wordSets[0].id;
       await request(app)
-        .post(endpoints.dictionaryWordsetWords(dictionary.id, wordSetId))
-        .send(mocks.word({dictionary: dictionary.id}))
+        .post(endpoints.words())
+        .send(mocks.word({dictionary: dictionary.id, wordSet: wordSetId}))
         .expect(401);
     });
 
     it('should return 422 if payload is empty', async () => {
-      const wordSetId = dictionary.wordSets[0].id;
       await request(app)
-        .post(endpoints.dictionaryWordsetWords(dictionary.id, wordSetId))
+        .post(endpoints.words())
         .set(...defaultUser.authData.header)
         .expect(422)
         .expect((res) => {
@@ -59,9 +58,9 @@ describe('Dictionaries Route', () => {
         });
 
       const wordSetId = dictionary.wordSets[0].id;
-      const newWord = mocks.word({dictionary: dictionary.id});
+      const newWord = mocks.word({dictionary: dictionary.id, wordSet: wordSetId});
       await request(app)
-        .post(endpoints.dictionaryWordsetWords(dictionary.id, wordSetId))
+        .post(endpoints.words())
         .set(...defaultUser.authData.header)
         .send(newWord)
         .expect(201)
