@@ -3,9 +3,10 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "nodemon ./src/bin/www.js",
+    "start": "NODE_PATH=./src nodemon ./src/bin/www.js",
     "migrate": "node node_modules/migrate/bin/migrate --chdir ./src",
-    "test": "PORT=3002 NODE_ENV=test mocha --exit --timeout 10000 'test/bootstrap.test.js' 'test/**/*.test.js'",
+    "test":
+      "NODE_PATH=./src PORT=3002 NODE_ENV=test mocha --exit --timeout 10000 'test/bootstrap.test.js' 'test/**/*.test.js'",
     "lint": "eslint .",
     "prettier": "prettier --write './**/*.js'"
   },

@@ -18,7 +18,7 @@ const schema = new Schema({
   wordSet: {
     type: Schema.Types.ObjectId,
     ref: 'WordSet',
-    required: [true, 'required'],
+    // required: [true, 'required'],
   },
   word: {
     type: String,
