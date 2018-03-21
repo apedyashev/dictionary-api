@@ -4,6 +4,23 @@ const errorHandler = require('helpers/errorHandler');
 const Dictionary = mongoose.model('Dictionary');
 
 module.exports = {
+  async create(req, res) {
+    try {
+      const {id: dictionaryId} = req.params;
+      const dictionary = await Dictionary.findOne({_id: dictionaryId});
+      if (!dictionary) {
+        return res.notFound();
+      }
+
+      dictionary.wordSets.push(req.body);
+      await dictionary.save();
+
+      res.created('wordset created', {item: _.last(dictionary.wordSets)});
+    } catch (err) {
+      errorHandler(res, 'wordset create error')(err);
+    }
+  },
+
   async update(req, res) {
     try {
       const {slug, wordSetSlug} = req.params;

@@ -26,11 +26,9 @@ const actions = {
 
   async create(req, res) {
     try {
-      const reqBody = req.body;
-
       const dictionary = new Dictionary({
         owner: req.user.id,
-        ...reqBody,
+        ...req.body,
         // NOTE: wordSetsCount is set in pre:save hook
       });
       await dictionary.save();

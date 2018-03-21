@@ -16,7 +16,9 @@ module.exports = {
     dictionaries: (slug) =>
       slug ? `${apiPrefix}/dictionaries/${slug}` : `${apiPrefix}/dictionaries`,
     dictionaryWordSets: (dictionarySlug, wordSetSlug) =>
-      `${apiPrefix}/dictionaries/${dictionarySlug}/wordsets/${wordSetSlug}`,
+      wordSetSlug
+        ? `${apiPrefix}/dictionaries/${dictionarySlug}/wordsets/${wordSetSlug}`
+        : `${apiPrefix}/dictionaries/${dictionarySlug}/wordsets`,
     dictionaryWordsetWords: (dictionaryId, wordSetId, wordId) =>
       wordId
         ? `${apiPrefix}/dictionaries/${dictionaryId}/wordsets/${wordSetId}/words/${wordId}`
