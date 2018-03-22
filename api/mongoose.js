@@ -8,7 +8,7 @@ module.exports = () => {
   const connectionString = `mongodb://${config.mongoose.server}/${config.mongoose.dbName}`;
   console.log('connectionString', connectionString);
   mongoose
-    .connect(connectionString) //, {useMongoClient: true})
+    .connect(connectionString)
     .then(() => {
       console.log('MongoDB: connected');
     })

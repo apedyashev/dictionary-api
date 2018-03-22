@@ -5,7 +5,7 @@ module.exports = {
     salt: 'cd5%7cd8*&09lkjbhg^!#ch;mbcgwewe$6%8v7df$9*32*4s3f2s4',
   },
   mongoose: {
-    dbName: 'jwt-boilerplate',
+    dbName: 'dictionary-api-dev',
     server: 'mongodb',
   },
   logger: {
