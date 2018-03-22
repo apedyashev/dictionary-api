@@ -65,6 +65,9 @@ schema.pre('save', async function() {
   // the sluggable plugin cannot handle nested schemas, so generate unique slugs for word sets here
   if (_.isArray(this.wordSets)) {
     this.stats.wordSetsCount = this.wordSets.length;
+    this.stats.wordsCount = this.wordSets.reduce((acc, wordSet) => {
+      return wordSet.stats.wordsCount + acc;
+    }, 0);
 
     this.wordSets.forEach((wordSet) => {
       if (wordSet.isModified('title')) {

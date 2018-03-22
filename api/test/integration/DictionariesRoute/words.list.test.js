@@ -27,7 +27,7 @@ describe('Dictionaries Route', () => {
         dictionary = res.body.item;
       });
 
-    _.range(20).forEach(async () => {
+    for (let i = 0; i < 20; i++) {
       const wordSetId = dictionary.wordSets[_.random(wordSetsCount - 1)].id;
       await request(app)
         .post(endpoints.words())
@@ -37,7 +37,7 @@ describe('Dictionaries Route', () => {
         .expect((res) => {
           userWords.push(res.body.item);
         });
-    });
+    }
   });
 
   describe(`GET ${endpoints.dictionaryWords(':id')}`, () => {

@@ -3,6 +3,7 @@ const _ = require('lodash');
 const {parseSortBy} = require('helpers/list');
 const errorHandler = require('helpers/errorHandler');
 const Dictionary = mongoose.model('Dictionary');
+const Word = mongoose.model('Word');
 const {ObjectId} = mongoose.Types;
 
 module.exports = {
@@ -52,7 +53,6 @@ module.exports = {
         return res.notFound('dictionary not found');
       }
 
-      // TODO: reset words' references to deleted wordset
       const wordSet = dictionary.wordSets.id(wordSetId);
       if (!wordSet) {
         return res.notFound('wordset not found');
@@ -60,6 +60,9 @@ module.exports = {
       wordSet.remove();
       // NOTE: it also updates `state.wordSetsCount`
       await dictionary.save();
+
+      // reset words' references to deleted wordset
+      await Word.update({wordSet: wordSetId}, {wordSet: null}, {multi: true});
 
       res.ok('wordset deleted');
     } catch (err) {
