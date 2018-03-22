@@ -16,6 +16,10 @@ const config = {
   jwt: {
     salt: '--- change this here or in env config file ---',
   },
+  mongoose: {
+    dbName: 'dictionary-api',
+    server: 'mongodb',
+  },
   passport: {
     facebook: {
       failureRedirect: '/login',

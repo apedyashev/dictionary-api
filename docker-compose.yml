@@ -14,15 +14,12 @@ mongodb:
     - ./runtime/mongo:/data/db
   ports:
     - "27017:27017"
-mongoexpress:
-  image: mongo-express:0.44
+rockmongo:
+  image: webts/rockmongo
   links:
-    - mongodb
-  environment:
-    ME_CONFIG_MONGODB_SERVER: mongodb
-    ME_CONFIG_MONGODB_PORT: 27017
+    - mongodb:db
   ports:
-    - "8082:8081"
+    - "8081:80"
 docs:
   image: swaggerapi/swagger-ui:latest
   ports:

@@ -5,8 +5,7 @@
   "scripts": {
     "start": "NODE_PATH=./src nodemon ./src/bin/www.js",
     "migrate": "node node_modules/migrate/bin/migrate --chdir ./src",
-    "test":
-      "NODE_PATH=./src PORT=3002 NODE_ENV=test mocha --exit --timeout 10000 'test/bootstrap.test.js' 'test/**/*.test.js'",
+    "test": "NODE_PATH=./src PORT=3002 NODE_ENV=test mocha --exit --timeout 10000 'test/bootstrap.test.js' 'test/**/*.test.js'",
     "lint": "eslint .",
     "prettier": "prettier --write './**/*.js'"
   },
@@ -42,7 +41,8 @@
     "serve-favicon": "2.4.2",
     "slug": "0.9.1",
     "swagger-jsdoc": "1.9.7",
-    "winston": "3.0.0-rc1"
+    "winston": "3.0.0-rc1",
+    "winston-mongodb": "4.0.0-rc1"
   },
   "devDependencies": {
     "babel-cli": "6.26.0",

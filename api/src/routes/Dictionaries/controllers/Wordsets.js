@@ -61,7 +61,7 @@ module.exports = {
       // NOTE: it also updates `state.wordSetsCount`
       await dictionary.save();
 
-      // reset words' references to deleted wordset
+      // reset words' references to deleted wordset so they can be found only by dictionary
       await Word.update({wordSet: wordSetId}, {wordSet: null}, {multi: true});
 
       res.ok('wordset deleted');
