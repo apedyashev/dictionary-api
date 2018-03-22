@@ -25,19 +25,20 @@ module.exports = {
 
   async update(req, res) {
     try {
-      const {slug, wordSetSlug} = req.params;
-      const dictonary = await Dictionary.findOne({slug});
-      if (!dictonary) {
+      const {id, wordSetId} = req.params;
+      const dictionary = await Dictionary.findOne({_id: id, owner: req.user.id});
+      if (!dictionary) {
         return res.notFound('dictionary not found');
       }
-      const wordSetIndex = _.findIndex(dictonary.wordSets, (ws) => ws.slug === wordSetSlug);
-      if (wordSetIndex < 0) {
+
+      const wordSet = dictionary.wordSets.id(wordSetId);
+      if (!wordSet) {
         return res.notFound('wordset not found');
       }
-      dictonary.wordSets[wordSetIndex] = {...req.body, _id: req.body.id};
-      await dictonary.save();
+      wordSet.set({...req.body, _id: req.body.id});
+      await dictionary.save();
 
-      res.ok('word set updated', {item: dictonary.wordSets[wordSetIndex]});
+      res.ok('word set updated', {item: wordSet});
     } catch (err) {
       errorHandler(res, 'wordset update error')(err);
     }
@@ -45,17 +46,18 @@ module.exports = {
 
   async delete(req, res) {
     try {
-      const {slug, wordSetSlug} = req.params;
-      const dictionary = await Dictionary.findOne({slug});
+      const {id, wordSetId} = req.params;
+      const dictionary = await Dictionary.findOne({_id: id, owner: req.user.id});
       if (!dictionary) {
         return res.notFound('dictionary not found');
       }
-      const wordSetIndex = _.findIndex(dictionary.wordSets, (ws) => ws.slug === wordSetSlug);
-      if (wordSetIndex < 0) {
+
+      // TODO: reset words' references to deleted wordset
+      const wordSet = dictionary.wordSets.id(wordSetId);
+      if (!wordSet) {
         return res.notFound('wordset not found');
       }
-      // TODO: reset words' references to deleted wordset
-      dictionary.wordSets = _.filter(dictionary.wordSets, (elem, idx) => idx !== wordSetIndex);
+      wordSet.remove();
       // NOTE: it also updates `state.wordSetsCount`
       await dictionary.save();
 

@@ -7,7 +7,7 @@ const {endpoints} = require(`${TEST_BASE}/constants.js`);
 const mocks = require(`${TEST_BASE}/mocks`);
 
 describe('Dictionaries Route', () => {
-  describe(`DELETE ${endpoints.dictionaryWordSets(':dictionarySlug', ':wordSetSlug')}`, () => {
+  describe(`DELETE ${endpoints.dictionaryWordSets(':dictionaryId', ':wordSetId')}`, () => {
     let newDict;
     beforeEach(async () => {
       const dictonary = mocks.dictionary(5);
@@ -23,13 +23,13 @@ describe('Dictionaries Route', () => {
 
     it('should return 401 if auth header is not set', async () => {
       await request(app)
-        .delete(endpoints.dictionaryWordSets(newDict.slug, newDict.wordSets[0].slug))
+        .delete(endpoints.dictionaryWordSets(newDict.id, newDict.wordSets[0].id))
         .expect(401);
     });
 
     it('should delete a wordset', async () => {
       await request(app)
-        .delete(endpoints.dictionaryWordSets(newDict.slug, newDict.wordSets[3].slug))
+        .delete(endpoints.dictionaryWordSets(newDict.id, newDict.wordSets[3].id))
         .set(...defaultUser.authData.header)
         .expect(200)
         .expect({
@@ -39,7 +39,7 @@ describe('Dictionaries Route', () => {
       _.pullAt(newDict.wordSets, 3);
       newDict.stats.wordSetsCount = newDict.wordSets.length;
       await request(app)
-        .get(endpoints.dictionaries(newDict.slug))
+        .get(endpoints.dictionaries(newDict.id))
         .set(...defaultUser.authData.header)
         .expect(200)
         .expect((res) => {

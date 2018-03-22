@@ -9,13 +9,13 @@ const {
 
 router.get('/', policies.checkJwtAuth, dictionaryController.list);
 router.post('/', policies.checkJwtAuth, dictionaryController.create);
-router.get('/:slug', policies.checkJwtAuth, dictionaryController.getOne);
-router.patch('/:slug', policies.checkJwtAuth, dictionaryController.update);
+router.get('/:id', policies.checkJwtAuth, dictionaryController.getOne);
+router.patch('/:id', policies.checkJwtAuth, dictionaryController.update);
 router.delete('/:id', policies.checkJwtAuth, dictionaryController.delete);
 
 router.post('/:id/wordsets', policies.checkJwtAuth, wordsetController.create);
-router.patch('/:slug/wordsets/:wordSetSlug', policies.checkJwtAuth, wordsetController.update);
-router.delete('/:slug/wordsets/:wordSetSlug', policies.checkJwtAuth, wordsetController.delete);
+router.patch('/:id/wordsets/:wordSetId', policies.checkJwtAuth, wordsetController.update);
+router.delete('/:id/wordsets/:wordSetId', policies.checkJwtAuth, wordsetController.delete);
 router.get('/:id/wordsets', policies.checkJwtAuth, wordsetController.list);
 
 router.post('/words', policies.checkJwtAuth, wordController.create);

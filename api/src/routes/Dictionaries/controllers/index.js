@@ -40,8 +40,8 @@ const actions = {
 
   async getOne(req, res) {
     try {
-      const {slug} = req.params;
-      const item = await Dictionary.findOne({slug});
+      const {id} = req.params;
+      const item = await Dictionary.findOne({_id: id, owner: req.user.id});
       if (!item) {
         return res.notFound('dictionary not found');
       }
@@ -53,8 +53,8 @@ const actions = {
 
   async update(req, res) {
     try {
-      const {slug} = req.params;
-      const dict = await Dictionary.findOne({slug});
+      const {id} = req.params;
+      const dict = await Dictionary.findOne({_id: id, owner: req.user.id});
       if (!dict) {
         return res.notFound('dictionary not found');
       }

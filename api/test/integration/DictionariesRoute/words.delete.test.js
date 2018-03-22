@@ -42,7 +42,7 @@ describe('Dictionaries Route', () => {
       let dictionaryBeforeDelete;
 
       await request(app)
-        .get(endpoints.dictionaries(dictionary.slug))
+        .get(endpoints.dictionaries(dictionary.id))
         .set(...defaultUser.authData.header)
         .expect(200)
         .expect((res) => {
@@ -74,7 +74,7 @@ describe('Dictionaries Route', () => {
 
       // Check that words count has been decreased
       await request(app)
-        .get(endpoints.dictionaries(dictionary.slug))
+        .get(endpoints.dictionaries(dictionary.id))
         .set(...defaultUser.authData.header)
         .expect(200)
         .expect((res) => {

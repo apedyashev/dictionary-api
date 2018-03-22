@@ -50,7 +50,7 @@ describe('Dictionaries Route', () => {
       // get dictonary stats befire creating a new word
       let dictionaryStats;
       await request(app)
-        .get(endpoints.dictionaries(dictionary.slug))
+        .get(endpoints.dictionaries(dictionary.id))
         .set(...defaultUser.authData.header)
         .expect(200)
         .expect((res) => {
@@ -84,7 +84,7 @@ describe('Dictionaries Route', () => {
 
       // Check that words count has been increased
       await request(app)
-        .get(endpoints.dictionaries(dictionary.slug))
+        .get(endpoints.dictionaries(dictionary.id))
         .set(...defaultUser.authData.header)
         .expect(200)
         .expect((res) => {

@@ -6,7 +6,7 @@ const {endpoints} = require(`${TEST_BASE}/constants.js`);
 const mocks = require(`${TEST_BASE}/mocks`);
 
 describe('Dictionaries Route', () => {
-  describe(`PATCH ${endpoints.dictionaryWordSets(':dictionarySlug', ':wordSetSlug')}`, () => {
+  describe(`PATCH ${endpoints.dictionaryWordSets(':dictionaryId', ':wordSetId')}`, () => {
     let newDict;
     beforeEach(async () => {
       const dictonary = mocks.dictionary(5);
@@ -22,18 +22,18 @@ describe('Dictionaries Route', () => {
 
     it('should return 401 if auth header is not set', async () => {
       await request(app)
-        .patch(endpoints.dictionaryWordSets(newDict.slug, newDict.wordSets[0].slug))
+        .patch(endpoints.dictionaryWordSets(newDict.id, newDict.wordSets[0].id))
         .send({...newDict.wordSets[0], ...mocks.wordSet()})
         .expect(401);
     });
 
-    it('should update wordset`s allowed fields and make it unique (1)', async () => {
+    it('should update wordset`s allowed fields and make slug unique (1)', async () => {
       // title of the 5st item will be udated
       const wordSet = newDict.wordSets[4];
       wordSet.title = newDict.wordSets[0].title;
 
       await request(app)
-        .patch(endpoints.dictionaryWordSets(newDict.slug, wordSet.slug))
+        .patch(endpoints.dictionaryWordSets(newDict.id, wordSet.id))
         .set(...defaultUser.authData.header)
         .send(wordSet)
         .expect(200)
@@ -43,13 +43,13 @@ describe('Dictionaries Route', () => {
         });
     });
 
-    it('should update wordset`s allowed fields and make it unique (2)', async () => {
+    it('should update wordset`s allowed fields and make slug unique (2)', async () => {
       // // title of the 1st item will be udated
       const wordSet = newDict.wordSets[0];
       wordSet.title = newDict.wordSets[4].title;
 
       await request(app)
-        .patch(endpoints.dictionaryWordSets(newDict.slug, wordSet.slug))
+        .patch(endpoints.dictionaryWordSets(newDict.id, wordSet.id))
         .set(...defaultUser.authData.header)
         .send(wordSet)
         .expect(200)

@@ -1,5 +1,6 @@
 /* global defaultUser */
 const request = require('supertest');
+const mongoose = require('mongoose');
 const _ = require('lodash');
 const slug = require('slug');
 const app = require(`${TEST_BASE}/../app.js`);
@@ -7,7 +8,7 @@ const {endpoints} = require(`${TEST_BASE}/constants.js`);
 const mocks = require(`${TEST_BASE}/mocks`);
 
 describe('Dictionaries Route', () => {
-  describe(`PATCH ${endpoints.dictionaries(':slug')}`, () => {
+  describe(`PATCH ${endpoints.dictionaries(':id')}`, () => {
     let newDict;
     beforeEach(async () => {
       const dictonary = mocks.dictionary(5);
@@ -23,7 +24,7 @@ describe('Dictionaries Route', () => {
 
     it('should return 401 if auth header is not set', async () => {
       await request(app)
-        .patch(endpoints.dictionaries(newDict.slug))
+        .patch(endpoints.dictionaries(newDict.id))
         .send(newDict)
         .expect(401);
     });
@@ -36,7 +37,7 @@ describe('Dictionaries Route', () => {
       newDict.translateTo = dictonary.translateTo;
 
       await request(app)
-        .patch(endpoints.dictionaries(newDict.slug))
+        .patch(endpoints.dictionaries(newDict.id))
         .set(...defaultUser.authData.header)
         .send(newDict)
         .expect(200)
@@ -52,9 +53,9 @@ describe('Dictionaries Route', () => {
         });
     });
 
-    it('should return 404 if slug is invalid', async () => {
+    it('should return 404 if id is invalid', async () => {
       await request(app)
-        .patch(endpoints.dictionaries(`${newDict.slug}-a-fake-slug`))
+        .patch(endpoints.dictionaries(mongoose.Types.ObjectId()))
         .set(...defaultUser.authData.header)
         .send(newDict)
         .expect(404);
