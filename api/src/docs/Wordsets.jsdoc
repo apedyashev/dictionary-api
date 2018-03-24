@@ -1,0 +1,14 @@
+/**
+* @swagger
+*
+* definitions:
+*   WordsetPayload:
+*     type: object
+*     required:
+*       - title
+*     properties:
+*       title:
+*         type: string
+*       slug:
+*         type: string
+*/

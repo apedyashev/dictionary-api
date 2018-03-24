@@ -1,0 +1,79 @@
+/**
+* @swagger
+*
+* definitions:
+*   BaseModel:
+*     type: object
+*     properties:
+*       id:
+*         type: string
+*       createdAt:
+*         type: string
+*         format: "date-time"
+*       updatedAt:
+*         type: string
+*         format: "date-time"
+*
+*   PaginationObject:
+*     type: object
+*     properties:
+*       page:
+*         type: number
+*       pages:
+*         type: number
+*       total:
+*         type: number
+*       perPage:
+*         type: number
+*
+*   ValidationError:
+*     type: object
+*     properties:
+*       message:
+*         type: string
+*       originalError:
+*         type: object
+*         description: Not available in production
+*       validationErrors:
+*         type: object
+*         properties:
+*           fieldName:
+*             type: string
+*
+* parameters:
+*   AuthorizationHeader:
+*     name: Authorization
+*     in: header
+*     description: Access token
+*     required: true
+*     type: string
+*     default: Bearer CODEHERE
+*   id:
+*     name: id
+*     in: path
+*     description: Resource ID
+*     required: true
+*     type: string
+*   page:
+*     name: page
+*     in: query
+*     description: Current page.
+*     required: false
+*     type: integer
+*     default: 1
+*   perPage:
+*     name: perPage
+*     in: query
+*     description: Default items per page.
+*     required: false
+*     type: integer
+*     default: 50
+*   sortBy:
+*     name: sortBy
+*     in: query
+*     description: Sort field and order
+*     required: false
+*     type: string
+*     default: createdAt:asc
+*
+*/

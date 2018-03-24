@@ -11,7 +11,7 @@ router.get('/', (req, res) => {
         version: '0.0.1',
       },
     },
-    apis: ['./src/**/*.js', './src/*.jsdoc'], // Path to the API docs
+    apis: ['./src/**/*.js', './src/docs/*.jsdoc'], // Path to the API docs
   };
 
   // Initialize swagger-jsdoc -> returns validated swagger spec in json format

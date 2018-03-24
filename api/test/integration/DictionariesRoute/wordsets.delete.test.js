@@ -46,7 +46,7 @@ describe('Dictionaries Route', () => {
       await request(app)
         .get(endpoints.dictionaryWords(newDict.id))
         .set(...defaultUser.authData.header)
-        .query({sort: 'word:asc', page: 1, perPage: 100})
+        .query({sortBy: 'word:asc', page: 1, perPage: 100})
         .expect(200)
         .expect((res) => {
           wordsBeforeDelete = res.body.items;
@@ -90,7 +90,7 @@ describe('Dictionaries Route', () => {
       await request(app)
         .get(endpoints.dictionaryWords(newDict.id))
         .set(...defaultUser.authData.header)
-        .query({sort: 'word:asc', page: 1, perPage: 100})
+        .query({sortBy: 'word:asc', page: 1, perPage: 100})
         .expect(200)
         .expect((res) => {
           const {items} = res.body;

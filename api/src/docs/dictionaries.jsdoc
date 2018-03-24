@@ -1,0 +1,47 @@
+/**
+* @swagger
+*
+* parameters:
+*   DictionaryPayload:
+*     name: payload
+*     in: body
+*     required: true
+*     type: object
+*     schema:
+*       $ref: "#/definitions/DictionaryPayload"
+*
+* definitions:
+*   DictionaryPayload:
+*     type: object
+*     required:
+*       - title
+*       - translateFrom
+*       - translateTo
+*     properties:
+*       title:
+*         type: string
+*       translateFrom:
+*         type: string
+*       translateTo:
+*         type: string
+*       wordSets:
+*         type: array
+*         items:
+*           $ref: "#/definitions/WordsetPayload"
+*
+*   DictionaryResponse:
+*     properties:
+*       item:
+*         type: object
+*         $ref: "#/definitions/SerializedDictionary"
+*
+*   DictionariesResponse:
+*     properties:
+*       items:
+*         type: array
+*         items:
+*           $ref: "#/definitions/SerializedDictionary"
+*       pagination:
+*         type: object
+*         $ref: "#/definitions/PaginationObject"
+*/

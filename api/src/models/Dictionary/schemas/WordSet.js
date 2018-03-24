@@ -2,6 +2,23 @@ const mongoose = require('mongoose');
 const toJson = require('@meanie/mongoose-to-json');
 const Schema = mongoose.Schema;
 
+/**
+ * @swagger
+ * definitions:
+ *   SerializedWordset:
+ *     allOf:
+ *       - $ref: '#/definitions/BaseModel'
+ *       - properties:
+ *          title:
+ *            type: string
+ *          slug:
+ *            type: string
+ *          stats:
+ *            type: object
+ *            properties:
+ *              wordsCount:
+ *                type: number
+ */
 const schema = new Schema({
   title: {
     type: String,

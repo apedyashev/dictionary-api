@@ -7,10 +7,170 @@ const {
   wordsets: wordsetController,
 } = require('./controllers');
 
+/**
+ * @swagger
+ * tags:
+ *   name: Dictionaries
+ *   description: Dictionaries operations
+ *
+ */
+
+/**
+ * @swagger
+ *
+ * /dictionaries:
+ *   get:
+ *     summary: Returns list of user's dictionaries
+ *     tags: [Dictionaries]
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - $ref: "#/parameters/AuthorizationHeader"
+ *       - $ref: "#/parameters/page"
+ *       - $ref: "#/parameters/perPage"
+ *       - $ref: "#/parameters/sortBy"
+ *     responses:
+ *       200:
+ *         description: Ok
+ *         schema:
+ *           $ref: '#/definitions/DictionariesResponse'
+ *       401:
+ *         description: Unauthorized
+ *       500:
+ *         description: Server error
+ *         schema:
+ *           $ref: '#/definitions/ResponseServerError'
+ *
+ */
 router.get('/', policies.checkJwtAuth, dictionaryController.list);
+
+/**
+ * @swagger
+ *
+ * /dictionaries:
+ *   post:
+ *     summary: Creates a new dictionary
+ *     tags: [Dictionaries]
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - $ref: "#/parameters/AuthorizationHeader"
+ *       - name: payload
+ *         description: Endpoint's payload.
+ *         in: body
+ *         required: true
+ *         schema:
+ *           $ref: "#/definitions/DictionaryPayload"
+ *     responses:
+ *       200:
+ *         description: Ok
+ *         schema:
+ *           $ref: '#/definitions/DictionaryResponse'
+ *       401:
+ *         description: Unauthorized
+ *       422:
+ *         description: Validation error
+ *         schema:
+ *           $ref: '#/definitions/ValidationError'
+ *       500:
+ *         description: Server error
+ *         schema:
+ *           $ref: '#/definitions/ResponseServerError'
+ *
+ */
 router.post('/', policies.checkJwtAuth, dictionaryController.create);
+
+/**
+ * @swagger
+ *
+ * /dictionaries/:id:
+ *   get:
+ *     summary: Returns a dictionanry by ID
+ *     tags: [Dictionaries]
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - $ref: "#/parameters/AuthorizationHeader"
+ *       - $ref: "#/parameters/id"
+ *     responses:
+ *       200:
+ *         description: Ok
+ *         schema:
+ *           $ref: '#/definitions/DictionaryResponse'
+ *       401:
+ *         description: Unauthorized
+ *       500:
+ *         description: Server error
+ *         schema:
+ *           $ref: '#/definitions/ResponseServerError'
+ *
+ */
 router.get('/:id', policies.checkJwtAuth, dictionaryController.getOne);
+
+/**
+ * @swagger
+ *
+ * /dictionaries/:id:
+ *   patch:
+ *     summary: Updates an existing dictionary
+ *     tags: [Dictionaries]
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - $ref: "#/parameters/AuthorizationHeader"
+ *       - $ref: "#/parameters/id"
+ *       - name: payload
+ *         description: Endpoint's payload.
+ *         in: body
+ *         required: true
+ *         schema:
+ *           $ref: "#/definitions/DictionaryPayload"
+ *     responses:
+ *       200:
+ *         description: Ok
+ *         schema:
+ *           $ref: '#/definitions/DictionaryResponse'
+ *       401:
+ *         description: Unauthorized
+ *       422:
+ *         description: Validation error
+ *         schema:
+ *           $ref: '#/definitions/ValidationError'
+ *       500:
+ *         description: Server error
+ *         schema:
+ *           $ref: '#/definitions/ResponseServerError'
+ *
+ */
 router.patch('/:id', policies.checkJwtAuth, dictionaryController.update);
+
+/**
+ * @swagger
+ *
+ * /dictionaries/:id:
+ *   delete:
+ *     summary: Deletes a dictionary
+ *     tags: [Dictionaries]
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - $ref: "#/parameters/AuthorizationHeader"
+ *       - $ref: "#/parameters/id"
+ *     responses:
+ *       200:
+ *         description: Deleted
+ *       401:
+ *         description: Unauthorized
+ *       402:
+ *         description: Dictionary doesn't belong to user
+ *       404:
+ *         description: Dictionary not found
+ *       500:
+ *         description: Server error
+ *         schema:
+ *           $ref: '#/definitions/ResponseServerError'
+ *
+ */
 router.delete('/:id', policies.checkJwtAuth, dictionaryController.delete);
 
 router.post('/:id/wordsets', policies.checkJwtAuth, wordsetController.create);

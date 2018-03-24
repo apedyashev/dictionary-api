@@ -2,27 +2,6 @@ const _ = require('lodash');
 const i18next = require('i18next');
 const logger = require('../helpers/logger');
 
-/**
- * @swagger
- *
- * definitions:
- *   ValidationError:
- *     type: object
- *     required:
- *       - validationErrors
- *     properties:
- *       originalError:
- *         type: object
- *         description: Not available in production
- *       validationErrors:
- *         type: object
- *         $ref: "#/definitions/ValidationErrorsObject"
- *   ValidationErrorsObject:
- *     type: object
- *     properties:
- *       fieldName:
- *         type: string
- */
 module.exports = function(err) {
   if (err.name === 'ValidationError' && err.errors) {
     const validationErrors = _.mapValues(err.errors, ({message, value, ...rest}, fieldName) => {

@@ -11,6 +11,39 @@ const Schema = mongoose.Schema;
 require('models/Word');
 const Word = mongoose.model('Word');
 
+/**
+ * @swagger
+ * definitions:
+ *   SerializedDictionary:
+ *     allOf:
+ *       - $ref: '#/definitions/BaseModel'
+ *       - properties:
+ *          owner:
+ *            type: string
+ *          title:
+ *            type: string
+ *          translateFrom:
+ *            type: string
+ *          translateTo:
+ *            type: string
+ *          slug:
+ *            type: string
+ *          collaborators:
+ *            type: array
+ *            items:
+ *              $ref: "#/definitions/SerializedCollaborator"
+ *          wordSets:
+ *            type: array
+ *            items:
+ *              $ref: "#/definitions/SerializedWordset"
+ *          stats:
+ *            type: object
+ *            properties:
+ *              wordSetsCount:
+ *                type: number
+ *              wordsCount:
+ *                type: number
+ */
 const schema = new Schema({
   owner: {
     type: Schema.Types.ObjectId,
