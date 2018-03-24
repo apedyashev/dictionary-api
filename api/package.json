@@ -2,6 +2,9 @@
   "name": "api",
   "version": "0.0.0",
   "private": true,
+  "engines": {
+    "node": "9.9.0"
+  },
   "scripts": {
     "start": "NODE_PATH=./src nodemon ./src/bin/www.js",
     "migrate": "node node_modules/migrate/bin/migrate --chdir ./src",
