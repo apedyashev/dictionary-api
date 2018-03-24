@@ -4,6 +4,6 @@
   },
   "scripts": {
     "start": "cd api && npm start",
-    "postinstall": "cd api && npm install && npm start"
+    "postinstall": "cd api && npm install"
   }
 }
