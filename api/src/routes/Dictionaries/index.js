@@ -161,7 +161,7 @@ router.patch('/:id', policies.checkJwtAuth, dictionaryController.update);
  *         description: Deleted
  *       401:
  *         description: Unauthorized
- *       402:
+ *       403:
  *         description: Dictionary doesn't belong to user
  *       404:
  *         description: Dictionary not found
@@ -267,9 +267,7 @@ router.patch('/:id/wordsets/:wordSetId', policies.checkJwtAuth, wordsetControlle
  *       - $ref: "#/parameters/wordSetId"
  *     responses:
  *       200:
- *         description: Ok
- *         schema:
- *           $ref: '#/definitions/WordsetResponse'
+ *         description: Deleted
  *       401:
  *         description: Unauthorized
  *       404:
@@ -309,10 +307,163 @@ router.delete('/:id/wordsets/:wordSetId', policies.checkJwtAuth, wordsetControll
  */
 router.get('/:id/wordsets', policies.checkJwtAuth, wordsetController.list);
 
+/**
+ * @swagger
+ *
+ * /dictionaries/words:
+ *   post:
+ *     summary: Create a new word for a dictionary
+ *     tags: [Dictionaries]
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - $ref: "#/parameters/AuthorizationHeader"
+ *       - name: payload
+ *         description: Endpoint's payload.
+ *         in: body
+ *         required: true
+ *         schema:
+ *           $ref: "#/definitions/WordPayload"
+ *     responses:
+ *       200:
+ *         description: Ok
+ *         schema:
+ *           $ref: '#/definitions/WordResponse'
+ *       401:
+ *         description: Unauthorized
+ *       422:
+ *         description: Validation error
+ *         schema:
+ *           $ref: '#/definitions/ValidationError'
+ *       500:
+ *         description: Server error
+ *         schema:
+ *           $ref: '#/definitions/ResponseServerError'
+ *
+ */
 router.post('/words', policies.checkJwtAuth, wordController.create);
+
+/**
+ * @swagger
+ *
+ * /dictionaries/words/:id:
+ *   patch:
+ *     summary: Updates an existing word
+ *     tags: [Dictionaries]
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - $ref: "#/parameters/AuthorizationHeader"
+ *       - $ref: "#/parameters/id"
+ *       - name: payload
+ *         description: Endpoint's payload.
+ *         in: body
+ *         required: true
+ *         schema:
+ *           $ref: "#/definitions/WordPayload"
+ *     responses:
+ *       200:
+ *         description: Ok
+ *         schema:
+ *           $ref: '#/definitions/WordResponse'
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Word doesn't belong to user
+ *       422:
+ *         description: Validation error
+ *         schema:
+ *           $ref: '#/definitions/ValidationError'
+ *       500:
+ *         description: Server error
+ *         schema:
+ *           $ref: '#/definitions/ResponseServerError'
+ *
+ */
 router.patch('/words/:id', policies.checkJwtAuth, wordController.update);
+
+/**
+ * @swagger
+ *
+ * /dictionaries/words/:id:
+ *   delete:
+ *     summary: Deletes a word
+ *     tags: [Dictionaries]
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - $ref: "#/parameters/AuthorizationHeader"
+ *       - $ref: "#/parameters/id"
+ *     responses:
+ *       200:
+ *         description: Deleted
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Word doesn't belong to user
+ *       404:
+ *         description: Word cannot be found by ID
+ *       500:
+ *         description: Server error
+ *         schema:
+ *           $ref: '#/definitions/ResponseServerError'
+ *
+ */
 router.delete('/words/:id', policies.checkJwtAuth, wordController.delete);
+
+/**
+ * @swagger
+ *
+ * /dictionaries/:id/words:
+ *   get:
+ *     summary: Returs list of words for a dictionary
+ *     tags: [Dictionaries]
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - $ref: "#/parameters/AuthorizationHeader"
+ *       - $ref: "#/parameters/id"
+ *     responses:
+ *       200:
+ *         description: Ok
+ *         schema:
+ *           $ref: '#/definitions/WordsResponse'
+ *       401:
+ *         description: Unauthorized
+ *       500:
+ *         description: Server error
+ *         schema:
+ *           $ref: '#/definitions/ResponseServerError'
+ *
+ */
 router.get('/:id/words', policies.checkJwtAuth, wordController.list);
+
+/**
+ * @swagger
+ *
+ * /dictionaries/:id/wordsets/:wordSetId/words:
+ *   get:
+ *     summary: Returs list of words for a wordset
+ *     tags: [Dictionaries]
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - $ref: "#/parameters/AuthorizationHeader"
+ *       - $ref: "#/parameters/id"
+ *       - $ref: "#/parameters/wordSetId"
+ *     responses:
+ *       200:
+ *         description: Ok
+ *         schema:
+ *           $ref: '#/definitions/WordsResponse'
+ *       401:
+ *         description: Unauthorized
+ *       500:
+ *         description: Server error
+ *         schema:
+ *           $ref: '#/definitions/ResponseServerError'
+ *
+ */
 router.get('/:id/wordsets/:wordSetId/words', policies.checkJwtAuth, wordController.list);
 
 module.exports = (app) => {

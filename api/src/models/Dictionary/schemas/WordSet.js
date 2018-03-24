@@ -7,7 +7,7 @@ const Schema = mongoose.Schema;
  * definitions:
  *   SerializedWordset:
  *     allOf:
- *       - $ref: '#/definitions/BaseModel'
+ *       - $ref: '#/definitions/NestedBaseModel'
  *       - properties:
  *          title:
  *            type: string

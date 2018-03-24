@@ -7,7 +7,7 @@ const Schema = mongoose.Schema;
  * definitions:
  *   SerializedCollaborator:
  *     allOf:
- *       - $ref: '#/definitions/BaseModel'
+ *       - $ref: '#/definitions/NestedBaseModel'
  *       - properties:
  *          user:
  *            type: string

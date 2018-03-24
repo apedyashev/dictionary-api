@@ -89,7 +89,7 @@ describe('Dictionaries Route', () => {
         .expect({
           message: 'word updated',
           item: {
-            ...updatedWord,
+            ..._.omit(updatedWord, ['updatedAt']),
             // word isn't allowed to be updated
             word: wordToBeUpdated.word,
           },

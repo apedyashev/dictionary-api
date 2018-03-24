@@ -1,9 +1,32 @@
 const mongoose = require('mongoose');
 const toJson = require('@meanie/mongoose-to-json');
 const mongoosePaginate = require('mongoose-paginate');
+const timestamps = require('mongoose-timestamp');
 const Translation = require('./schemas/Translation');
 const Schema = mongoose.Schema;
 
+/**
+ * @swagger
+ * definitions:
+ *   SerializedWord:
+ *     allOf:
+ *       - $ref: '#/definitions/BaseModel'
+ *       - properties:
+ *          owner:
+ *            type: string
+ *          dictionary:
+ *            type: string
+ *          wordSet:
+ *            type: string
+ *          word:
+ *            type: string
+ *          translations:
+ *            type: array
+ *            items:
+ *              $ref: "#/definitions/SerializedTranslation"
+ *          isLearned:
+ *            type: boolean
+ */
 const schema = new Schema({
   owner: {
     type: Schema.Types.ObjectId,
@@ -32,6 +55,7 @@ const schema = new Schema({
     default: false,
   },
 });
+schema.plugin(timestamps);
 schema.plugin(toJson);
 schema.plugin(mongoosePaginate);
 
