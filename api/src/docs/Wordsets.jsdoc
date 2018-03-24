@@ -9,6 +9,20 @@
 *     properties:
 *       title:
 *         type: string
-*       slug:
-*         type: string
+*
+*   WordsetResponse:
+*     properties:
+*       item:
+*         type: object
+*         $ref: "#/definitions/SerializedWordset"
+*
+*   WordsetsResponse:
+*     properties:
+*       items:
+*         type: array
+*         items:
+*           $ref: "#/definitions/SerializedWordset"
+*       pagination:
+*         type: object
+*         $ref: "#/definitions/PaginationObject"
 */

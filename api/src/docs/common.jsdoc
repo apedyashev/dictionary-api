@@ -54,6 +54,12 @@
 *     description: Resource ID
 *     required: true
 *     type: string
+*   wordSetId:
+*     name: wordSetId
+*     in: path
+*     description: WordSet Id
+*     required: true
+*     type: string
 *   page:
 *     name: page
 *     in: query
