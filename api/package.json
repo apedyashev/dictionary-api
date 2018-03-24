@@ -6,7 +6,8 @@
     "node": "9.9.0"
   },
   "scripts": {
-    "start": "NODE_PATH=./src nodemon ./src/bin/www.js",
+    "start": "NODE_PATH=./src node ./src/bin/www.js",
+    "start-dev": "NODE_PATH=./src nodemon ./src/bin/www.js",
     "migrate": "node node_modules/migrate/bin/migrate --chdir ./src",
     "test":
       "NODE_PATH=./src PORT=3002 NODE_ENV=test mocha --exit --timeout 10000 'test/bootstrap.test.js' 'test/**/*.test.js'",
