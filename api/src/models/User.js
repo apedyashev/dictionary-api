@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const timestamps = require('mongoose-timestamp');
 const crypto = require('crypto');
 const _ = require('lodash');
+const logger = require('helpers/logger');
 const {cache: {userCacheLifetime}} = require('../config');
 const {buildCacheKey} = require('../helpers/cache');
 const redisClient = require('../../redis.js');
@@ -106,6 +107,20 @@ const schema = new Schema({
 
 schema.plugin(timestamps);
 // schema.plugin(mongoosePaginate);
+
+schema.path('email').validate({
+  isAsync: true,
+  validator: async function(value, respond) {
+    try {
+      const count = await this.model('User').count({_id: {$ne: this._id}, email: value});
+      respond(!count);
+    } catch (err) {
+      logger.error('email counting error', err);
+      return respond(false);
+    }
+  },
+  message: 'email is already taken',
+});
 
 schema.pre('validate', function(next) {
   if (

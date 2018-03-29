@@ -103,6 +103,24 @@ describe('AuthController', () => {
           },
         });
     });
+
+    it('should return 422, if email is already taken', async () => {
+      // try to register admin and check if it's not possible
+      const newUser = mocks.user({email: defaultUser.data.email});
+      await request(app)
+        .post(endpoints.register)
+        .send(newUser)
+        .expect(422)
+        .expect((res) => {
+          res.body = _.omit(res.body, ['originalError']);
+        })
+        .expect({
+          message: 'register user error',
+          validationErrors: {
+            email: 'email is already taken',
+          },
+        });
+    });
   });
 
   describe(`POST ${endpoints.login}`, () => {

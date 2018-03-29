@@ -7,8 +7,6 @@ const config = require('../config');
 const logger = winston.createLogger({
   level: config.logger.level,
   format: winston.format.json(),
-  transports: [],
-  exceptionHandlers: [],
 });
 
 // If we're not in production then log to the `console` with the format:
