@@ -240,6 +240,7 @@ router.post(
         const {token} = await Token.sign(user, deviceId);
         res.ok('login successfull', {token, user});
       } else {
+        console.log('facebook');
         res.notFound('user not found');
       }
     } catch (err) {

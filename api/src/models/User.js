@@ -178,11 +178,17 @@ schema.statics.findCachedById = async function(id) {
   return {id, ...cachedUser};
 };
 
-schema.statics.createFromFacebookProfile = function({emails, name, id}) {
+schema.statics.createFromFacebookProfile = async function({emails, name, id}) {
+  const email = emails[0] && emails[0].value;
+  const count = await this.model('User').count({email});
+  if (count) {
+    // add social id to the existing user
+    return await this.findOneAndUpdate({email: email}, {socialId: id}, {new: true});
+  }
   return this.create({
     firstName: name.givenName,
     lastName: name.familyName,
-    email: emails[0] && emails[0].value,
+    email,
     socialId: id,
     provider: 'facebook',
   });

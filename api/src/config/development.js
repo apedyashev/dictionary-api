@@ -11,4 +11,12 @@ module.exports = {
   logger: {
     level: 'silly',
   },
+  passport: {
+    facebook: {
+      failureRedirect: '/login',
+      strategy: {
+        callbackURL: `http://localhost:3000/facebook/callback`,
+      },
+    },
+  },
 };

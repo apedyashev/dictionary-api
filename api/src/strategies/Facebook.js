@@ -7,7 +7,7 @@ const logger = require('../helpers/logger');
 module.exports = new Strategy(
   {
     ...config.passport.facebook.strategy,
-    callbackURL: `${config.baseUrl}/auth/facebook/callback`,
+    // callbackURL: `${config.baseUrl}/auth/facebook/callback`,
     // session: false,
   },
   async (accessToken, refreshToken, profile, next) => {
