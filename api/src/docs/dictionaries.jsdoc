@@ -15,14 +15,11 @@
 *     type: object
 *     required:
 *       - title
-*       - translateFrom
-*       - translateTo
+*       - translateDirection
 *     properties:
 *       title:
 *         type: string
-*       translateFrom:
-*         type: string
-*       translateTo:
+*       translateDirection:
 *         type: string
 *       wordSets:
 *         type: array

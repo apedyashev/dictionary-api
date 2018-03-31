@@ -11,6 +11,19 @@ const Schema = mongoose.Schema;
 require('models/Word');
 const Word = mongoose.model('Word');
 
+const validateTitle = function(value) {
+  if (this.translateDirection) {
+    return true;
+  }
+  return !!value;
+};
+const validateDirection = function(value) {
+  if (this.title) {
+    return true;
+  }
+  return !!value;
+};
+
 /**
  * @swagger
  * definitions:
@@ -22,9 +35,7 @@ const Word = mongoose.model('Word');
  *            type: string
  *          title:
  *            type: string
- *          translateFrom:
- *            type: string
- *          translateTo:
+ *          translateDirection:
  *            type: string
  *          slug:
  *            type: string
@@ -52,15 +63,13 @@ const schema = new Schema({
   },
   title: {
     type: String,
-    required: [true, 'required'],
+    validate: [validateTitle, 'required'],
+    default: null,
   },
-  translateFrom: {
+  translateDirection: {
     type: String,
-    required: [true, 'required'],
-  },
-  translateTo: {
-    type: String,
-    required: [true, 'required'],
+    validate: [validateDirection, 'required'],
+    default: null,
   },
   slug: {
     type: String,
@@ -89,7 +98,7 @@ const schema = new Schema({
 });
 schema.plugin(timestamps);
 schema.plugin(toJson);
-schema.plugin(sluggable, {unique: true, source: ['translateFrom', 'translateTo']});
+schema.plugin(sluggable, {unique: true, source: ['title', 'translateDirection']});
 schema.plugin(mongoosePaginate);
 
 schema.pre('save', async function() {

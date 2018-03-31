@@ -21,7 +21,7 @@ describe('Dictionaries Route', () => {
       const numOfDicts = 5;
       _.range(numOfDicts).map(async (n) => {
         const dictonary = mocks.dictionary();
-        dictonary.translateFrom = `${n} ${dictonary.translateFrom}`;
+        dictonary.translateDirection = `${n} ${dictonary.translateDirection}`;
         await request(app)
           .post(endpoints.dictionaries())
           .set(...newUserAuth)
@@ -50,40 +50,40 @@ describe('Dictionaries Route', () => {
         });
     });
 
-    it('should sort result by single field (translateFrom:asc)', async () => {
+    it('should sort result by single field (translateDirection:asc)', async () => {
       await request(app)
         .get(endpoints.dictionaries())
         .set(...newUserAuth)
-        .query({sortBy: 'translateFrom:asc'})
+        .query({sortBy: 'translateDirection:asc'})
         .expect(200)
         .expect((res) => {
           const {items} = res.body;
           assert.sameOrderedMembers(
-            _.map(items, 'translateFrom'),
+            _.map(items, 'translateDirection'),
             _(newDicts)
-              .orderBy(['translateFrom'], ['asc'])
-              .map('translateFrom')
+              .orderBy(['translateDirection'], ['asc'])
+              .map('translateDirection')
               .value(),
-            'sorted by translateFrom:asc'
+            'sorted by translateDirection:asc'
           );
         });
     });
 
-    it('should sort result by single field (translateFrom:desc)', async () => {
+    it('should sort result by single field (translateDirection:desc)', async () => {
       await request(app)
         .get(endpoints.dictionaries())
         .set(...newUserAuth)
-        .query({sortBy: 'translateFrom:desc'})
+        .query({sortBy: 'translateDirection:desc'})
         .expect(200)
         .expect((res) => {
           const {items} = res.body;
           assert.sameOrderedMembers(
-            _.map(items, 'translateFrom'),
+            _.map(items, 'translateDirection'),
             _(newDicts)
-              .orderBy(['translateFrom'], ['desc'])
-              .map('translateFrom')
+              .orderBy(['translateDirection'], ['desc'])
+              .map('translateDirection')
               .value(),
-            'sorted by translateFrom:desc'
+            'sorted by translateDirection:desc'
           );
         });
     });
@@ -93,15 +93,15 @@ describe('Dictionaries Route', () => {
       await request(app)
         .get(endpoints.dictionaries())
         .set(...newUserAuth)
-        .query({sortBy: 'translateFrom:asc', page: 1, perPage})
+        .query({sortBy: 'translateDirection:asc', page: 1, perPage})
         .expect(200)
         .expect((res) => {
           const {items} = res.body;
           assert.sameOrderedMembers(
-            _.map(items, 'translateFrom'),
+            _.map(items, 'translateDirection'),
             _(newDicts)
-              .orderBy(['translateFrom'], ['asc'])
-              .map('translateFrom')
+              .orderBy(['translateDirection'], ['asc'])
+              .map('translateDirection')
               .slice(0, 2)
               .value(),
             'returns the first page'
@@ -124,15 +124,15 @@ describe('Dictionaries Route', () => {
       await request(app)
         .get(endpoints.dictionaries())
         .set(...newUserAuth)
-        .query({sortBy: 'translateFrom:asc', page: 2, perPage})
+        .query({sortBy: 'translateDirection:asc', page: 2, perPage})
         .expect(200)
         .expect((res) => {
           const {items} = res.body;
           assert.sameOrderedMembers(
-            _.map(items, 'translateFrom'),
+            _.map(items, 'translateDirection'),
             _(newDicts)
-              .orderBy(['translateFrom'], ['asc'])
-              .map('translateFrom')
+              .orderBy(['translateDirection'], ['asc'])
+              .map('translateDirection')
               .slice(2, 4)
               .value(),
             'returns the 2nd page'
@@ -155,15 +155,15 @@ describe('Dictionaries Route', () => {
       await request(app)
         .get(endpoints.dictionaries())
         .set(...newUserAuth)
-        .query({sortBy: 'translateFrom:asc', page: 1, perPage})
+        .query({sortBy: 'translateDirection:asc', page: 1, perPage})
         .expect(200)
         .expect((res) => {
           const {items} = res.body;
           assert.sameOrderedMembers(
-            _.map(items, 'translateFrom'),
+            _.map(items, 'translateDirection'),
             _(newDicts)
-              .orderBy(['translateFrom'], ['asc'])
-              .map('translateFrom')
+              .orderBy(['translateDirection'], ['asc'])
+              .map('translateDirection')
               .slice(0, 3)
               .value(),
             'returns the 1nd page out of 2'

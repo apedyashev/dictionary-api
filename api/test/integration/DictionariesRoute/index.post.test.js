@@ -29,8 +29,7 @@ describe('Dictionaries Route', () => {
           message: 'dictionary create error',
           validationErrors: {
             title: 'required',
-            translateFrom: 'required',
-            translateTo: 'required',
+            translateDirection: 'required',
           },
         });
     });
@@ -58,7 +57,7 @@ describe('Dictionaries Route', () => {
           item: {
             ...dictonary,
             owner: defaultUser.data.id,
-            slug: slug([dictonary.translateFrom, dictonary.translateTo].join(' ')),
+            slug: slug([dictonary.title, dictonary.translateDirection].join(' ')).toLowerCase(),
             collaborators: [],
             wordSets: dictonary.wordSets.map((wordSet) => ({
               ...wordSet,
@@ -70,6 +69,42 @@ describe('Dictionaries Route', () => {
               wordsCount: 0,
             },
           },
+        });
+    });
+
+    it('should return 201 and if title is missing but translateDirection is set', async () => {
+      const dictonary = mocks.dictionary();
+      delete dictonary.title;
+      await request(app)
+        .post(endpoints.dictionaries())
+        .set(...defaultUser.authData.header)
+        .send(dictonary)
+        .expect(201)
+        .expect((res) => {
+          const {item} = res.body;
+          assert.equal(
+            item.slug,
+            slug(['', dictonary.translateDirection].join('-')).toLowerCase(),
+            'slug is correct'
+          );
+        });
+    });
+
+    it('should return 201 and if translateDirection is missing but title is set', async () => {
+      const dictonary = mocks.dictionary();
+      delete dictonary.translateDirection;
+      await request(app)
+        .post(endpoints.dictionaries())
+        .set(...defaultUser.authData.header)
+        .send(dictonary)
+        .expect(201)
+        .expect((res) => {
+          const {item} = res.body;
+          assert.equal(
+            item.slug,
+            slug([dictonary.title, ''].join('-')).toLowerCase(),
+            'slug is correct'
+          );
         });
     });
 
@@ -115,7 +150,7 @@ describe('Dictionaries Route', () => {
           item: {
             ...dictonary,
             owner: defaultUser.data.id,
-            slug: slug([dictonary.translateFrom, dictonary.translateTo].join(' ')),
+            slug: slug([dictonary.title, dictonary.translateDirection].join(' ')).toLowerCase(),
             collaborators: [],
             wordSets: [],
             stats: {

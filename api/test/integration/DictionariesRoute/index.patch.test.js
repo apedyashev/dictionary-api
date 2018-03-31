@@ -33,8 +33,7 @@ describe('Dictionaries Route', () => {
       const dictonary = mocks.dictionary(5);
       // only those fields can be updated by tested endpoint
       newDict.title = dictonary.title;
-      newDict.translateFrom = dictonary.translateFrom;
-      newDict.translateTo = dictonary.translateTo;
+      newDict.translateDirection = dictonary.translateDirection;
 
       await request(app)
         .patch(endpoints.dictionaries(newDict.id))
@@ -48,7 +47,7 @@ describe('Dictionaries Route', () => {
           message: 'dictionary updated',
           item: {
             ..._.omit(newDict, 'updatedAt'),
-            slug: slug([newDict.translateFrom, newDict.translateTo].join(' ')),
+            slug: slug([newDict.title, newDict.translateDirection].join(' ')).toLowerCase(),
           },
         });
     });
