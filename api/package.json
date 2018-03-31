@@ -5,8 +5,7 @@
   "scripts": {
     "start": "NODE_PATH=./src nodemon ./src/bin/www.js",
     "migrate": "node node_modules/migrate/bin/migrate --chdir ./src",
-    "test":
-      "NODE_PATH=./src PORT=3002 NODE_ENV=test mocha --exit --timeout 10000 'test/bootstrap.test.js' 'test/**/*.test.js'",
+    "test": "NODE_PATH=./src PORT=3002 NODE_ENV=test mocha --exit --timeout 10000 'test/bootstrap.test.js' 'test/**/*.test.js'",
     "lint": "eslint .",
     "prettier": "prettier --write './**/*.js'"
   },
@@ -25,6 +24,7 @@
     "i18next": "10.2.2",
     "i18next-express-middleware": "1.0.9",
     "i18next-node-fs-backend": "1.0.0",
+    "iso-639-1": "2.0.3",
     "jade": "1.11.0",
     "jsonwebtoken": "8.1.0",
     "lodash": "4.17.4",
