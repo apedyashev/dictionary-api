@@ -47,7 +47,7 @@ describe('Dictionaries Route', () => {
           message: 'dictionary updated',
           item: {
             ..._.omit(newDict, 'updatedAt'),
-            slug: slug([newDict.title, newDict.translateDirection].join(' ')).toLowerCase(),
+            slug: slug(newDict.translateDirection).toLowerCase(),
           },
         });
     });

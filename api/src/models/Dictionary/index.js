@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const timestamps = require('mongoose-timestamp');
 const toJson = require('@meanie/mongoose-to-json');
-const sluggable = require('mongoose-sluggable');
+// const sluggable = require('mongoose-sluggable');
 const mongoosePaginate = require('mongoose-paginate');
 const slug = require('slug');
 const _ = require('lodash');
@@ -10,19 +10,6 @@ const {withNextId} = require('../../helpers/mongoose');
 const Schema = mongoose.Schema;
 require('models/Word');
 const Word = mongoose.model('Word');
-
-const validateTitle = function(value) {
-  if (this.translateDirection) {
-    return true;
-  }
-  return !!value;
-};
-const validateDirection = function(value) {
-  if (this.title) {
-    return true;
-  }
-  return !!value;
-};
 
 /**
  * @swagger
@@ -63,19 +50,18 @@ const schema = new Schema({
   },
   title: {
     type: String,
-    validate: [validateTitle, 'required'],
-    default: null,
+    required: [true, 'required'],
   },
   translateDirection: {
     type: String,
-    validate: [validateDirection, 'required'],
     default: null,
   },
   slug: {
     type: String,
     index: true,
-    unique: true,
+    unique: false,
     trim: true,
+    default: null,
   },
   collaborators: {
     type: [Collaborator],
@@ -98,12 +84,54 @@ const schema = new Schema({
 });
 schema.plugin(timestamps);
 schema.plugin(toJson);
-schema.plugin(sluggable, {unique: true, source: ['title', 'translateDirection']});
+// schema.plugin(sluggable, {
+//   unique: false,
+//   source: function(doc) {
+//     if (doc.translateDirection) {
+//       return String(doc.translateDirection).trim();
+//     }
+//     return String(doc.title).trim();
+//   },
+// });
 schema.plugin(mongoosePaginate);
 
-schema.pre('save', async function() {
-  delete this.slug;
+// checks if dictionanry with given translateDirection or title already exist
+schema.path('slug').validate({
+  isAsync: true,
+  validator: async function(value, respond) {
+    try {
+      const count = await this.model('Dictionary').count({
+        _id: {$ne: this._id},
+        owner: this.owner,
+        slug: value,
+      });
+      respond(!count);
+    } catch (err) {
+      logger.error('dictionary slug counting error', err);
+      return respond(false);
+    }
+  },
+  message: 'dictionary already exist',
+});
 
+// generate slug before validation
+schema.pre('validate', async function() {
+  if (this.translateDirection) {
+    this.slug = slug(
+      String(this.translateDirection)
+        .trim()
+        .toLowerCase()
+    );
+  } else {
+    this.slug = slug(
+      String(this.title)
+        .trim()
+        .toLowerCase()
+    );
+  }
+});
+
+schema.pre('save', async function() {
   // the sluggable plugin cannot handle nested schemas, so generate unique slugs for word sets here
   if (_.isArray(this.wordSets)) {
     this.stats.wordSetsCount = this.wordSets.length;
