@@ -117,17 +117,9 @@ schema.path('slug').validate({
 // generate slug before validation
 schema.pre('validate', async function() {
   if (this.translateDirection) {
-    this.slug = slug(
-      String(this.translateDirection)
-        .trim()
-        .toLowerCase()
-    );
+    this.slug = slug(String(this.translateDirection).trim()).toLowerCase();
   } else {
-    this.slug = slug(
-      String(this.title)
-        .trim()
-        .toLowerCase()
-    );
+    this.slug = slug(String(this.title).trim()).toLowerCase();
   }
 });
 
@@ -141,7 +133,7 @@ schema.pre('save', async function() {
 
     this.wordSets.forEach((wordSet) => {
       if (wordSet.isModified('title')) {
-        wordSet.slug = slug(wordSet.title);
+        wordSet.slug = slug(wordSet.title).toLowerCase();
       }
       // do not allow to update state directly
       delete wordSet.stats;

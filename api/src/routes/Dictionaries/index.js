@@ -62,7 +62,7 @@ router.get('/', policies.checkJwtAuth, dictionaryController.list);
  *         schema:
  *           $ref: "#/definitions/DictionaryPayload"
  *     responses:
- *       200:
+ *       201:
  *         description: Ok
  *         schema:
  *           $ref: '#/definitions/DictionaryResponse'

@@ -1,11 +1,14 @@
 const express = require('express');
 const router = express.Router();
+const mongoose = require('mongoose');
 const got = require('got');
 const qs = require('querystring');
 const ISO6391 = require('iso-639-1');
 const policies = require('../helpers/policies');
 const errorHandler = require('../helpers/errorHandler');
 const config = require('../config');
+
+const Translation = mongoose.model('Translation');
 
 /**
  * @swagger
@@ -18,17 +21,24 @@ const config = require('../config');
 router.get('/', policies.checkJwtAuth, async (req, res) => {
   try {
     const {dictionaryKey} = config.translate.yandex;
-    const {text, direction, uiLang} = req.query;
-    const options = {
-      ui: uiLang || req.i18n.language,
-      key: dictionaryKey,
-      lang: direction,
-      text,
-    };
-    const dictResponse = await got(
-      `https://dictionary.yandex.net/api/v1/dicservice.json/lookup?${qs.stringify(options)}`
-    );
-    res.ok({items: JSON.parse(dictResponse.body).def});
+    const {direction} = req.query;
+    const text = req.query.text.trim();
+    let translation = await Translation.findOne({word: text});
+    if (!translation) {
+      const options = {
+        ui: 'en', //uiLang || req.i18n.language,
+        key: dictionaryKey,
+        lang: direction,
+        text,
+      };
+      const dictResponse = await got(
+        `https://dictionary.yandex.net/api/v1/dicservice.json/lookup?${qs.stringify(options)}`
+      );
+      const defs = JSON.parse(dictResponse.body).def;
+      translation = await Translation.addFromYandexResponse(text, defs);
+    }
+
+    res.ok({items: translation.defs});
   } catch (err) {
     let message;
     switch (err.statusCode) {

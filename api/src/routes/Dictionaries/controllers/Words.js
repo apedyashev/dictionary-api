@@ -9,7 +9,7 @@ module.exports = {
   async create(req, res) {
     try {
       const {dictionary: dictionaryId, wordSet: wordSetId} = req.body;
-      if (dictionaryId && !await Dictionary.hasWordSet(dictionaryId, wordSetId)) {
+      if (dictionaryId && !await Dictionary.count({_id: dictionaryId, owner: req.user.id})) {
         return res.unprocessableEntity({dictionary: 'invalid dictionary'});
       }
       if (wordSetId && !await Dictionary.hasWordSet(dictionaryId, wordSetId)) {
