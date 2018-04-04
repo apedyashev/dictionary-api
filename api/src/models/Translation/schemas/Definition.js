@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const toJson = require('@meanie/mongoose-to-json');
+const TranslationOption = require('./TranslationOption');
 const Schema = mongoose.Schema;
 
 const schema = new Schema({
@@ -7,17 +8,7 @@ const schema = new Schema({
     type: String,
     default: '',
   },
-  translations: [
-    new Schema({
-      text: {
-        type: String,
-        default: '',
-      },
-      examples: [String],
-      meanings: [String],
-      synonyms: [String],
-    }),
-  ],
+  translations: [TranslationOption],
   transcription: {
     type: String,
     default: '',

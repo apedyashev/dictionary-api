@@ -22,7 +22,15 @@ router.get('/', policies.checkJwtAuth, async (req, res) => {
   try {
     const {dictionaryKey} = config.translate.yandex;
     const {direction} = req.query;
+    if (!direction) {
+      // TODO: not sure which status code must be returned (422 ???)
+      return res.notFound();
+    }
     const text = req.query.text.trim();
+    if (!text) {
+      // TODO: not sure which status code must be returned (422 ???)
+      return res.notFound();
+    }
     let translation = await Translation.findOne({word: text});
     if (!translation) {
       const options = {
@@ -35,7 +43,11 @@ router.get('/', policies.checkJwtAuth, async (req, res) => {
         `https://dictionary.yandex.net/api/v1/dicservice.json/lookup?${qs.stringify(options)}`
       );
       const defs = JSON.parse(dictResponse.body).def;
-      translation = await Translation.addFromYandexResponse(text, defs);
+      if (defs && defs.length) {
+        translation = await Translation.addFromYandexResponse(text, direction, defs);
+      } else {
+        translation = {defs: []};
+      }
     }
 
     res.ok({items: translation.defs});

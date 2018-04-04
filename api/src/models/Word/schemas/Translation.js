@@ -27,11 +27,11 @@ const Schema = mongoose.Schema;
  *              - type: string
  */
 const schema = new Schema({
-  text: String,
-  pos: String,
-  meanings: [String],
-  synonyms: [String],
-  examples: [String],
+  text: {type: String, required: [true, 'required']},
+  pos: {type: String, default: ''},
+  meanings: {type: [String], default: []},
+  synonyms: {type: [String], default: []},
+  examples: {type: [String], default: []},
 });
 
 schema.plugin(toJson);

@@ -10,13 +10,18 @@ const schema = new Schema({
     type: String,
     required: [true, 'requried'],
   },
+  direction: {
+    type: String,
+    required: [true, 'requried'],
+  },
   defs: [Definition],
 });
 schema.plugin(timestamps);
 schema.plugin(toJson);
-schema.statics.addFromYandexResponse = async function(word, defs) {
+schema.statics.addFromYandexResponse = async function(word, direction, defs) {
   return this.create({
     word,
+    direction,
     defs: defs.map((curDef) => ({
       pos: curDef.pos,
       translations: curDef.tr.map((tr) => {
