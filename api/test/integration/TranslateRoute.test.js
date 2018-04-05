@@ -15,7 +15,6 @@ describe('TranslateRoute', () => {
         .expect(200)
         .expect((res) => {
           const {items} = res.body;
-          console.log('items', items);
           assert.isArray(items);
           assert.isAtLeast(items.length, 1, 'response contains at least one translation');
         });
