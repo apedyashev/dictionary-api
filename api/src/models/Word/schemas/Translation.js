@@ -27,6 +27,10 @@ const Schema = mongoose.Schema;
  *              - type: string
  */
 const schema = new Schema({
+  translation: {
+    type: Schema.Types.ObjectId,
+    default: null,
+  },
   text: {type: String, required: [true, 'required']},
   pos: {type: String, default: ''},
   meanings: {type: [String], default: []},

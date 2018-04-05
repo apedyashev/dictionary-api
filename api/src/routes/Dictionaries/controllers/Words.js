@@ -45,7 +45,7 @@ module.exports = {
         return res.forbidden();
       }
       const {dictionary: dictionaryId, wordSet: wordSetId} = req.body;
-      if (!dictionaryId || !await Dictionary.count({_id: dictionaryId})) {
+      if (dictionaryId && !await Dictionary.count({_id: dictionaryId})) {
         return res.unprocessableEntity({dictionary: 'invalid dictionary'});
       }
       if (wordSetId && !await Dictionary.hasWordSet(dictionaryId, wordSetId)) {
