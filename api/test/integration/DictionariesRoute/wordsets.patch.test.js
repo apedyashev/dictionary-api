@@ -39,7 +39,7 @@ describe('Dictionaries Route', () => {
         .expect(200)
         .expect({
           message: 'word set updated',
-          item: {...wordSet, slug: `${slug(wordSet.title)}-1`},
+          item: {...wordSet, slug: `${slug(wordSet.title).toLowerCase()}-1`},
         });
     });
 
@@ -55,7 +55,7 @@ describe('Dictionaries Route', () => {
         .expect(200)
         .expect({
           message: 'word set updated',
-          item: {...wordSet, slug: `${slug(wordSet.title)}-1`},
+          item: {...wordSet, slug: `${slug(wordSet.title.toLowerCase())}-1`},
         });
     });
   });

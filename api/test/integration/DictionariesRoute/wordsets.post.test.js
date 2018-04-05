@@ -60,7 +60,7 @@ describe('Dictionaries Route', () => {
           message: 'wordset created',
           item: {
             ...newWordSet,
-            slug: slug(newWordSet.title),
+            slug: slug(newWordSet.title).toLowerCase(),
             stats: {
               wordsCount: 0,
             },

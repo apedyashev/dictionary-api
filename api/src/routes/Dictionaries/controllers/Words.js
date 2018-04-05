@@ -24,10 +24,11 @@ module.exports = {
       });
       await word.save();
 
+      await Dictionary.findOneAndUpdate({_id: dictionaryId}, {$inc: {'stats.wordsCount': 1}});
       // inc words count for the corresponding word set
       await Dictionary.findOneAndUpdate(
         {_id: dictionaryId, 'wordSets._id': wordSetId},
-        {$inc: {'wordSets.$.stats.wordsCount': 1, 'stats.wordsCount': 1}}
+        {$inc: {'wordSets.$.stats.wordsCount': 1}}
       );
 
       res.created('a word created', {item: word});

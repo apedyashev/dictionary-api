@@ -60,7 +60,7 @@ describe('Dictionaries Route', () => {
             collaborators: [],
             wordSets: dictonary.wordSets.map((wordSet) => ({
               ...wordSet,
-              slug: slug(wordSet.title),
+              slug: slug(wordSet.title).toLowerCase(),
               stats: {wordsCount: 0},
             })),
             stats: {
@@ -101,31 +101,6 @@ describe('Dictionaries Route', () => {
         .expect((res) => {
           const {item} = res.body;
           assert.equal(item.slug, slug(dictonary.title).toLowerCase(), 'slug is correct');
-        });
-    });
-
-    it('should append incremented number to slug if such slug is already exist', async () => {
-      const dictonary = mocks.dictionary(5);
-      // make some of titles the same
-      dictonary.wordSets[2].title = dictonary.wordSets[0].title;
-      dictonary.wordSets[4].title = dictonary.wordSets[0].title;
-      dictonary.wordSets[3].title = dictonary.wordSets[1].title;
-      await request(app)
-        .post(endpoints.dictionaries())
-        .set(...defaultUser.authData.header)
-        .send(dictonary)
-        .expect(201)
-        .expect((res) => {
-          const {item: {wordSets}} = res.body;
-          const expectedSlugs = _(dictonary.wordSets)
-            .map('title')
-            .map((title) => slug(title))
-            .value();
-          expectedSlugs[2] = `${expectedSlugs[0]}-1`;
-          expectedSlugs[4] = `${expectedSlugs[0]}-2`;
-          expectedSlugs[3] = `${expectedSlugs[1]}-1`;
-          const allSlugs = _.map(wordSets, 'slug');
-          assert.includeMembers(allSlugs, expectedSlugs, 'slugs are autoincremented');
         });
     });
 
