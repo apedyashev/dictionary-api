@@ -59,6 +59,12 @@
 *     description: Resource ID
 *     required: true
 *     type: string
+*   dictionaryId:
+*     name: dictionaryId
+*     in: path
+*     description: Dictionary ID
+*     required: true
+*     type: string
 *   wordSetId:
 *     name: wordSetId
 *     in: path

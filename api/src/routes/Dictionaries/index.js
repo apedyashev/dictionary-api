@@ -83,7 +83,7 @@ router.post('/', policies.checkJwtAuth, dictionaryController.create);
 /**
  * @swagger
  *
- * /dictionaries/:id:
+ * /dictionaries/{id}:
  *   get:
  *     summary: Returns a dictionanry by ID
  *     tags: [Dictionaries]
@@ -110,7 +110,7 @@ router.get('/:id', policies.checkJwtAuth, dictionaryController.getOne);
 /**
  * @swagger
  *
- * /dictionaries/:id:
+ * /dictionaries/{id}:
  *   patch:
  *     summary: Updates an existing dictionary
  *     tags: [Dictionaries]
@@ -147,7 +147,7 @@ router.patch('/:id', policies.checkJwtAuth, dictionaryController.update);
 /**
  * @swagger
  *
- * /dictionaries/:id:
+ * /dictionaries/{id}:
  *   delete:
  *     summary: Deletes a dictionary
  *     tags: [Dictionaries]
@@ -176,7 +176,7 @@ router.delete('/:id', policies.checkJwtAuth, dictionaryController.delete);
 /**
  * @swagger
  *
- * /dictionaries/:id/wordsets:
+ * /dictionaries/{dictionaryId}/wordsets:
  *   post:
  *     summary: Adds a new wordset to the dictionary
  *     tags: [Dictionaries]
@@ -184,7 +184,7 @@ router.delete('/:id', policies.checkJwtAuth, dictionaryController.delete);
  *       - application/json
  *     parameters:
  *       - $ref: "#/parameters/AuthorizationHeader"
- *       - $ref: "#/parameters/id"
+ *       - $ref: "#/parameters/dictionaryId"
  *       - name: payload
  *         description: Endpoint's payload.
  *         in: body
@@ -215,7 +215,7 @@ router.post('/:id/wordsets', policies.checkJwtAuth, wordsetController.create);
 /**
  * @swagger
  *
- * /dictionaries/:id/wordsets/:wordSetId:
+ * /dictionaries/{id}/wordsets/{wordSetId}:
  *   patch:
  *     summary: Updates an existing wordset
  *     tags: [Dictionaries]
@@ -255,7 +255,7 @@ router.patch('/:id/wordsets/:wordSetId', policies.checkJwtAuth, wordsetControlle
 /**
  * @swagger
  *
- * /dictionaries/:id/wordsets/:wordSetId:
+ * /dictionaries/{id}/wordsets/{wordSetId}:
  *   delete:
  *     summary: Deletes a wordset
  *     tags: [Dictionaries]
@@ -283,7 +283,7 @@ router.delete('/:id/wordsets/:wordSetId', policies.checkJwtAuth, wordsetControll
 /**
  * @swagger
  *
- * /dictionaries/:id/wordsets:
+ * /dictionaries/{id}/wordsets:
  *   get:
  *     summary: Returs list of dictionarie's wordsets
  *     tags: [Dictionaries]
@@ -346,7 +346,7 @@ router.post('/words', policies.checkJwtAuth, wordController.create);
 /**
  * @swagger
  *
- * /dictionaries/words/:id:
+ * /dictionaries/words/{id}:
  *   patch:
  *     summary: Updates an existing word
  *     tags: [Dictionaries]
@@ -385,7 +385,7 @@ router.patch('/words/:id', policies.checkJwtAuth, wordController.update);
 /**
  * @swagger
  *
- * /dictionaries/words/:id:
+ * /dictionaries/words/{id}:
  *   delete:
  *     summary: Deletes a word
  *     tags: [Dictionaries]
@@ -414,7 +414,7 @@ router.delete('/words/:id', policies.checkJwtAuth, wordController.delete);
 /**
  * @swagger
  *
- * /dictionaries/:id/words:
+ * /dictionaries/{id}/words:
  *   get:
  *     summary: Returs list of words for a dictionary
  *     tags: [Dictionaries]
@@ -441,7 +441,7 @@ router.get('/:id/words', policies.checkJwtAuth, wordController.list);
 /**
  * @swagger
  *
- * /dictionaries/:id/wordsets/:wordSetId/words:
+ * /dictionaries/{id}/wordsets/{wordSetId}/words:
  *   get:
  *     summary: Returs list of words for a wordset
  *     tags: [Dictionaries]
