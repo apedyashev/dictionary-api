@@ -27,6 +27,8 @@ module.exports = {
 
     words: (id) =>
       id ? `${apiPrefix}/dictionaries/words/${id}` : `${apiPrefix}/dictionaries/words`,
+    wordsBunchAdd: (dictionaryId, wordSetId) =>
+      `${apiPrefix}/dictionaries/${dictionaryId}/wordsets/${wordSetId}/words/bunch-add`,
 
     translate: `${apiPrefix}/translate`,
   },

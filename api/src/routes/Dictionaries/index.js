@@ -252,6 +252,13 @@ router.post('/:id/wordsets', policies.checkJwtAuth, wordsetController.create);
  */
 router.patch('/:id/wordsets/:wordSetId', policies.checkJwtAuth, wordsetController.update);
 
+// TODO: swagger
+router.post(
+  '/:dictionaryId/wordsets/:wordSetId/words/bunch-add',
+  policies.checkJwtAuth,
+  wordsetController.bunchWordsAdd
+);
+
 /**
  * @swagger
  *

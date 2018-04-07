@@ -45,6 +45,31 @@ module.exports = {
     }
   },
 
+  async bunchWordsAdd(req, res) {
+    try {
+      const {dictionaryId, wordSetId} = req.params;
+      const {wordIds} = req.body;
+      const dictionary = await Dictionary.findOne({_id: dictionaryId, owner: req.user.id});
+      if (!dictionary) {
+        return res.notFound('dictionary not found');
+      }
+
+      const wordSet = dictionary.wordSets.id(wordSetId);
+      if (!wordSet) {
+        return res.notFound('wordset not found');
+      }
+      for (let i = 0; i < wordIds.length; i++) {
+        const wordId = wordIds[i];
+        await Word.update({_id: wordId, owner: req.user.id}, {wordSet: wordSetId});
+      }
+
+      const items = await Word.find({_id: {$in: wordIds}, owner: req.user.id});
+      res.ok('words were added to the wordset', {items: items});
+    } catch (err) {
+      errorHandler(res, 'wordset/words bunchWordsAdd error')(err);
+    }
+  },
+
   async delete(req, res) {
     try {
       const {id, wordSetId} = req.params;
