@@ -88,6 +88,36 @@ module.exports = {
     }
   },
 
+  //  TODO: tests
+  async deleteBatch(req, res) {
+    try {
+      const {wordIds = []} = req.body;
+      const deletedWordIds = [];
+      for (let i = 0; i < wordIds.length; i++) {
+        const wordId = wordIds[i];
+        const word = await Word.findOne({_id: wordId, owner: req.user.id});
+        if (word) {
+          const wordSetId = word.wordSet;
+          const dictionaryId = word.dictionary;
+          await word.remove();
+          deletedWordIds.push(wordId);
+
+          // update stats
+          await Dictionary.findOneAndUpdate({_id: dictionaryId}, {$inc: {'stats.wordsCount': -1}});
+          // inc words count for the corresponding word set
+          await Dictionary.findOneAndUpdate(
+            {_id: dictionaryId, 'wordSets._id': wordSetId},
+            {$inc: {'wordSets.$.stats.wordsCount': -1}}
+          );
+        }
+      }
+
+      res.ok('words deleted', {items: deletedWordIds});
+    } catch (err) {
+      errorHandler(res, 'word delete error')(err);
+    }
+  },
+
   async list(req, res) {
     try {
       const perPage = +req.query.perPage || 30;

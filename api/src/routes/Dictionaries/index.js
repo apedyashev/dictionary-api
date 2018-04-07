@@ -389,6 +389,8 @@ router.post('/words', policies.checkJwtAuth, wordController.create);
  */
 router.patch('/words/:id', policies.checkJwtAuth, wordController.update);
 
+router.delete('/words/batch', policies.checkJwtAuth, wordController.deleteBatch);
+
 /**
  * @swagger
  *
@@ -416,7 +418,7 @@ router.patch('/words/:id', policies.checkJwtAuth, wordController.update);
  *           $ref: '#/definitions/ResponseServerError'
  *
  */
-router.delete('/words/:id', policies.checkJwtAuth, wordController.delete);
+// router.delete('/words/:id', policies.checkJwtAuth, wordController.delete);
 
 /**
  * @swagger
