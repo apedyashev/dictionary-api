@@ -475,6 +475,8 @@ router.get('/:id/words', policies.checkJwtAuth, wordController.list);
  */
 router.get('/:id/wordsets/:wordSetId/words', policies.checkJwtAuth, wordController.list);
 
+router.get('/:dictionaryId/words/random', policies.checkJwtAuth, wordController.listRandom);
+
 module.exports = (app) => {
   app.use('/dictionaries', router);
 };

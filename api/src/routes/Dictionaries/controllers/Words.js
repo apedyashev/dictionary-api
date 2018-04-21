@@ -4,6 +4,7 @@ const {parseSortBy} = require('helpers/list');
 const errorHandler = require('helpers/errorHandler');
 const Dictionary = mongoose.model('Dictionary');
 const Word = mongoose.model('Word');
+const {ObjectId} = mongoose.Types;
 
 module.exports = {
   async create(req, res) {
@@ -138,6 +139,33 @@ module.exports = {
       res.paginated(items).ok();
     } catch (err) {
       errorHandler(res, 'words list error')(err);
+    }
+  },
+
+  async learn(req, res) {
+    //
+  },
+
+  // /words/suggested-translations
+  // TODO: test
+  async listRandom(req, res) {
+    try {
+      const {excludeWords = [], limit = 10, onlyForLearning = false} = req.query;
+      const {dictionaryId} = req.params;
+      const matchQuery = {
+        owner: ObjectId(req.user.id),
+        dictionary: ObjectId(dictionaryId),
+        _id: {$not: {$in: excludeWords}},
+      };
+      if (onlyForLearning) {
+        matchQuery.isLearned = false;
+      }
+      const documents = await Word.aggregate([{$match: matchQuery}, {$sample: {size: +limit}}]);
+
+      const items = documents.map((doc) => ({..._.omit(doc, ['_id', '__v']), id: doc._id}));
+      res.ok({items});
+    } catch (err) {
+      errorHandler(res, 'list of suggested translations error')(err);
     }
   },
 };

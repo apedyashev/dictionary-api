@@ -2417,6 +2417,10 @@ mongoose-paginate@5.0.3:
   dependencies:
     bluebird "3.0.5"
 
+mongoose-simple-random@0.4.1:
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/mongoose-simple-random/-/mongoose-simple-random-0.4.1.tgz#09054d8555826730209a7405b1d73cb4a8f91aa3"
+
 mongoose-sluggable@0.7.4:
   version "0.7.4"
   resolved "https://registry.yarnpkg.com/mongoose-sluggable/-/mongoose-sluggable-0.7.4.tgz#232d30d75f067708370158685e1fd1dd1ae2bf1a"
