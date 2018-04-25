@@ -54,6 +54,20 @@ const schema = new Schema({
     type: Boolean,
     default: false,
   },
+  learnedStatus: {
+    wordTranslation: {
+      type: Boolean,
+      default: false,
+    },
+    writing: {
+      type: Boolean,
+      default: false,
+    },
+    translationWord: {
+      type: Boolean,
+      default: false,
+    },
+  },
 });
 schema.plugin(timestamps);
 schema.plugin(toJson);
@@ -68,5 +82,11 @@ schema.path('translations').validate(function(translations) {
   }
   return true;
 }, 'required');
+
+schema.pre('save', function(next) {
+  const {wordTranslation, writing, translationWord} = this.learnedStatus;
+  this.isLearned = wordTranslation && writing && translationWord;
+  next();
+});
 
 mongoose.model('Word', schema);
