@@ -54,6 +54,13 @@ const schema = new Schema({
     type: Boolean,
     default: false,
   },
+  learnedAt: {
+    type: Date,
+  },
+  reviewInDays: {
+    type: Number,
+    default: 0,
+  },
   learnedStatus: {
     wordTranslation: {
       type: Boolean,
@@ -85,7 +92,12 @@ schema.path('translations').validate(function(translations) {
 
 schema.pre('save', function(next) {
   const {wordTranslation, writing, translationWord} = this.learnedStatus;
+  // const prevIsLearned = this.isLearned;
   this.isLearned = wordTranslation && writing && translationWord;
+  // if (!prevIsLearned && this.isLearned) {
+  //   this.learnedAt = new Date();
+  //   this.reviewInDays = 2 * this.reviewInDays + 1;
+  // }
   next();
 });
 

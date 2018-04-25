@@ -142,8 +142,24 @@ module.exports = {
     }
   },
 
-  async learn(req, res) {
-    //
+  // TODO: tests
+  async learned(req, res) {
+    const {learnedStatuses = []} = req.body;
+    const items = [];
+    for (let i = 0; i < learnedStatuses.length; i++) {
+      const {wordId, data} = learnedStatuses[i];
+      const word = await Word.findOne({_id: wordId});
+      const {wordTranslation, writing, translationWord} = data;
+      const isLearned = wordTranslation && writing && translationWord;
+      if (isLearned) {
+        word.learnedAt = new Date();
+        word.reviewInDays = 2 * word.reviewInDays + 1;
+      }
+      word.set({learnedStatus: data});
+      await word.save();
+      items.push(word);
+    }
+    res.ok({items});
   },
 
   // /words/suggested-translations

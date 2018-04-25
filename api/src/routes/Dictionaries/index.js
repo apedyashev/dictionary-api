@@ -350,6 +350,9 @@ router.get('/:id/wordsets', policies.checkJwtAuth, wordsetController.list);
  */
 router.post('/words', policies.checkJwtAuth, wordController.create);
 
+// TODO: swagger
+router.patch('/words/learned', policies.checkJwtAuth, wordController.learned);
+
 /**
  * @swagger
  *
