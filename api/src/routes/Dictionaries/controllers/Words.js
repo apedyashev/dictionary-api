@@ -4,6 +4,7 @@ const {parseSortBy} = require('helpers/list');
 const errorHandler = require('helpers/errorHandler');
 const Dictionary = mongoose.model('Dictionary');
 const Word = mongoose.model('Word');
+const LearningSchedule = mongoose.model('LearningSchedule');
 const {ObjectId} = mongoose.Types;
 
 module.exports = {
@@ -144,22 +145,28 @@ module.exports = {
 
   // TODO: tests
   async learned(req, res) {
-    const {learnedStatuses = []} = req.body;
-    const items = [];
-    for (let i = 0; i < learnedStatuses.length; i++) {
-      const {wordId, data} = learnedStatuses[i];
-      const word = await Word.findOne({_id: wordId});
-      const {wordTranslation, writing, translationWord} = data;
-      const isLearned = wordTranslation && writing && translationWord;
-      if (isLearned) {
-        word.learnedAt = new Date();
-        word.reviewInDays = 2 * word.reviewInDays + 1;
+    try {
+      const {learnedStatuses = []} = req.body;
+      const items = [];
+      for (let i = 0; i < learnedStatuses.length; i++) {
+        const {wordId, data} = learnedStatuses[i];
+        const word = await Word.findOne({_id: wordId});
+        const {wordTranslation, writing, translationWord} = data;
+        const isLearned = wordTranslation && writing && translationWord;
+        if (isLearned) {
+          word.learnedAt = new Date();
+          word.reviewInDays = 2 * word.reviewInDays + 1;
+
+          await LearningSchedule.addWord(word);
+        }
+        word.set({learnedStatus: data});
+        await word.save();
+        items.push(word);
       }
-      word.set({learnedStatus: data});
-      await word.save();
-      items.push(word);
+      res.ok({items});
+    } catch (err) {
+      errorHandler(res, 'words learned error')(err);
     }
-    res.ok({items});
   },
 
   // /words/suggested-translations
