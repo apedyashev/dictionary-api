@@ -1,15 +1,21 @@
 const mongoose = require('mongoose');
 const timestamps = require('mongoose-timestamp');
 const toJson = require('@meanie/mongoose-to-json');
-// const sluggable = require('mongoose-sluggable');
 const mongoosePaginate = require('mongoose-paginate');
 const slug = require('slug');
 const _ = require('lodash');
+const {cache: {dictionaryCacheLifetime}} = require('config');
+const {buildCacheKey} = require('helpers/cache');
+const {withNextId} = require('helpers/mongoose');
+const redisClient = require('../../../redis.js');
 const {Collaborator, WordSet} = require('./schemas');
-const {withNextId} = require('../../helpers/mongoose');
 const Schema = mongoose.Schema;
 require('models/Word');
 const Word = mongoose.model('Word');
+
+function getCacheKey(id) {
+  return buildCacheKey('dictionaries', id);
+}
 
 /**
  * @swagger
@@ -156,6 +162,13 @@ schema.pre('remove', async function() {
   await Word.remove({dictionary: this._id});
 });
 
+const cachableFields = ['title', 'slug'];
+schema.post('save', async function(doc) {
+  const newData = JSON.stringify(_.pick(doc, cachableFields));
+  const cacheKey = getCacheKey(doc._id);
+  await redisClient.setAsync(cacheKey, newData, 'EX', dictionaryCacheLifetime);
+});
+
 schema.statics.hasWordSet = async function(dictionaryId, wordSetId) {
   const dict = await this.findOne({_id: dictionaryId});
   if (!dict) {
@@ -163,6 +176,34 @@ schema.statics.hasWordSet = async function(dictionaryId, wordSetId) {
   }
 
   return !!dict.wordSets.id(wordSetId);
+};
+
+// TODO: DRY it up?
+schema.statics.findCachedById = async function(id) {
+  const cacheKey = getCacheKey(id);
+  let cachedDoc;
+  const readFromDb = async () => {
+    const doc = await this.findOne({_id: id});
+    if (doc) {
+      cachedDoc = _.pick(doc, cachableFields);
+      await redisClient.setAsync(
+        cacheKey,
+        JSON.stringify(cachedDoc),
+        'EX',
+        dictionaryCacheLifetime
+      );
+    }
+  };
+
+  try {
+    cachedDoc = JSON.parse(await redisClient.getAsync(cacheKey));
+    if (!cachedDoc) {
+      await readFromDb();
+    }
+  } catch (err) {
+    await readFromDb();
+  }
+  return {id, ...cachedDoc};
 };
 
 mongoose.model('Dictionary', schema);

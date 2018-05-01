@@ -4,7 +4,7 @@ const crypto = require('crypto');
 const _ = require('lodash');
 const logger = require('helpers/logger');
 const {cache: {userCacheLifetime}} = require('../config');
-const {buildCacheKey} = require('../helpers/cache');
+const {buildCacheKey} = require('helpers/cache');
 const redisClient = require('../../redis.js');
 const Schema = mongoose.Schema;
 

@@ -12,6 +12,7 @@ const config = {
     prefix: '',
     userCacheLifetime: 300, // 5 minutes
     tokenCacheLifetime: 900, // 15 minutes
+    dictionaryCacheLifetime: 60, // 1 minute
   },
   jwt: {
     salt: '--- change this here or in env config file ---',

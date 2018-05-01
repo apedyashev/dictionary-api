@@ -1,9 +1,12 @@
+const _ = require('lodash');
+const Promise = require('bluebird');
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const timestamps = require('mongoose-timestamp');
 const toJson = require('@meanie/mongoose-to-json');
 const mongoosePaginate = require('mongoose-paginate');
 const moment = require('moment');
+const Dictionary = mongoose.model('Dictionary');
 
 const schema = new Schema({
   owner: {
@@ -15,10 +18,6 @@ const schema = new Schema({
     type: Date,
     required: [true, 'required'],
   },
-  // words: {
-  //   type: [{title: String}],
-  //   default: [],
-  // },
   dictionaries: {
     type: [
       {
@@ -41,11 +40,21 @@ schema.plugin(timestamps);
 schema.plugin(toJson);
 schema.plugin(mongoosePaginate);
 
+schema.post('find', async function(docs) {
+  // populate dictionary title and slug from the cache
+  for (let docIdx = 0; docIdx < docs.length; docIdx++) {
+    const {dictionaries} = docs[docIdx];
+    for (let i = 0; i < dictionaries.length; i++) {
+      const cachedDictionary = await Dictionary.findCachedById(dictionaries[i]._id);
+      dictionaries[i] = {...cachedDictionary, ..._.pick(dictionaries[i], ['_id', 'words'])};
+    }
+  }
+});
+
 schema.statics.addWord = async function(word) {
   // remove word from the schedule before adding it
   // NOTE: each word can be added to the schedule ONCE, so use findOne
   const scheduleItem = await this.findOne({'dictionaries._id': word.dictionary});
-  console.log('scheduleItem', scheduleItem);
   if (scheduleItem) {
     scheduleItem.dictionaries.id(word.dictionary).words.pull(word._id);
     await scheduleItem.save();
@@ -86,37 +95,5 @@ schema.statics.addWord = async function(word) {
     });
   }
 };
-
-// schema.statics.addWord = async function(word) {
-//   // remove word from the schedule before adding it
-//   // NOTE: each word can be added to the schedule ONCE, so use findOne
-//   const scheduleItem = await this.findOne({'words._id': word._id});
-//   console.log('scheduleItem', scheduleItem);
-//   if (scheduleItem) {
-//     scheduleItem.words.pull(word._id);
-//     await scheduleItem.save();
-//   }
-//
-//   // add to the schedule
-//   const nextReviewDate = moment()
-//     .startOf('day')
-//     .add(word.reviewInDays, 'days')
-//     .toDate();
-//   const newScheduleDayItem = await this.findOne({
-//     owner: word.owner,
-//     date: nextReviewDate,
-//   });
-//   if (newScheduleDayItem) {
-//     // add word to existing schedule item
-//     newScheduleDayItem.words.push({_id: word._id, title: word.word});
-//     await newScheduleDayItem.save();
-//   } else {
-//     await this.create({
-//       owner: word.owner,
-//       date: nextReviewDate,
-//       words: [{_id: word._id, title: word.word}],
-//     });
-//   }
-// };
 
 mongoose.model('LearningSchedule', schema);
