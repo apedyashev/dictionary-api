@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
-const timestamps = require('mongoose-timestamp');
 const Schema = mongoose.Schema;
+const timestamps = require('mongoose-timestamp');
 const toJson = require('@meanie/mongoose-to-json');
+const mongoosePaginate = require('mongoose-paginate');
 const moment = require('moment');
 
 const schema = new Schema({
@@ -21,6 +22,7 @@ const schema = new Schema({
 });
 schema.plugin(timestamps);
 schema.plugin(toJson);
+schema.plugin(mongoosePaginate);
 
 schema.statics.addWord = async function(word) {
   // remove word from the schedule before adding it
