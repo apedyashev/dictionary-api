@@ -10,6 +10,16 @@ const schema = new Schema({
   nativeName: {
     type: String,
   },
+  cities: {
+    type: [
+      {
+        name: {type: String},
+        province: {type: String},
+        timezone: {type: String},
+      },
+    ],
+    default: [],
+  },
 });
 schema.plugin(mongoosePaginate);
 schema.plugin(toJson);
