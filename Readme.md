@@ -5,6 +5,11 @@
 * Documentation: http://localhost:8080/
 * Redis Commander: http://localhost:8095/
 
+### Create migration
+```
+docker-compose run api npm run migrate create seed-countries
+```
+
 ### 1. Running in development
 ```
     git clone https://github.com/apedyashev/usecases-app.git
