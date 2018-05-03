@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
+const _ = require('lodash');
 const policies = require('../helpers/policies');
 const errorHandler = require('../helpers/errorHandler');
 const config = require('../config');
@@ -55,6 +56,7 @@ const User = mongoose.model('User');
  *       locale:
  *         type: string
  */
+// TODO: tobe removed
 router.put('/language', policies.checkJwtAuth, async (req, res) => {
   const {locale} = req.body;
   try {
@@ -76,6 +78,20 @@ router.put('/language', policies.checkJwtAuth, async (req, res) => {
     } else {
       res.unprocessableEntity({locale: 'locale must be set'});
     }
+  } catch (err) {
+    errorHandler(res, 'language changing error')(err);
+  }
+});
+
+// TODO: swagger, tests
+router.patch('/me', policies.checkJwtAuth, async (req, res) => {
+  try {
+    const allowedFields = _.omit(req.body, ['email', 'roles', 'socialId', 'provider', 'salt']);
+    const user = await User.findOne({_id: req.user.id});
+    user.set(allowedFields);
+    user.save();
+
+    res.ok('profile updated', {item: user});
   } catch (err) {
     errorHandler(res, 'language changing error')(err);
   }

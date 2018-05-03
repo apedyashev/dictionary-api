@@ -103,6 +103,10 @@ const schema = new Schema({
     type: String,
     default: 'en-US',
   },
+  exerciseTime: {
+    type: String,
+    default: '18:00',
+  },
 });
 
 schema.plugin(timestamps);
