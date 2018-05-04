@@ -107,6 +107,15 @@ const schema = new Schema({
     type: String,
     default: '18:00',
   },
+  timezone: {
+    type: String,
+    default: 'Europe/London',
+  },
+  country: {
+    type: Schema.Types.ObjectId,
+    ref: 'Country',
+    default: null,
+  },
 });
 
 schema.plugin(timestamps);
