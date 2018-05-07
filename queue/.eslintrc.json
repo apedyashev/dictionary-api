@@ -1,0 +1,16 @@
+{
+  "plugins": ["prettier"],
+  "rules": {
+    "prettier/prettier": "error",
+    "no-var": "error",
+    "no-unused-vars": "warn",
+    "prefer-const": "error"
+  },
+  "extends": ["prettier"],
+  "parserOptions": {
+    "ecmaVersion": 8,
+    "ecmaFeatures": {
+      "experimentalObjectRestSpread": true
+    }
+  }
+}

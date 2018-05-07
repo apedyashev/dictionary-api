@@ -14,6 +14,7 @@ router.get('/', policies.checkJwtAuth, async (req, res) => {
     const sort = parseSortBy(req.query.sortBy);
     const query = {owner: req.user.id};
 
+    // NOTE: paginate calls the find() function that triggers post:find hook to populate dictionaries
     const items = await LearningSchedule.paginate(query, {page, limit: perPage, sort});
     res.paginated(items).ok();
   } catch (err) {

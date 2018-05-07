@@ -1,0 +1,34 @@
+{
+  "name": "queue",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "NODE_PATH=./src nodemon ./app.js",
+    "lint": "eslint .",
+    "prettier": "prettier --write './**/*.js'"
+  },
+  "dependencies": {
+    "debug": "2.6.3",
+    "ejs": "^2.6.1",
+    "email-templates": "^3.6.0",
+    "kue": "^0.11.6",
+    "lodash": "4.17.4",
+    "pug": "^2.0.3"
+  },
+  "devDependencies": {
+    "babel-cli": "6.26.0",
+    "babel-eslint": "7.2.3",
+    "eslint": "4.4.0",
+    "eslint-config-prettier": "2.9.0",
+    "eslint-config-standard": "10.2.1",
+    "eslint-config-standard-react": "5.0.0",
+    "eslint-plugin-babel": "4.1.2",
+    "eslint-plugin-import": "2.7.0",
+    "eslint-plugin-node": "5.1.1",
+    "eslint-plugin-prettier": "2.6.0",
+    "eslint-plugin-promise": "3.5.0",
+    "eslint-plugin-react": "7.1.0",
+    "eslint-plugin-standard": "3.0.1",
+    "prettier": "1.10.2"
+  }
+}

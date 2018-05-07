@@ -4,6 +4,7 @@ const {parseSortBy} = require('helpers/list');
 const errorHandler = require('helpers/errorHandler');
 const Dictionary = mongoose.model('Dictionary');
 const Word = mongoose.model('Word');
+const User = mongoose.model('User');
 const LearningSchedule = mongoose.model('LearningSchedule');
 const {ObjectId} = mongoose.Types;
 
@@ -157,7 +158,9 @@ module.exports = {
           word.learnedAt = new Date();
           word.reviewInDays = 2 * word.reviewInDays + 1;
 
-          await LearningSchedule.addWord(word);
+          const user = await User.findOne({_id: req.user.id});
+          const scheduleItem = await LearningSchedule.addWord(word);
+          (await scheduleItem.populateDictionaries()).createNotificationJobs(user);
         }
         word.set({learnedStatus: data});
         await word.save();

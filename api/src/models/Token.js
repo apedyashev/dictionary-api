@@ -7,7 +7,7 @@ const redisClient = require('../../redis.js');
 const config = require('../config');
 
 function getCacheKey(id) {
-  return buildCacheKey('users', id);
+  return buildCacheKey('tokens', id);
 }
 
 const schema = new Schema({

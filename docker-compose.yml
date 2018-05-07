@@ -8,6 +8,15 @@ api:
     - mongodb
     - redis
   command: [nodemon, start]
+queue:
+  build: ./queue
+  volumes:
+    - ./queue:/src
+  ports:
+    - "3005:3005"
+  links:
+    - redis
+  command: [nodemon, start]
 mongodb:
   image: mongo:3
   volumes:

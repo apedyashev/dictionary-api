@@ -1,0 +1,7 @@
+Hi <%= firstName %>,
+<p> It's time to review your words</p>
+
+<% dicts.forEach((dict) => { %>
+  <h4><a href="<%= `${config.baseUrl}/${dict.slug}` %>"><%= dict.title %></a></h4>
+  <div><%= dict.words.map((word) => word.title).join(', ') %></div>
+<% }) %>

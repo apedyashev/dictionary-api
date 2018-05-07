@@ -1,11 +1,13 @@
 const _ = require('lodash');
+const kue = require('kue');
 const Promise = require('bluebird');
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const timestamps = require('mongoose-timestamp');
 const toJson = require('@meanie/mongoose-to-json');
 const mongoosePaginate = require('mongoose-paginate');
-const moment = require('moment');
+// const moment = require('moment');
+const moment = require('moment-timezone');
 const Dictionary = mongoose.model('Dictionary');
 
 const schema = new Schema({
@@ -41,19 +43,13 @@ schema.plugin(toJson);
 schema.plugin(mongoosePaginate);
 
 schema.post('find', async function(docs) {
-  // populate dictionary title and slug from the cache
   for (let docIdx = 0; docIdx < docs.length; docIdx++) {
-    const {dictionaries} = docs[docIdx];
-    for (let i = 0; i < dictionaries.length; i++) {
-      const cachedDictionary = await Dictionary.findCachedById(dictionaries[i]._id);
-      dictionaries[i] = {...cachedDictionary, ..._.pick(dictionaries[i], ['_id', 'words'])};
-    }
+    docs[docIdx].populateDictionaries();
   }
 });
 
 schema.statics.addWord = async function(word) {
   // remove word from the schedule before adding it
-  // NOTE: each word can be added to the schedule ONCE, so use findOne
   const scheduleItem = await this.findOne({'dictionaries._id': word.dictionary});
   if (scheduleItem) {
     scheduleItem.dictionaries.id(word.dictionary).words.pull(word._id);
@@ -80,20 +76,60 @@ schema.statics.addWord = async function(word) {
         words: [{_id: word._id, title: word.word}],
       });
     }
-    // newDayScheduleItem.words.push({_id: word._id, title: word.word});
     await newDayScheduleItem.save();
-  } else {
-    await this.create({
-      owner: word.owner,
-      date: nextReviewDate,
-      dictionaries: [
-        {
-          _id: word.dictionary,
-          words: [{_id: word._id, title: word.word}],
-        },
-      ],
-    });
+
+    return newDayScheduleItem;
   }
+  return await this.create({
+    owner: word.owner,
+    date: nextReviewDate,
+    dictionaries: [
+      {
+        _id: word.dictionary,
+        words: [{_id: word._id, title: word.word}],
+      },
+    ],
+  });
+};
+
+schema.methods.populateDictionaries = async function() {
+  const {dictionaries} = this;
+  for (let i = 0; i < dictionaries.length; i++) {
+    const cachedDictionary = await Dictionary.findCachedById(dictionaries[i]._id);
+    dictionaries[i] = {...cachedDictionary, ..._.pick(dictionaries[i], ['_id', 'words'])};
+  }
+
+  return this;
+};
+
+// TODO: config
+const jobsQueue = kue.createQueue({
+  redis: {
+    host: 'redis',
+  },
+});
+schema.methods.createNotificationJobs = function(user) {
+  const [hours, minutes] = user.exerciseTime.split(':');
+  const exerciseTimeMs = moment
+    .utc(this.date)
+    .tz(user.timezone)
+    .set('hour', hours)
+    .set('minutes', minutes);
+  const nowTimeMs = moment.tz(user.timezone);
+  const notificationDelay = exerciseTimeMs.valueOf() - nowTimeMs.valueOf();
+
+  const job = jobsQueue
+    .create('email', {
+      to: user.email,
+      firstName: user.firstName,
+      dicts: this.dictionaries,
+    })
+    .delay(notificationDelay)
+    .removeOnComplete(true)
+    .save(function(err) {
+      if (!err) console.log(job.id);
+    });
+  return this;
 };
 
 mongoose.model('LearningSchedule', schema);

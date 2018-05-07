@@ -59,4 +59,4 @@ typings/
 
 runtime
 
-api/src/config/locals.js
+**/config/locals.js
