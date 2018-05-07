@@ -44,7 +44,7 @@ schema.plugin(mongoosePaginate);
 
 schema.post('find', async function(docs) {
   for (let docIdx = 0; docIdx < docs.length; docIdx++) {
-    docs[docIdx].populateDictionaries();
+    await docs[docIdx].populateDictionaries();
   }
 });
 

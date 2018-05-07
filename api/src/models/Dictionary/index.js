@@ -181,27 +181,34 @@ schema.statics.hasWordSet = async function(dictionaryId, wordSetId) {
 // TODO: DRY it up?
 schema.statics.findCachedById = async function(id) {
   const cacheKey = getCacheKey(id);
-  let cachedDoc;
   const readFromDb = async () => {
     const doc = await this.findOne({_id: id});
+    console.log('id', id, cacheKey);
     if (doc) {
-      cachedDoc = _.pick(doc, cachableFields);
+      const docToBeCached = _.pick(doc, cachableFields);
       await redisClient.setAsync(
         cacheKey,
-        JSON.stringify(cachedDoc),
+        JSON.stringify(docToBeCached),
         'EX',
         dictionaryCacheLifetime
       );
+      return docToBeCached;
     }
+
+    return null;
   };
 
+  let cachedDoc;
   try {
     cachedDoc = JSON.parse(await redisClient.getAsync(cacheKey));
+    console.log('======--------cachedDoc', cachedDoc);
     if (!cachedDoc) {
-      await readFromDb();
+      cachedDoc = await readFromDb();
+      console.log('--------cachedDoc', cachedDoc);
     }
   } catch (err) {
-    await readFromDb();
+    console.log('UUUUUerr', err);
+    cachedDoc = await readFromDb();
   }
   return {id, ...cachedDoc};
 };
