@@ -201,13 +201,10 @@ schema.statics.findCachedById = async function(id) {
   let cachedDoc;
   try {
     cachedDoc = JSON.parse(await redisClient.getAsync(cacheKey));
-    console.log('======--------cachedDoc', cachedDoc);
     if (!cachedDoc) {
       cachedDoc = await readFromDb();
-      console.log('--------cachedDoc', cachedDoc);
     }
   } catch (err) {
-    console.log('UUUUUerr', err);
     cachedDoc = await readFromDb();
   }
   return {id, ...cachedDoc};

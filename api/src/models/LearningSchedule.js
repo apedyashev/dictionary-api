@@ -49,11 +49,25 @@ schema.post('find', async function(docs) {
 });
 
 schema.statics.addWord = async function(word) {
+  console.log('-------word._id', word._id);
   // remove word from the schedule before adding it
-  const scheduleItem = await this.findOne({'dictionaries._id': word.dictionary});
+  // NOTE: each word can be added to the schedule ONCE, so use findOne
+  const scheduleItem = await this.findOne({'dictionaries.words._id': word._id});
   if (scheduleItem) {
     scheduleItem.dictionaries.id(word.dictionary).words.pull(word._id);
-    await scheduleItem.save();
+    const words = scheduleItem.dictionaries.id(word.dictionary).words;
+    if (words.length) {
+      await scheduleItem.save();
+    } else {
+      // remove dictionary without words
+      scheduleItem.dictionaries.pull(word.dictionary);
+      if (scheduleItem.dictionaries.length) {
+        await scheduleItem.save();
+      } else {
+        // schedule item is empty - remove it
+        await scheduleItem.remove();
+      }
+    }
   }
 
   // add to the schedule
