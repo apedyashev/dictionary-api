@@ -9,4 +9,4 @@
 * I18N √
 * deviceId middleware √
 
-Email unique index test
+Email unique index test.
