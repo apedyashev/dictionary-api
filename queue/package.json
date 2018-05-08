@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "start": "NODE_PATH=./src nodemon ./app.js",
+    "start": "nodemon ./app.js",
     "lint": "eslint .",
     "prettier": "prettier --write './**/*.js'"
   },
@@ -13,7 +13,7 @@
     "email-templates": "^3.6.0",
     "kue": "^0.11.6",
     "lodash": "4.17.4",
-    "pug": "^2.0.3"
+    "mongoose": "^5.0.17"
   },
   "devDependencies": {
     "babel-cli": "6.26.0",

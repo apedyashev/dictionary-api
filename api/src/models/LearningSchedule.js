@@ -6,7 +6,6 @@ const Schema = mongoose.Schema;
 const timestamps = require('mongoose-timestamp');
 const toJson = require('@meanie/mongoose-to-json');
 const mongoosePaginate = require('mongoose-paginate');
-// const moment = require('moment');
 const moment = require('moment-timezone');
 const Dictionary = mongoose.model('Dictionary');
 
@@ -37,6 +36,9 @@ const schema = new Schema({
     ],
     default: [],
   },
+  jobId: {
+    type: Number,
+  },
 });
 schema.plugin(timestamps);
 schema.plugin(toJson);
@@ -48,8 +50,21 @@ schema.post('find', async function(docs) {
   }
 });
 
+schema.pre('remove', async function() {
+  if (!this.jobId) {
+    return;
+  }
+
+  kue.Job.get(this.jobId, function(err, job) {
+    console.log('**********job.state', job.state);
+    job.remove(function(err) {
+      if (err) throw err;
+      console.log('removed completed job #%d', job.id);
+    });
+  });
+});
+
 schema.statics.addWord = async function(word) {
-  console.log('-------word._id', word._id);
   // remove word from the schedule before adding it
   // NOTE: each word can be added to the schedule ONCE, so use findOne
   const scheduleItem = await this.findOne({'dictionaries.words._id': word._id});
@@ -64,7 +79,7 @@ schema.statics.addWord = async function(word) {
       if (scheduleItem.dictionaries.length) {
         await scheduleItem.save();
       } else {
-        // schedule item is empty - remove it
+        // schedule item is empty - remove it and it's jobs
         await scheduleItem.remove();
       }
     }
@@ -75,7 +90,7 @@ schema.statics.addWord = async function(word) {
     .startOf('day')
     .add(word.reviewInDays, 'days')
     .toDate();
-  const newDayScheduleItem = await this.findOne({
+  let newDayScheduleItem = await this.findOne({
     owner: word.owner,
     date: nextReviewDate,
   });
@@ -91,19 +106,21 @@ schema.statics.addWord = async function(word) {
       });
     }
     await newDayScheduleItem.save();
-
-    return newDayScheduleItem;
+  } else {
+    newDayScheduleItem = await this.create({
+      owner: word.owner,
+      date: nextReviewDate,
+      dictionaries: [
+        {
+          _id: word.dictionary,
+          words: [{_id: word._id, title: word.word}],
+        },
+      ],
+    });
+    await newDayScheduleItem.createNotificationJobs(word.owner);
   }
-  return await this.create({
-    owner: word.owner,
-    date: nextReviewDate,
-    dictionaries: [
-      {
-        _id: word.dictionary,
-        words: [{_id: word._id, title: word.word}],
-      },
-    ],
-  });
+
+  return newDayScheduleItem;
 };
 
 schema.methods.populateDictionaries = async function() {
@@ -122,7 +139,10 @@ const jobsQueue = kue.createQueue({
     host: 'redis',
   },
 });
-schema.methods.createNotificationJobs = function(user) {
+schema.methods.createNotificationJobs = async function(userId) {
+  const User = mongoose.model('User');
+  const user = await User.findOne({_id: userId});
+
   const [hours, minutes] = user.exerciseTime.split(':');
   const exerciseTimeMs = moment
     .utc(this.date)
@@ -135,13 +155,18 @@ schema.methods.createNotificationJobs = function(user) {
   const job = jobsQueue
     .create('email', {
       to: user.email,
-      firstName: user.firstName,
-      dicts: this.dictionaries,
+      scheduleItemId: this._id,
+      // firstName: user.firstName,
+      // dicts: this.dictionaries,
     })
-    .delay(notificationDelay)
+    // .delay(notificationDelay)
     .removeOnComplete(true)
-    .save(function(err) {
-      if (!err) console.log(job.id);
+    .save((err) => {
+      // TODO
+      if (!err) {
+        this.jobId = job.id;
+        this.save();
+      }
     });
   return this;
 };

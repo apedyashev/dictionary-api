@@ -1,5 +1,5 @@
 const Email = require('email-templates');
-const config = require('./config');
+const config = require('../config');
 
 const email = new Email({
   views: {
@@ -17,8 +17,9 @@ const email = new Email({
   },
 });
 
-module.exports = function(data) {
+module.exports = async function(data) {
   console.log('job datai', data);
+
   email
     .send({
       template: 'review-words',

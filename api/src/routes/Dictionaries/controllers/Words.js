@@ -160,7 +160,8 @@ module.exports = {
 
           const user = await User.findOne({_id: req.user.id});
           const scheduleItem = await LearningSchedule.addWord(word);
-          (await scheduleItem.populateDictionaries()).createNotificationJobs(user);
+
+          // (await scheduleItem.populateDictionaries()).createNotificationJobs(user);
         }
         word.set({learnedStatus: data});
         await word.save();

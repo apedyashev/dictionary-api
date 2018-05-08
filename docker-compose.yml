@@ -15,6 +15,7 @@ queue:
   ports:
     - "3005:3005"
   links:
+    - mongodb
     - redis
   command: [nodemon, start]
 mongodb:
