@@ -2,7 +2,7 @@ FROM node:9-alpine
 
 RUN mkdir /src
 ADD ./ /src
-WORKDIR /src
+WORKDIR /src/queue
 
 # RUN npm install
 RUN npm install -g yarn

@@ -11,7 +11,8 @@ const i18nextMiddleware = require('i18next-express-middleware');
 const i18nextFsBackend = require('i18next-node-fs-backend');
 const config = require('./src/config');
 
-require('./mongoose.js')();
+require('./src/models')();
+require('dictionary-api-common/mongoose.js')(config);
 
 // TODO move to strategies/index.js
 const jwtStrategy = require('./src/strategies/Jwt');

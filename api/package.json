@@ -18,6 +18,7 @@
     "cookie-parser": "1.4.3",
     "cors": "2.8.4",
     "debug": "2.6.3",
+    "dictionary-api-common": "../common",
     "express": "4.15.2",
     "express-device": "0.4.2",
     "got": "8.3.0",

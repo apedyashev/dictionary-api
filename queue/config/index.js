@@ -1,8 +1,11 @@
 const fs = require('fs');
 const _ = require('lodash');
 const path = require('path');
+const commonConfig = require('dictionary-api-common/config');
 
-const config = {};
+const config = {
+  baseUrl: commonConfig.baseUrl,
+};
 
 const {NODE_ENV} = process.env;
 let envFileName = './development.js';

@@ -1,36 +1,12 @@
 const fs = require('fs');
 const _ = require('lodash');
 const path = require('path');
-// const logger = require('../helpers/logger');
 
 const config = {
-  appName: 'JWT API boilerplate',
-  useMultipleCpus: true,
-  fallbackLng: 'en-US',
-  allowedLanguages: ['en-US', 'ru-RU', 'de-CH'],
   cache: {
     prefix: '',
-    // userCacheLifetime: 300, // 5 minutes
-    tokenCacheLifetime: 900, // 15 minutes
-    // dictionaryCacheLifetime: 60, // 1 minute
-  },
-  jwt: {
-    salt: '--- change this here or in env config file ---',
-  },
-  mongoose: {
-    dbName: 'dictionary-api',
-    server: 'mongodb',
-  },
-  passport: {
-    facebook: {
-      failureRedirect: '/login',
-      strategy: {
-        // NOTE: for public repos secret data must be set in git-ingored config/locals.js
-        // clientID: '',
-        // clientSecret: '',
-        profileFields: ['name', 'displayName', 'emails'],
-      },
-    },
+    userCacheLifetime: 300, // 5 minutes
+    dictionaryCacheLifetime: 60, // 1 minute
   },
 };
 

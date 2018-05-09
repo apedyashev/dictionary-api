@@ -16,19 +16,23 @@ const queue = kue.createQueue({
   },
 });
 
-const connectionString = `mongodb://${config.mongoose.server}/${config.mongoose.dbName}`;
-console.log('connectionString', connectionString);
-mongoose
-  .connect(connectionString)
-  .then(() => {
-    console.log('MongoDB: connected');
-  })
-  .catch((err) => {
-    console.log('Could not connect to MongoDB!');
-    console.log('err: ', err);
-  });
+require('./models')();
+require('dictionary-api-common/mongoose.js')(config);
 
+// const connectionString = `mongodb://${config.mongoose.server}/${config.mongoose.dbName}`;
+// console.log('connectionString', connectionString);
+// mongoose
+//   .connect(connectionString)
+//   .then(() => {
+//     console.log('MongoDB: connected');
+//   })
+//   .catch((err) => {
+//     console.log('Could not connect to MongoDB!');
+//     console.log('err: ', err);
+//   });
+//
 const LearningSchedule = mongoose.model('LearningSchedule');
+const User = mongoose.model('User');
 
 const clusterWorkerSize = require('os').cpus().length;
 
@@ -41,12 +45,12 @@ if (cluster.isMaster) {
   queue.process('email', 10, async (job, done) => {
     let pending = 5,
       total = pending;
-    console.log('job received', job.type, job.data);
 
     if (jobHandlers[job.type]) {
       const scheduleItem = await LearningSchedule.findOne({_id: job.data.scheduleItemId});
       if (scheduleItem) {
-        jobHandlers[job.type]({...job.data, dicts: scheduleItem.dictionaries});
+        const user = (await User.findOne({_id: scheduleItem.owner})) || {firstName: 'user'};
+        jobHandlers[job.type]({...job.data, user, dicts: scheduleItem.dictionaries});
       }
     }
 

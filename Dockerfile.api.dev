@@ -2,9 +2,8 @@ FROM node:9-alpine
 
 RUN mkdir /src
 ADD ./ /src
-WORKDIR /src
-
+WORKDIR /src/api
+#COPY package.json .
 # RUN npm install
 RUN npm install -g yarn
 RUN npm install -g nodemon
-RUN yarn install

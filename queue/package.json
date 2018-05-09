@@ -8,12 +8,21 @@
     "prettier": "prettier --write './**/*.js'"
   },
   "dependencies": {
+    "@meanie/mongoose-to-json": "2.2.0",
+    "bluebird": "3.5.1",
     "debug": "2.6.3",
+    "dictionary-api-common": "../common",
     "ejs": "^2.6.1",
     "email-templates": "^3.6.0",
     "kue": "^0.11.6",
     "lodash": "4.17.4",
-    "mongoose": "^5.0.17"
+    "moment-timezone": "0.5.16",
+    "mongoose": "5.0.7",
+    "mongoose-paginate": "5.0.3",
+    "mongoose-sluggable": "0.7.4",
+    "mongoose-timestamp": "0.6.0",
+    "winston": "^3.0.0-rc1",
+    "winston-mongodb": "^4.0.0-rc1"
   },
   "devDependencies": {
     "babel-cli": "6.26.0",
