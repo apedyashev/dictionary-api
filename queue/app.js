@@ -1,5 +1,6 @@
 const kue = require('kue');
 const cluster = require('cluster');
+const moment = require('moment');
 const mongoose = require('mongoose');
 require('./models/LearningSchedule');
 const config = require('./config');
@@ -46,11 +47,13 @@ if (cluster.isMaster) {
     let pending = 5,
       total = pending;
 
+    // TODO: erros handling
     if (jobHandlers[job.type]) {
       const scheduleItem = await LearningSchedule.findOne({_id: job.data.scheduleItemId});
       if (scheduleItem) {
         const user = (await User.findOne({_id: scheduleItem.owner})) || {firstName: 'user'};
-        jobHandlers[job.type]({...job.data, user, dicts: scheduleItem.dictionaries});
+        const dateScheduled = moment.utc(scheduleItem.date).format('YYYY-MM-DD');
+        jobHandlers[job.type]({...job.data, user, dateScheduled, dicts: scheduleItem.dictionaries});
       }
     }
 

@@ -15,6 +15,7 @@
       <h4 class="dictionary-title">
         <a href="<%= `${config.baseUrl}/dictionaries/${dict.slug}` %>"><%= dict.title %></a>
         <span><%= dict.words.length %> to be reviewed</span>
+        <a href="<%= `${config.baseUrl}/learn-words/${dict.slug}/scheduled/${dateScheduled}` %>">Learn again</a>
       </h4>
       <div><%= dict.words.map((word) => word.title).join(', ') %></div>
     <% }) %>
