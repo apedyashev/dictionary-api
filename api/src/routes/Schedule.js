@@ -6,6 +6,7 @@ const {parseSortBy} = require('helpers/list');
 const policies = require('helpers/policies');
 const errorHandler = require('helpers/errorHandler');
 const LearningSchedule = mongoose.model('LearningSchedule');
+const User = mongoose.model('User');
 
 // TODO: swagger, tests
 router.get('/', policies.checkJwtAuth, async (req, res) => {
@@ -14,7 +15,11 @@ router.get('/', policies.checkJwtAuth, async (req, res) => {
     const page = +req.query.page || 1;
     const sort = parseSortBy(req.query.sortBy);
     // show today's items even if they are in the past
-    const startOfToday = moment()
+    const user = await User.findOne({_id: req.user.id});
+    const timeInUserTimezone = moment()
+      .tz(user.timezone || 'Europe/London')
+      .format('YYYY-MM-DD HH:mm');
+    const startOfToday = moment(timeInUserTimezone)
       .startOf('day')
       .toDate();
     const query = {owner: req.user.id, date: {$gte: startOfToday}};
