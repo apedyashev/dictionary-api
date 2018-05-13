@@ -176,12 +176,22 @@ module.exports = {
   async listRandom(req, res) {
     try {
       const {excludeWords = [], limit = 10, onlyForLearning = false} = req.query;
-      const {dictionaryId} = req.params;
+      const {dictionaryId, date} = req.params;
       const matchQuery = {
         owner: ObjectId(req.user.id),
         dictionary: ObjectId(dictionaryId),
         _id: {$not: {$in: excludeWords}},
       };
+      if (date && /^\d{4}-(0?[1-9]|1[012])-(0?[1-9]|[12][0-9]|3[01])$/.test(date)) {
+        // TODO: timezone
+        const scheduleItem = await LearningSchedule.findOne({date: new Date(date)});
+
+        const scheduledWordIds = scheduleItem.dictionaries
+          .find((dict) => String(dict._id) === dictionaryId)
+          .words.map(({_id}) => _id);
+        console.log('scheduledWordIds', scheduledWordIds);
+        matchQuery._id.$in = scheduledWordIds;
+      }
       if (onlyForLearning) {
         matchQuery.isLearned = false;
       }
@@ -193,4 +203,9 @@ module.exports = {
       errorHandler(res, 'list of suggested translations error')(err);
     }
   },
+
+  // // TODO: test
+  // async listScheduledRandom(req, res) {
+  //   //
+  // },
 };

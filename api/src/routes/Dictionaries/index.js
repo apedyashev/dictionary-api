@@ -480,6 +480,12 @@ router.get('/:id/wordsets/:wordSetId/words', policies.checkJwtAuth, wordControll
 
 router.get('/:dictionaryId/words/random', policies.checkJwtAuth, wordController.listRandom);
 
+router.get(
+  '/:dictionaryId/words/scheduled/:date/random',
+  policies.checkJwtAuth,
+  wordController.listRandom
+);
+
 module.exports = (app) => {
   app.use('/dictionaries', router);
 };
