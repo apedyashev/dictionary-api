@@ -88,7 +88,7 @@ const schema = new Schema({
   password: {
     type: String,
     validate: [validateLocalStrategyPassword, 'password must be longer'],
-    required: [true, 'required'],
+    // required: [true, 'required'],
   },
   socialId: {
     type: String,

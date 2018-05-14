@@ -235,9 +235,12 @@ router.post(
   async (req, res) => {
     try {
       const deviceId = req.device.type;
-      const {user} = req;
+      const {user, body: {locale}} = req;
       if (user) {
         const {token} = await Token.sign(user, deviceId);
+        user.locale = locale;
+        await user.save();
+
         res.ok('login successfull', {token, user});
       } else {
         res.notFound('user not found');
