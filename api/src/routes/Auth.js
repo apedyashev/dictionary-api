@@ -76,13 +76,13 @@ router.post('/login', async (req, res) => {
   try {
     const user = await User.findOne({email});
     if (!user) {
-      return res.unauthorized('invalid credentials');
+      return res.forbidden('invalid credentials');
     }
     if (user.authenticate(password)) {
       const {token} = await Token.sign(user, deviceId);
       res.ok('login successfull', {token, user});
     } else {
-      res.unauthorized('invalid credentials');
+      res.forbidden('invalid credentials');
     }
   } catch (err) {
     errorHandler(res, 'login error')(err);
@@ -216,6 +216,12 @@ router.get(
  *         in: query
  *         required: true
  *         type: string
+ *       - locale: code
+ *         description: Locale for UI
+ *         in: body
+ *         required: true
+ *         type: string
+ *         enum: [en-US, de-CH, ru-RU, sr-SP]
  *     responses:
  *       200:
  *         description: Ok
