@@ -1,6 +1,6 @@
 const winston = require('winston');
 // Requiring `winston-mongodb` will expose `winston.transports.MongoDB`
-require('winston-mongodb');
+// require('winston-mongodb');
 const mongoose = require('mongoose');
 const config = require('../config');
 
@@ -27,13 +27,13 @@ if (process.env.NODE_ENV !== 'production') {
     //     decolorize: true,
     //   })
     // );
-    logger.exceptions.handle(
-      new winston.transports.MongoDB({
-        db: mongoose.connection.db,
-        collection: 'log',
-        decolorize: true,
-      })
-    );
+    // logger.exceptions.handle(
+    //   new winston.transports.MongoDB({
+    //     db: mongoose.connection.db,
+    //     collection: 'log',
+    //     decolorize: true,
+    //   })
+    // );
   });
 }
 
