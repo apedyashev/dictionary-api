@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const policies = require('dictionary-api-common/helpers/policies');
+const passport = require('passport');
+const policies = require('dictionary-api-common/helpers/policies')(passport);
 const {
   dictionaries: dictionaryController,
   words: wordController,

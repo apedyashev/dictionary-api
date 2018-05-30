@@ -4,7 +4,8 @@ const mongoose = require('mongoose');
 const got = require('got');
 const qs = require('querystring');
 const ISO6391 = require('iso-639-1');
-const policies = require('dictionary-api-common/helpers/policies');
+const passport = require('passport');
+const policies = require('dictionary-api-common/helpers/policies')(passport);
 const errorHandler = require('dictionary-api-common/helpers/errorHandler');
 const config = require('../config');
 

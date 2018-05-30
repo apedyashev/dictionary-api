@@ -2,7 +2,8 @@ const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
 const {parseSortBy} = require('dictionary-api-common/helpers/list');
-const policies = require('dictionary-api-common/helpers/policies');
+const passport = require('passport');
+const policies = require('dictionary-api-common/helpers/policies')(passport);
 const errorHandler = require('dictionary-api-common/helpers/errorHandler');
 const Country = mongoose.model('Country');
 

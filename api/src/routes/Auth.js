@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const User = mongoose.model('User');
 const Token = mongoose.model('Token');
 const passport = require('passport');
-const policies = require('dictionary-api-common/helpers/policies');
+const policies = require('dictionary-api-common/helpers/policies')(passport);
 const errorHandler = require('dictionary-api-common/helpers/errorHandler');
 const config = require('../config');
 
