@@ -19,13 +19,14 @@ if (process.env.NODE_ENV !== 'production') {
   );
 } else {
   mongoose.connection.on('connected', () => {
-    winston.add(
-      new winston.transports.MongoDB({
-        db: mongoose.connection.db,
-        collection: 'log',
-        decolorize: true,
-      })
-    );
+    // TODO
+    // winston.add(
+    //   new winston.transports.MongoDB({
+    //     db: mongoose.connection.db,
+    //     collection: 'log',
+    //     decolorize: true,
+    //   })
+    // );
     logger.exceptions.handle(
       new winston.transports.MongoDB({
         db: mongoose.connection.db,
