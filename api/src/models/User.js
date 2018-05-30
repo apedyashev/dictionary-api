@@ -10,7 +10,7 @@ mongoose.model('User', UserSchema);
 // const logger = require('dictionary-api-common/helpers/logger');
 // const {cache: {userCacheLifetime}} = require('../config');
 // const {buildCacheKey} = require('dictionary-api-common/helpers/cache');
-// const redisClient = require('../../redis.js');
+// const redisClient = require('dictionary-api-common/redis.js');
 // const Schema = mongoose.Schema;
 //
 // function getCacheKey(id) {

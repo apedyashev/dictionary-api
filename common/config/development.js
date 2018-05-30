@@ -1,5 +1,7 @@
 module.exports = {
+  // TODO: delete
   baseUrl: 'http://localhost:3001',
+  // TODO: delete
   mongoose: {
     dbName: 'dictionary-api-dev',
     server: 'mongodb',
@@ -7,4 +9,7 @@ module.exports = {
   logger: {
     level: 'silly',
   },
+  redis: {
+    host: 'redis'
+  }
 };

@@ -11,7 +11,7 @@ mongoose.model('Dictionary', DictionarySchema);
 // const {cache: {dictionaryCacheLifetime}} = require('config');
 // const {buildCacheKey} = require('dictionary-api-common/helpers/cache');
 // const {withNextId} = require('dictionary-api-common/helpers/mongoose');
-// const redisClient = require('../../../redis.js');
+// const redisClient = require('dictionary-api-common/redis.js');
 // const {Collaborator, WordSet} = require('./schemas');
 // const Schema = mongoose.Schema;
 // require('models/Word');
