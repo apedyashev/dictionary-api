@@ -1,4 +1,4 @@
-const logger = require('../helpers/logger');
+const logger = require('dictionary-api-common/helpers/logger');
 
 module.exports = function(message) {
   logger.error('Sending 401 ("Unautorized") response', {message});

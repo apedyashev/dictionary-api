@@ -4,7 +4,7 @@ const Token = mongoose.model('Token');
 const passportJwt = require('passport-jwt');
 const i18next = require('i18next');
 const config = require('../config');
-const logger = require('../helpers/logger');
+const logger = require('dictionary-api-common/helpers/logger');
 
 const {ExtractJwt, Strategy} = passportJwt;
 

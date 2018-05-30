@@ -5,7 +5,7 @@
  *   res.created({key1: value1}); // ==> {key1: value1}
  */
 const _ = require('lodash');
-const logger = require('../helpers/logger');
+const logger = require('dictionary-api-common/helpers/logger');
 
 module.exports = function(...args) {
   let message;

@@ -1,4 +1,4 @@
-const logger = require('../helpers/logger');
+const logger = require('dictionary-api-common/helpers/logger');
 
 module.exports = function(message) {
   logger.debug('Sending 404 ("Not Found") response', {message});

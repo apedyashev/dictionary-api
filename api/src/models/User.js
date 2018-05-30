@@ -7,9 +7,9 @@ mongoose.model('User', UserSchema);
 // const timestamps = require('mongoose-timestamp');
 // const crypto = require('crypto');
 // const _ = require('lodash');
-// const logger = require('helpers/logger');
+// const logger = require('dictionary-api-common/helpers/logger');
 // const {cache: {userCacheLifetime}} = require('../config');
-// const {buildCacheKey} = require('helpers/cache');
+// const {buildCacheKey} = require('dictionary-api-common/helpers/cache');
 // const redisClient = require('../../redis.js');
 // const Schema = mongoose.Schema;
 //

@@ -1,4 +1,4 @@
-const logger = require('../helpers/logger');
+const logger = require('dictionary-api-common/helpers/logger');
 const _ = require('lodash');
 
 module.exports = function unprocessableEntity(...args) {

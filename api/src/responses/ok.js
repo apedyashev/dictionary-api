@@ -4,7 +4,7 @@
  *   res.ok('some message', {key1: value1}); // ==> {message: 'some message', key1: value1}
  *   res.ok({key1: value1}); // ==> {key1: value1}
  */
-const logger = require('../helpers/logger');
+const logger = require('dictionary-api-common/helpers/logger');
 const _ = require('lodash');
 
 module.exports = function(...args) {

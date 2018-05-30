@@ -2,7 +2,7 @@ const Strategy = require('passport-facebook');
 const mongoose = require('mongoose');
 const User = mongoose.model('User');
 const config = require('../config');
-const logger = require('../helpers/logger');
+const logger = require('dictionary-api-common/helpers/logger');
 
 module.exports = new Strategy(
   {

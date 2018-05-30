@@ -1,6 +1,6 @@
 const _ = require('lodash');
 const i18next = require('i18next');
-const logger = require('../helpers/logger');
+const logger = require('dictionary-api-common/helpers/logger');
 
 module.exports = function(err) {
   if (err.name === 'ValidationError' && err.errors) {

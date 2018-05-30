@@ -2,8 +2,8 @@ const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
 const _ = require('lodash');
-const policies = require('../helpers/policies');
-const errorHandler = require('../helpers/errorHandler');
+const policies = require('dictionary-api-common/helpers/policies');
+const errorHandler = require('dictionary-api-common/helpers/errorHandler');
 const config = require('../config');
 const User = mongoose.model('User');
 

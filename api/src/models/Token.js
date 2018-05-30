@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 const Schema = mongoose.Schema;
 const {cache: {tokenCacheLifetime}} = require('../config');
-const {buildCacheKey} = require('../helpers/cache');
+const {buildCacheKey} = require('dictionary-api-common/helpers/cache');
 const redisClient = require('../../redis.js');
 const config = require('../config');
 

@@ -7,7 +7,7 @@
 const app = require('../../app');
 const http = require('http');
 const cluster = require('cluster');
-const logger = require('../helpers/logger');
+const logger = require('dictionary-api-common/helpers/logger');
 const {useMultipleCpus} = require('../config');
 
 app.set('logger', logger);
