@@ -1,4 +1,4 @@
-const passport = require('passport');
+// const passport = require('passport');
 
 function isAdmin(req, res, next) {
   const isAdmin = req.user && req.user.roles && req.user.roles.includes('admin');
@@ -20,9 +20,12 @@ function canLogin(req, res, next) {
   }
 }
 
-const policies = {
-  checkJwtAuth: [passport.authenticate('jwt', {session: false}), canLogin],
-  checkAdmin: [passport.authenticate('jwt', {session: false}), canLogin, isAdmin],
-};
 
-module.exports = policies;
+
+module.exports = function(passport) {
+  const policies = {
+    checkJwtAuth: [passport.authenticate('jwt', {session: false}), canLogin],
+    checkAdmin: [passport.authenticate('jwt', {session: false}), canLogin, isAdmin],
+  };
+  return policies;
+}
