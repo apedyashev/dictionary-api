@@ -4,7 +4,7 @@ const path = require('path');
 // const logger = require('../helpers/logger');
 
 const config = {
-  appName: 'JWT API boilerplate',
+  appName: 'Dictionary',
   useMultipleCpus: true,
   fallbackLng: 'en-US',
   allowedLanguages: ['en-US', 'ru-RU', 'de-CH'],
