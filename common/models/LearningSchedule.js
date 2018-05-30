@@ -1,4 +1,5 @@
 const _ = require('lodash');
+const config = require('../config');
 const kue = require('kue');
 const Promise = require('bluebird');
 const mongoose = require('mongoose');
@@ -141,11 +142,8 @@ schema.methods.populateDictionaries = async function() {
   return this;
 };
 
-// TODO: config
 const jobsQueue = kue.createQueue({
-  redis: {
-    host: 'redis',
-  },
+  redis: config.redis,
 });
 schema.methods.createNotificationJobs = async function(userId) {
   // const User = mongoose.model('User');
