@@ -22,7 +22,7 @@ router.get('/countries', async (req, res) => {
     const items = await Country.paginate(query, {page, limit: perPage, sort});
     res.paginated(items).ok();
   } catch (err) {
-    errorHandler(res, 'list schedule error')(err);
+    errorHandler(res, 'list countries error')(err);
   }
 });
 

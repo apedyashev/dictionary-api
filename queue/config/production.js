@@ -1,8 +1,6 @@
 module.exports = {
-  // email: {
-  //   auth: {
-  //     user: '',
-  //     pass: '',
-  //   },
-  // },
+  mongoose: {
+    dbName: 'dictionary-api',
+    server: 'localhost',
+  },
 };

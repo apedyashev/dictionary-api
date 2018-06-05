@@ -1,5 +1,4 @@
 module.exports = {
-  // TODO: delete
   baseUrl: 'http://localhost:3001',
   // TODO: delete
   mongoose: {
