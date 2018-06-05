@@ -18,7 +18,7 @@ const email = new Email({
 });
 
 module.exports = async function(data) {
-  console.log('job datai', data);
+  // console.log('job datai', data);
 
   email
     .send({
@@ -27,13 +27,11 @@ module.exports = async function(data) {
         to: data.to,
       },
       locals: {
-        config: {
-          // TODO
-          baseUrl: 'http://localhost:3000',
-        },
+        config,
         ...data,
       },
     })
-    .then(console.log)
+    // TODO
+    // .then(console.log)
     .catch(console.error);
 };
