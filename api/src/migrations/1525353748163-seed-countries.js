@@ -1,7 +1,9 @@
 const _ = require('lodash');
 const countriesData = require('./seeds/countries.json');
 const timezonesData = require('./seeds/timezones.json');
-const mongoose = require('../../mongoose.js')();
+const config = require('../config');
+const mongoose = require('dictionary-api-common/mongoose.js')(config);
+require('../models')();
 const Country = mongoose.model('Country');
 
 exports.up = function(next) {

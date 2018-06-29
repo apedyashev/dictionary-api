@@ -61,6 +61,10 @@ const schema = new Schema({
     type: Number,
     default: 0,
   },
+  image: {
+    type: String,
+    default: ''
+  },
   learnedStatus: {
     wordTranslation: {
       type: Boolean,
@@ -74,6 +78,10 @@ const schema = new Schema({
       type: Boolean,
       default: false,
     },
+    image: {
+      type: String,
+      default: ''
+    }
   },
 });
 schema.plugin(timestamps);

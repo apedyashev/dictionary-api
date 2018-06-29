@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const _ = require('lodash');
+const got = require('got');
 const {parseSortBy} = require('dictionary-api-common/helpers/list');
 const errorHandler = require('dictionary-api-common/helpers/errorHandler');
 const Dictionary = mongoose.model('Dictionary');
@@ -18,12 +19,17 @@ module.exports = {
       if (wordSetId && !await Dictionary.hasWordSet(dictionaryId, wordSetId)) {
         return res.unprocessableEntity({wordSet: 'invalid wordset'});
       }
+      const imagesResponse = await got(
+        `https://api.qwant.com/api/search/images?count=1&offset=1&q=${req.body.word}`
+      );
+      const imagesData = JSON.parse(imagesResponse.body).data.result.items;
 
       const word = new Word({
         owner: req.user.id,
         dictonary: dictionaryId,
         wordSet: wordSetId || null,
         ...req.body,
+        image: imagesData && imagesData[0] ? imagesData[0].media : '',
       });
       await word.save();
 

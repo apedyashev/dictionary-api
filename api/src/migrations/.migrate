@@ -1,1 +1,1 @@
-{"migrations":[{"title":"1511633223786-seed-users.js"},{"title":"1525353748163-seed-countries.js"}],"path":"migrations/.migrate","pos":2,"_events":{},"_eventsCount":1}
+{"migrations":[{"title":"1511633223786-seed-users.js"},{"title":"1525353748163-seed-countries.js"},{"title":"1530195516087-add-images-to-words.js"}],"path":"migrations/.migrate","pos":3,"_events":{},"_eventsCount":1}

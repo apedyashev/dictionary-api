@@ -1,5 +1,7 @@
 const usersData = require('./seeds/users.json');
-const mongoose = require('../../mongoose.js')();
+const config = require('../config');
+const mongoose = require('dictionary-api-common/mongoose.js')(config);
+require('../models')();
 const User = mongoose.model('User');
 
 exports.up = function(next) {
