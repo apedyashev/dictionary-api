@@ -78,20 +78,45 @@ schema.statics.addWord = async function(word) {
   // NOTE: each word can be added to the schedule ONCE, so use findOne
   const scheduleItem = await this.findOne({'dictionaries.words._id': word._id});
   if (scheduleItem) {
-    scheduleItem.dictionaries.id(word.dictionary).words.pull(word._id);
-    const words = scheduleItem.dictionaries.id(word.dictionary).words;
-    if (words.length) {
-      await scheduleItem.save();
-    } else {
-      // remove dictionary without words
-      scheduleItem.dictionaries.pull(word.dictionary);
-      if (scheduleItem.dictionaries.length) {
+    // scheduleItem.dictionaries.id(word.dictionary).words.pull(word._id);
+    const dictionaryIndex = _.findIndex(scheduleItem.dictionaries, {_id: word.dictionary});
+    if (dictionaryIndex >= 0) {
+      const scheduleDictionary = scheduleItem.dictionaries[dictionaryIndex];
+      scheduleDictionary.words = scheduleDictionary.words.filter(
+        (wordItem) => wordItem._id !== word._id
+      );
+      const words = scheduleDictionary.words; //scheduleItem.dictionaries.id(word.dictionary).words;
+      if (words.length) {
         await scheduleItem.save();
       } else {
-        // schedule item is empty - remove it and it's jobs
-        await scheduleItem.remove();
+        // remove dictionary without words
+        // scheduleItem.dictionaries.pull(word.dictionary);
+        scheduleItem.dictionaries = scheduleItem.dictionaries.filter(
+          (dictItem) => dictItem._id !== word.dictionary
+        );
+        if (scheduleItem.dictionaries.length) {
+          await scheduleItem.save();
+        } else {
+          // schedule item is empty - remove it and it's jobs
+          await scheduleItem.remove();
+        }
       }
+    } else {
+      // TODO: how to handle this???
     }
+    // const words = scheduleItem.dictionaries.id(word.dictionary).words;
+    // if (words.length) {
+    //   await scheduleItem.save();
+    // } else {
+    //   // remove dictionary without words
+    //   scheduleItem.dictionaries.pull(word.dictionary);
+    //   if (scheduleItem.dictionaries.length) {
+    //     await scheduleItem.save();
+    //   } else {
+    //     // schedule item is empty - remove it and it's jobs
+    //     await scheduleItem.remove();
+    //   }
+    // }
   }
 
   // add to the schedule
@@ -105,7 +130,9 @@ schema.statics.addWord = async function(word) {
   });
   if (newDayScheduleItem) {
     // add word to existing schedule item
-    const dictionaryItem = newDayScheduleItem.dictionaries.id(word.dictionary);
+    // const dictionaryItem = newDayScheduleItem.dictionaries.id(word.dictionary);
+    const dictionaryIndex = _.findIndex(newDayScheduleItem.dictionaries, {_id: word.dictionary});
+    const dictionaryItem = dictionaryIndex >= 0 && newDayScheduleItem.dictionaries[dictionaryIndex];
     if (dictionaryItem) {
       dictionaryItem.words.push({_id: word._id, title: word.word});
     } else {

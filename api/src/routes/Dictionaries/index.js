@@ -487,6 +487,8 @@ router.get(
   wordController.listRandom
 );
 
+router.patch('/words/:wordId/image', policies.checkJwtAuth, wordController.changeImage);
+
 module.exports = (app) => {
   app.use('/dictionaries', router);
 };

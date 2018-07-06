@@ -20,7 +20,7 @@ module.exports = {
         return res.unprocessableEntity({wordSet: 'invalid wordset'});
       }
       const imagesResponse = await got(
-        `https://api.qwant.com/api/search/images?count=1&offset=1&q=${req.body.word}`
+        `https://api.qwant.com/api/search/images?count=100&offset=1&q=${req.body.word}`
       );
       const imagesData = JSON.parse(imagesResponse.body).data.result.items;
 
@@ -195,7 +195,6 @@ module.exports = {
         const scheduledWordIds = scheduleItem.dictionaries
           .find((dict) => String(dict._id) === dictionaryId)
           .words.map(({_id}) => _id);
-        console.log('scheduledWordIds', scheduledWordIds);
         matchQuery._id.$in = scheduledWordIds;
       }
       if (onlyForLearning) {
@@ -210,8 +209,26 @@ module.exports = {
     }
   },
 
-  // // TODO: test
-  // async listScheduledRandom(req, res) {
-  //   //
-  // },
+  // TODO: test, docs
+  async changeImage(req, res) {
+    try {
+      const {wordId} = req.params;
+      const word = await Word.findOne({_id: wordId});
+
+      const imagesResponse = await got(
+        `https://api.qwant.com/api/search/images?count=100&offset=1&q=${word.word}`
+      );
+      const imagesData = JSON.parse(imagesResponse.body).data.result.items;
+      const availableImages = _(imagesData)
+        .map('media')
+        .without(word.image)
+        .value();
+      word.image = availableImages[_.random(0, availableImages.length - 1)] || '';
+      word.save();
+
+      res.ok({item: word});
+    } catch (err) {
+      errorHandler(res, 'change image error')(err);
+    }
+  },
 };

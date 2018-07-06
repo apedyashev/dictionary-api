@@ -17,7 +17,7 @@
     "kue": "^0.11.6",
     "lodash": "4.17.4",
     "moment-timezone": "0.5.16",
-    "mongoose": "5.0.7",
+    "mongoose": "5.2.1",
     "mongoose-paginate": "5.0.3",
     "mongoose-sluggable": "0.7.4",
     "mongoose-timestamp": "0.6.0",
