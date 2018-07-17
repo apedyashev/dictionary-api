@@ -2,7 +2,7 @@
   tag: production
   service: api
   command: echo 'TBD'
-  
+
 - name: reinstate SSH Private Key File
   service: ssh_client
   command: /bin/bash -c "echo -e $PRIVATE_SSH_KEY >> /root/.ssh/id_rsa"
@@ -20,4 +20,4 @@
 - name: git_pull_server
   tag: production
   service: ssh_client
-  command: ssh csdeploy@138.197.184.26 'git pull origin production'
+  command: ssh csdeploy@138.197.184.26 'pwd && git pull origin production'
