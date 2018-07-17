@@ -20,4 +20,4 @@
 - name: git_pull_server
   tag: production
   service: ssh_client
-  command: ssh csdeploy@138.197.184.26 'pwd && git pull origin production'
+  command: ssh csdeploy@138.197.184.26 'cd /var/www/node/dictionary-api && git pull origin production'
