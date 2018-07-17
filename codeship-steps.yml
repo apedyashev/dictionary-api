@@ -1,0 +1,8 @@
+- name: install
+  tag: production
+  service: api
+  command: yarn install
+- name: test
+  tag: production
+  service: api
+  command: npm run test

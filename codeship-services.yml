@@ -1,0 +1,17 @@
+api:
+  build:
+    name: dict/api
+    dockerfile: Dockerfile.api.dev
+  environment:
+    EXAMPLE_ENV_VAR: NODE_ENV=test
+  depends_on:
+    - mongodb
+    - redis
+mongodb:
+  image: mongo:3
+  ports:
+    - 27017:27017
+redis:
+  image: redis:3
+  ports:
+      - 6379:6379
