@@ -7,3 +7,5 @@ WORKDIR /src/api
 RUN npm install -g yarn
 RUN pwd
 RUN ls -l
+
+RUN yarn install
