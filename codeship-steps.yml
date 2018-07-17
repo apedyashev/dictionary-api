@@ -4,5 +4,5 @@
   command: echo 'TBD'
 - name: git_pull_server
   tag: production
-  service: api
+  service: ssh_client
   command: ssh csdeploy@138.197.184.26 'git pull origin production'

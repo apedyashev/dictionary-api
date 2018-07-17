@@ -15,3 +15,5 @@ redis:
   image: redis:3
   ports:
       - 6379:6379
+ssh_client:
+  image: kroniak/ssh-client
