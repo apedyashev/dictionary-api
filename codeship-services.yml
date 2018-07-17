@@ -1,7 +1,7 @@
 api:
   build:
     name: dict/api
-    dockerfile: Dockerfile.api.dev
+    dockerfile: Dockerfile.api.ci
   environment:
     EXAMPLE_ENV_VAR: NODE_ENV=test
   depends_on:
