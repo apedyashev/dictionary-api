@@ -2,6 +2,7 @@
   tag: production
   service: api
   command: echo 'TBD'
+  
 - name: reinstate SSH Private Key File
   service: ssh_client
   command: /bin/bash -c "echo -e $PRIVATE_SSH_KEY >> /root/.ssh/id_rsa"
