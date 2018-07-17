@@ -1,8 +1,4 @@
 - name: test
   tag: production
   service: api
-  command: echo TBD: testing
-- name: git_pull_server
-  tag: production
-  service: api
-  command: ssh csdeploy@138.197.184.26 git pull origin production
+  command: echo 'TBD: testing'
