@@ -1,4 +1,4 @@
 - name: test
   tag: production
   service: api
-  command: echo 'TBD: testing'
+  command: echo TBD
