@@ -3,7 +3,7 @@
   service: api
   command: echo 'TBD'
 - name: reinstate SSH Private Key File
-  service: app
+  service: ssh_client
   command: /bin/bash -c "echo -e $PRIVATE_SSH_KEY >> /root/.ssh/id_rsa"
 
 - name: chmod id_rsa
