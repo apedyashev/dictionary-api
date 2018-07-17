@@ -2,6 +2,18 @@
   tag: production
   service: api
   command: echo 'TBD'
+- name: reinstate SSH Private Key File
+  service: app
+  command: /bin/bash -c "echo -e $PRIVATE_SSH_KEY >> /root/.ssh/id_rsa"
+
+- name: chmod id_rsa
+  service: app
+  command: chmod 600 /root/.ssh/id_rsa
+
+- name: add server to list of known hosts
+  service: app
+  command: /bin/bash -c "ssh-keyscan -H 138.197.184.26 >> /root/.ssh/known_hosts"
+
 - name: git_pull_server
   tag: production
   service: ssh_client

@@ -16,4 +16,11 @@ redis:
   ports:
       - 6379:6379
 ssh_client:
-  image: kroniak/ssh-client
+  build:
+    image: codeship/setting-ssh-key-test
+    dockerfile: Dockerfile.ssh
+  encrypted_env_file: codeship.env.encrypted
+  volumes:
+  # mapping to `.ssh` directory ensures that `id_rsa` file persists to subsequent steps
+  # replace container pathing if $HOME is not `/root`
+    - ./.ssh:/root/.ssh
