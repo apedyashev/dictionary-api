@@ -1,4 +1,8 @@
 - name: test
   tag: production
   service: api
-  command: npm run-script test
+  command: echo "TBD: testing"
+- name: Git Pull (server)
+  tag: production
+  service: api
+  command: ssh csdeploy@138.197.184.26 'git pull origin production'
