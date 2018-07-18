@@ -5,6 +5,8 @@
 * Documentation: http://localhost:8080/
 * Redis Commander: http://localhost:8095/
 
+http://pm2.keymetrics.io/docs/usage/pm2-doc-single-page/
+
 ### Create migration
 ```
 docker-compose run api npm run migrate create seed-countries

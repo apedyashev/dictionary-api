@@ -4,7 +4,7 @@ git pull origin production
 
 cd ./api
 yarn install
-npm run migrate
+NODE_ENV=prodiction npm run migrate
 
 cd ./queue
 yarn install
