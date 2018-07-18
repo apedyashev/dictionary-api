@@ -6,9 +6,11 @@
 * Redis Commander: http://localhost:8095/
 
 ## Deploy links
+https://documentation.codeship.com/pro/continuous-deployment/ssh-deploy/
 https://www.digitalocean.com/community/tutorials/how-to-set-up-a-node-js-application-for-production-on-ubuntu-16-04
 http://pm2.keymetrics.io/docs/usage/environment/
 http://pm2.keymetrics.io/docs/usage/pm2-doc-single-page/
+https://documentation.codeship.com/pro/builds-and-configuration/services-and-databases/
 
 ### Create migration
 ```
