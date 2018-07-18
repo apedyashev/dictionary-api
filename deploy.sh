@@ -6,5 +6,5 @@ cd ./api
 yarn install
 NODE_ENV=production npm run migrate
 
-cd ./queue
+cd ../queue
 yarn install
