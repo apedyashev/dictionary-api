@@ -9,14 +9,19 @@ exports.up = async function(next) {
     const words = await Word.find({image: {$exists: false}});
     if (words) {
       for (let i = 0; i < words.length; i++) {
-        const word = words[i];
-        const imagesResponse = await got(
-          `https://api.qwant.com/api/search/images?count=1&offset=1&q=${word.word}`
-        );
-        const imagesData = JSON.parse(imagesResponse.body).data.result.items;
-        word.image = imagesData && imagesData[0] ? imagesData[0].media : '';
-        await word.save();
-        console.log('word', word.id, 'saved');
+        try {
+          const word = words[i];
+          const imagesResponse = await got(
+            `https://api.qwant.com/api/search/images?count=1&offset=1&q=${word.word}`
+          );
+          const imagesData = JSON.parse(imagesResponse.body).data.result.items;
+          word.image = imagesData && imagesData[0] ? imagesData[0].media : '';
+          await word.save();
+          console.log('word', word.id, 'saved');
+        } catch (err) {
+          // don't faile all the migration if one image failed
+          console.log('picture getting error', err);
+        }
       }
     }
     next();

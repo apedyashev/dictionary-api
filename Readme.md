@@ -5,6 +5,9 @@
 * Documentation: http://localhost:8080/
 * Redis Commander: http://localhost:8095/
 
+## Deploy links
+https://www.digitalocean.com/community/tutorials/how-to-set-up-a-node-js-application-for-production-on-ubuntu-16-04
+http://pm2.keymetrics.io/docs/usage/environment/
 http://pm2.keymetrics.io/docs/usage/pm2-doc-single-page/
 
 ### Create migration
