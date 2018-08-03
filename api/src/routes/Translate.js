@@ -32,7 +32,7 @@ router.get('/', policies.checkJwtAuth, async (req, res) => {
       // TODO: not sure which status code must be returned (422 ???)
       return res.notFound();
     }
-    let translation = await Translation.findOne({word: text});
+    let translation = await Translation.findOne({word: text, direction});
     if (!translation) {
       const options = {
         ui: 'en', //uiLang || req.i18n.language,

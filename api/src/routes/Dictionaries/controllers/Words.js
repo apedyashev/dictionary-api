@@ -1,6 +1,9 @@
 const mongoose = require('mongoose');
 const _ = require('lodash');
-const got = require('got');
+// const got = require('got');
+const util = require('util');
+const logger = require('dictionary-api-common/helpers/logger');
+const imageSearch = require('dictionary-api-common/helpers/imageSearch');
 const {parseSortBy} = require('dictionary-api-common/helpers/list');
 const errorHandler = require('dictionary-api-common/helpers/errorHandler');
 const Dictionary = mongoose.model('Dictionary');
@@ -19,17 +22,25 @@ module.exports = {
       if (wordSetId && !await Dictionary.hasWordSet(dictionaryId, wordSetId)) {
         return res.unprocessableEntity({wordSet: 'invalid wordset'});
       }
-      const imagesResponse = await got(
-        `https://api.qwant.com/api/search/images?count=100&offset=1&q=${req.body.word}`
-      );
-      const imagesData = JSON.parse(imagesResponse.body).data.result.items;
+      let imagesData;
+      // wrap with the try/catch since we don't want to fail entire request just because of failed
+      // image API
+      try {
+        // const imagesResponse = await got(
+        //   `https://api.qwant.com/api/search/images?count=100&offset=1&q=${req.body.word}`
+        // );
+        // imagesData = JSON.parse(imagesResponse.body).data.result.items;
+        imagesData = await imageSearch.run(req.body.word);
+      } catch (imageApiErr) {
+        logger.error('Image search API error', {error: util.inspect(imageApiErr)});
+      }
 
       const word = new Word({
         owner: req.user.id,
         dictonary: dictionaryId,
         wordSet: wordSetId || null,
         ...req.body,
-        image: imagesData && imagesData[0] ? imagesData[0].media : '',
+        image: imagesData && imagesData[0] ? imagesData[0].url : '',
       });
       await word.save();
 
@@ -215,12 +226,14 @@ module.exports = {
       const {wordId} = req.params;
       const word = await Word.findOne({_id: wordId});
 
-      const imagesResponse = await got(
-        `https://api.qwant.com/api/search/images?count=100&offset=1&q=${word.word}`
-      );
-      const imagesData = JSON.parse(imagesResponse.body).data.result.items;
+      // const imagesResponse = await got(
+      //   `https://api.qwant.com/api/search/images?count=100&offset=1&q=${word.word}`
+      // );
+      // const imagesData = JSON.parse(imagesResponse.body).data.result.items;
+      const imagesData = await imageSearch.run(word.word);
+      console.log('imagesData', imagesData);
       const availableImages = _(imagesData)
-        .map('media')
+        .map('url')
         .without(word.image)
         .value();
       word.image = availableImages[_.random(0, availableImages.length - 1)] || '';
