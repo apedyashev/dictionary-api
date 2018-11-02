@@ -1,4 +1,4 @@
-# Important: you need Docker to run the app
+# Important: Docker is needed to run the app
 
 ## Useful links
 * Rockmongo: http://localhost:8081/

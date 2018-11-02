@@ -7,6 +7,7 @@ const policies = require('dictionary-api-common/helpers/policies')(passport);
 const errorHandler = require('dictionary-api-common/helpers/errorHandler');
 const config = require('../config');
 const User = mongoose.model('User');
+const {parseSortBy} = require('dictionary-api-common/helpers/list');
 
 /**
  * @swagger
@@ -99,9 +100,18 @@ router.patch('/me', policies.checkJwtAuth, async (req, res) => {
 });
 
 router.get('/', policies.checkAdmin, async (req, res) => {
-  // await User.remove();
-  const users = await User.find();
-  console.log('users', users);
+  const perPage = +req.query.perPage || 30;
+  const page = +req.query.page || 1;
+  const sort = parseSortBy(req.query.sortBy);
+  const {search} = req.query;
+  if (search) {
+    // TODO: allow search by name
+    query.email = new RegExp(search, 'ig');
+  }
+
+  const query = {};
+  const items = await User.paginate(query, {page, limit: perPage, sort});
+  res.paginated(items).ok();
   res.ok(users);
 });
 

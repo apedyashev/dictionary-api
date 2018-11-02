@@ -1,5 +1,6 @@
 const got = require('got');
 
+//API: https://contextualwebsearch.com/freeapi
 module.exports = {
   async run(query) {
     const imagesResponse = await got(

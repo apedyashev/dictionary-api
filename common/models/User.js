@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const timestamps = require('mongoose-timestamp');
+const mongoosePaginate = require('mongoose-paginate');
 const crypto = require('crypto');
 const _ = require('lodash');
 const logger = require('../helpers/logger');
@@ -119,7 +120,7 @@ const schema = new Schema({
 });
 
 schema.plugin(timestamps);
-// schema.plugin(mongoosePaginate);
+schema.plugin(mongoosePaginate);
 
 schema.path('email').validate({
   isAsync: true,
