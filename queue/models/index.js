@@ -9,7 +9,7 @@ module.exports = () => {
       return file.indexOf('.') !== 0 && file !== 'index.js';
     })
     .forEach((file) => {
-      logger.debug('Loading model', {file});
+      logger.debug('Loading queue model', {file});
       require(path.join(__dirname, file));
     });
 };

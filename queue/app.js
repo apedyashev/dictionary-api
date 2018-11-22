@@ -4,21 +4,24 @@ const moment = require('moment');
 const mongoose = require('mongoose');
 require('./models/LearningSchedule');
 const config = require('./config');
-const jobHandlers = require('./jobs');
+const commonConfig = require('dictionary-api-common/config');
+
 const queue = kue.createQueue({
-  redis: {
-    // port: 1234,
-    host: 'redis',
-    // auth: 'password',
-    // db: 3, // if provided select a non-default redis db
-    // options: {
-    //   // see https://github.com/mranney/node_redis#rediscreateclient
-    // },
-  },
+  redis: commonConfig.redis,
+  // redis: {
+  //   // port: 1234,
+  //   host: 'redis',
+  //   // auth: 'password',
+  //   // db: 3, // if provided select a non-default redis db
+  //   // options: {
+  //   //   // see https://github.com/mranney/node_redis#rediscreateclient
+  //   // },
+  // },
 });
 
 require('./models')();
 require('dictionary-api-common/mongoose.js')(config);
+const jobHandlers = require('./jobs');
 
 // const connectionString = `mongodb://${config.mongoose.server}/${config.mongoose.dbName}`;
 // console.log('connectionString', connectionString);
@@ -63,5 +66,9 @@ if (cluster.isMaster) {
     //   --pending || done();
     //   pending || clearInterval(interval);
     // }, 1000);
+  });
+
+  queue.process('import_stats', 10, async (job, done) => {
+    jobHandlers.importStats(job);
   });
 }
