@@ -23,7 +23,7 @@ module.exports = async function(data) {
 
   email
     .send({
-      template: path.join(__dirname, 'review-words'),
+      template: path.join(__dirname, '..', 'emails', 'review-words'),
       message: {
         to: data.to,
       },
