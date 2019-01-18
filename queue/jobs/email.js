@@ -1,4 +1,5 @@
 const Email = require('email-templates');
+const path = require('path');
 const config = require('../config');
 
 const email = new Email({
@@ -22,7 +23,7 @@ module.exports = async function(data) {
 
   email
     .send({
-      template: 'review-words',
+      template: path.join(__dirname, 'review-words'),
       message: {
         to: data.to,
       },

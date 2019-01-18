@@ -43,6 +43,12 @@ docker-compose run api npm run migrate create seed-countries
 
 
 ## Additional commands
+## Queue UI
+```
+api/node_modules/kue/bin/kue-dashboard -p 3051 -r redis://localhost:6379
+```
+and then open http://127.0.0.1:3051
+
 ### Run tests
 ```
 	docker-compose run api npm run test
