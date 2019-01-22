@@ -13,7 +13,8 @@ module.exports = {
         script: "./queue/app.js",
         watch: true,
         env: {
-            "NODE_ENV": "production"
+            "NODE_ENV": "production",
+            "DEBUG": "email-templates"
         }
       }
   ]

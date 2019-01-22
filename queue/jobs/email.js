@@ -1,6 +1,7 @@
 const Email = require('email-templates');
 const path = require('path');
 const config = require('../config');
+console.log('path1', path.join(__dirname, '..', 'emails', 'review-words'));
 
 const email = new Email({
   views: {
@@ -19,7 +20,7 @@ const email = new Email({
 });
 
 module.exports = async function(data) {
-  // console.log('job datai', data);
+  console.log('path', path.join(__dirname, '..', 'emails', 'review-words'));
 
   email
     .send({
