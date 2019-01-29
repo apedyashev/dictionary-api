@@ -83,7 +83,7 @@ schema.statics.addWord = async function(word) {
     if (dictionaryIndex >= 0) {
       const scheduleDictionary = scheduleItem.dictionaries[dictionaryIndex];
       scheduleDictionary.words = scheduleDictionary.words.filter(
-        (wordItem) => wordItem._id !== word._id
+        (wordItem) => !wordItem._id.equals(word._id)
       );
       const words = scheduleDictionary.words; //scheduleItem.dictionaries.id(word.dictionary).words;
       if (words.length) {

@@ -188,7 +188,6 @@ module.exports = {
     }
   },
 
-  // /words/suggested-translations
   // TODO: test
   async listRandom(req, res) {
     try {
