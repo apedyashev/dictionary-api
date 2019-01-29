@@ -18,7 +18,7 @@ if (allowedEnvs.indexOf(NODE_ENV) >= 0) {
 }
 
 envFileName = path.resolve(__dirname, envFileName);
-console.log('loading config', {envFileName});
+// console.log('loading config', {envFileName});
 let envConfig = {};
 if (fs.existsSync(envFileName)) {
   envConfig = require(envFileName) || {};

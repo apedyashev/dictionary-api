@@ -88,6 +88,10 @@ const schema = new Schema({
       type: Number,
       default: 0,
     },
+    learnedWordsCount: {
+      type: Number,
+      default: 0,
+    },
   },
 });
 schema.plugin(timestamps);
@@ -135,9 +139,11 @@ schema.pre('save', async function() {
   // the sluggable plugin cannot handle nested schemas, so generate unique slugs for word sets here
   if (_.isArray(this.wordSets)) {
     this.stats.wordSetsCount = this.wordSets.length;
-    this.stats.wordsCount = this.wordSets.reduce((acc, wordSet) => {
-      return wordSet.stats.wordsCount + acc;
-    }, 0);
+    // ERROR: it counts only words associated with wordsets
+    // this.stats.wordsCount = this.wordSets.reduce((acc, wordSet) => {
+    //   return wordSet.stats.wordsCount + acc;
+    // }, 0);
+    this.stats.wordsCount = await Word.count({dictionary: this._id});
 
     this.wordSets.forEach((wordSet) => {
       if (wordSet.isModified('title')) {
