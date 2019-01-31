@@ -8,7 +8,7 @@ module.exports = (config) => {
   const connectionString = `mongodb://${config.mongoose.server}/${config.mongoose.dbName}`;
   console.log('connectionString', connectionString);
   mongoose
-    .connect(connectionString)
+    .connect(connectionString, { useNewUrlParser: true })
     .then(() => {
       console.log('MongoDB: connected');
     })
