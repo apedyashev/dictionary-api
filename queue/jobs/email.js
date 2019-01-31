@@ -1,12 +1,10 @@
 const Email = require('email-templates');
 const path = require('path');
 const config = require('../config');
-console.log('path1', path.join(__dirname, '..', 'emails', 'review-words'));
-console.log('templates dir', path.join(__dirname, '..', 'emails'));
 
 const email = new Email({
   views: {
-    root: path.join(__dirname, '..', 'emails'),
+    root: path.join(__dirname, '..', 'emails', '/'),
     options: {
       extension: 'ejs',
     },
@@ -22,11 +20,9 @@ const email = new Email({
 });
 
 module.exports = async function(data) {
-  console.log('path', path.join(__dirname, '..', 'emails', 'review-words'));
-
   email
     .send({
-      template: path.join(__dirname, '..', 'emails', 'review-words'),
+      template: 'review-words',
       message: {
         to: data.to,
       },
