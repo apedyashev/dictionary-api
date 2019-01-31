@@ -5,7 +5,12 @@ module.exports = {
   },
   redis: {
     host: 'localhost'
-  }
+  },
+  mongoose: {
+    dbName: 'dictionary-api',
+    server: 'localhost',
+    port: 27017,
+  },
   // email: {
   //   auth: {
   //     user: '',

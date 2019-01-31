@@ -5,8 +5,8 @@ mongoose.Promise = require('bluebird');
 
 module.exports = (config) => {
   // TODO
-  const connectionString = `mongodb://${config.mongoose.server}/${config.mongoose.dbName}`;
-  // console.log('connectionString', connectionString);
+  const connectionString = `mongodb://${config.mongoose.server}:${config.mongoose.port}/${config.mongoose.dbName}`;
+  console.log('=-=-=-=-=-=-connectionString', connectionString);
   mongoose
     .connect(connectionString, { useNewUrlParser: true })
     .then(() => {
