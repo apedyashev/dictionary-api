@@ -4,7 +4,8 @@ const path = require('path');
 const commonConfig = require('dictionary-api-common/config');
 
 const config = {
-  baseUrl: commonConfig.baseUrl,
+  // baseUrl: commonConfig.baseUrl,
+  ...commonConfig,
 };
 
 const {NODE_ENV} = process.env;
